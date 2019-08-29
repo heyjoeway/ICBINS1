@@ -163,7 +163,21 @@ public class Character : MonoBehaviour {
     // ========================================================================
 
     public int score = 0;
-    public int rings;
+    int _ringLivesMax = 0;
+    int _rings;
+    public int rings { 
+        get { return _rings; }
+        set {
+            _rings = value;
+            int livesPrev = lives;
+            lives += Mathf.Max(0, (int)Mathf.Floor(_rings / 100F) - _ringLivesMax);
+            if (lives > livesPrev) {
+                // Play lives jingle
+
+            }
+            _ringLivesMax = Mathf.Max(_ringLivesMax, (int)Mathf.Floor(_rings / 100F));
+        }
+    }
     public int lives = 3;
 
     // ========================================================================
@@ -227,7 +241,8 @@ public class Character : MonoBehaviour {
     public int checkpointId = 0;
 
     void Respawn() { // Should only be used in multiplayer; for full respawns reload scene
-        rings = 0;
+        _rings = 0;
+        _ringLivesMax = 0;
         position = respawnPosition;
         stateCurrent = CharacterState.ground;
         velocity = Vector3.zero;
@@ -439,14 +454,12 @@ public class Character : MonoBehaviour {
         return hit.collider != null;
     }
 
-
     // 3D-Ready: NO
     bool GetIsGrounded(RaycastHit hit) { // Potentially avoid recomputing raycast
         if (!IsValidRaycastHit(hit)) return false;
 
-        RaycastHit realHit = (RaycastHit)hit;
         float angleDiff = Mathf.DeltaAngle(
-            Quaternion.FromToRotation(Vector3.up, realHit.normal).eulerAngles.z,
+            Quaternion.FromToRotation(Vector3.up, hit.normal).eulerAngles.z,
             forwardAngle
         );
         return angleDiff < 67.5F;
@@ -499,7 +512,7 @@ public class Character : MonoBehaviour {
         UpdateInvulnerable();
     }
 
-    // 3D-Ready: NO
+    // 3D-Ready: Sorta
     void UpdateGroundMove() {
         float accelerationMagnitude = 0F;
 
@@ -557,7 +570,7 @@ public class Character : MonoBehaviour {
     BalanceState balanceState = BalanceState.None;
 
     // Keeps character locked to ground while in ground state
-    // 3D-Ready: No, but pretty close, actually. Basically just change the ledge code.
+    // 3D-Ready: No, but pretty close, actually.
     bool UpdateGroundSnap() {
         RaycastHit potentialHit = GetGroundRaycast();
         balanceState = BalanceState.None;

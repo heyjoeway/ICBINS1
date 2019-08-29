@@ -3,18 +3,19 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class RollZone : MonoBehaviour {
-    void OnTriggerEnter(Collider other) {
-        Character[] characters = other.transform.gameObject.GetComponentsInParent<Character>();
-        if (characters.Length == 0) return;
-        Character character = characters[0];
-        character.rollLock = true;
-        character.stateCurrent = Character.CharacterState.rolling;
-    }
+    public bool lockLeft = false;
 
-    void OnTriggerExit(Collider other) {
+    void OnTriggerStay(Collider other) {
         Character[] characters = other.transform.gameObject.GetComponentsInParent<Character>();
-        if (characters.Length == 0) return;
-        Character character = characters[0];
-        character.rollLock = false;
+
+        foreach (Character character in characters) {
+            if (character.position.x > transform.position.x)
+                character.rollLock = !lockLeft;
+            else
+                character.rollLock = lockLeft;
+
+            if (character.rollLock && character.inGroundedState)
+                character.stateCurrent = Character.CharacterState.rolling;
+        }
     }
 }

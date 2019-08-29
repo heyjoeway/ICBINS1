@@ -1,0 +1,43 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!78 &1
+TagManager:
+  serializedVersion: 2
+  tags: []
+  layers:
+  - Default
+  - TransparentFX
+  - Ignore Raycast
+  - 
+  - Water
+  - UI
+  - 
+  - 
+  - Player - Ignore Top Solid and Raycast
+  - Player - Ignore Top Solid
+  - Player - Rolling
+  - Object - Top Solid Only
+  - Object - Rolling Only
+  - Object - Not Rolling Only
+  - Player - Rolling and Ignore Top Solid
+  - Object - Ignore Player
+  - Player - Default
+  - Object - Monitor Solidity
+  - Object - Monitor Trigger
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  m_SortingLayers:
+  - name: Default
+    uniqueID: 0
+    locked: 0

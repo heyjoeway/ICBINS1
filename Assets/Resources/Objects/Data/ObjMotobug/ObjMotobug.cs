@@ -24,7 +24,10 @@ public class ObjMotobug : MonoBehaviour {
 
     // ========================================================================
 
-    public bool moveRight = false;
+    public bool moveRight {
+        get { return spriteRenderer.flipX; }
+        set { spriteRenderer.flipX = value; }
+    }
     float turnTimer = 0;
     Vector3 positionPrev = Vector3.zero;
 
@@ -40,7 +43,6 @@ public class ObjMotobug : MonoBehaviour {
             if (turnTimer > 0) return;
             turnTimer = 0;
             moveRight = !moveRight;
-            spriteRenderer.flipX = moveRight;
             transform.position = positionPrev;
             animator.enabled = true;
             return;

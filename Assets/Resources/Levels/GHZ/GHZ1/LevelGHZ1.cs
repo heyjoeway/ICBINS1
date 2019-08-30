@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class LevelGHZ1 : Level {
+    // Vector3 positionOffset = Vector3.zero;
     Vector3 cameraMin1 = new Vector3(21.5F, 4.5F, -99999F);
     Vector3 cameraMin2 = new Vector3(21.5F, -3.5F, -99999F);
     Vector3 cameraMax = new Vector3(314.2F, 28.5F, 99999F);

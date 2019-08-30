@@ -21,8 +21,16 @@ public class CharacterCamera : MonoBehaviour {
 
     public GameObject characterObj;
     public float zDistance = -13.5F;
-    public Vector3 minPosition;
-    public Vector3 maxPosition;
+    public Vector3 minPosition = new Vector3(
+        -Mathf.Infinity,
+        -Mathf.Infinity,
+        -Mathf.Infinity
+    );
+    public Vector3 maxPosition  = new Vector3(
+        Mathf.Infinity,
+        Mathf.Infinity,
+        Mathf.Infinity
+    );
     public float lagTimer = 0;
 
     // ========================================================================
@@ -87,17 +95,24 @@ public class CharacterCamera : MonoBehaviour {
 
 
         Transform characterLocation = character.spriteObject.transform;
+        Vector3 characterPosition = Vector3.Min(
+            maxPosition,
+            Vector3.Max(
+                minPosition,
+                characterLocation.position
+            )
+        );
 
         // Move camera horizontally towards character but not past them,
         // only move a max of hMoveMax, and restrict self to boundaries
-        float hDist = characterLocation.position.x - transform.position.x;
+        float hDist = characterPosition.x - transform.position.x;
         if (Mathf.Abs(hDist) > hBorderDistance * valScale) {
             moveAmt.x = Mathf.Abs(hDist) - (hBorderDistance * valScale);
             moveAmt.x = Mathf.Min(moveAmt.x, hMoveMax * valScale);
             moveAmt.x = Mathf.Sign(hDist) * moveAmt.x;
         }
         
-        float vDist = characterLocation.position.y - transform.position.y;
+        float vDist = characterPosition.y - transform.position.y;
         if (character.inGroundedState) {
             if (Mathf.Abs(vDist) > 0) {
                 moveAmt.y = Mathf.Abs(vDist);
@@ -117,9 +132,9 @@ public class CharacterCamera : MonoBehaviour {
         }
 
         position += moveAmt * (Time.deltaTime * 60F);
-        position.z = characterLocation.position.z + zDistance;
+        position.z = characterPosition.z + zDistance;
         
-        position = Vector3.Min(maxPosition, Vector3.Max(minPosition, position));
+        // position = Vector3.Min(maxPosition, Vector3.Max(minPosition, position));
         transform.position = position;
     }
 

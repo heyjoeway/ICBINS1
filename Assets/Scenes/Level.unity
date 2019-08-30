@@ -168,7 +168,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b25f3e2427ab3a84d8275adac765a409, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  time: 0
 --- !u!224 &601641300
 RectTransform:
   m_ObjectHideFlags: 0
@@ -203,12 +202,12 @@ PrefabInstance:
     - target: {fileID: 2433295566893689410, guid: 11650c45065e7c1478dbc54d08afce7a,
         type: 3}
       propertyPath: m_LocalPosition.x
-      value: 18.28
+      value: 333.26
       objectReference: {fileID: 0}
     - target: {fileID: 2433295566893689410, guid: 11650c45065e7c1478dbc54d08afce7a,
         type: 3}
       propertyPath: m_LocalPosition.y
-      value: 2.31
+      value: -5.22
       objectReference: {fileID: 0}
     - target: {fileID: 2433295566893689410, guid: 11650c45065e7c1478dbc54d08afce7a,
         type: 3}
@@ -844,16 +843,6 @@ PrefabInstance:
     - target: {fileID: 5026790956096267152, guid: 11650c45065e7c1478dbc54d08afce7a,
         type: 3}
       propertyPath: m_Enabled
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 2433295567184313090, guid: 11650c45065e7c1478dbc54d08afce7a,
-        type: 3}
-      propertyPath: dropDashEnabled
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 2433295567184313090, guid: 11650c45065e7c1478dbc54d08afce7a,
-        type: 3}
-      propertyPath: spinDashEnabled
       value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []

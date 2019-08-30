@@ -47,8 +47,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   characterObj: {fileID: 0}
   zDistance: -13.5
-  minPosition: {x: 0, y: 0, z: 0}
-  maxPosition: {x: 0, y: 0, z: 0}
+  minPosition: {x: -99999, y: -99999, z: -99999}
+  maxPosition: {x: 99999, y: 99999, z: 99999}
   lagTimer: 0
 --- !u!20 &495726082896974522
 Camera:
@@ -83,7 +83,7 @@ Camera:
     serializedVersion: 2
     m_Bits: 4294967295
   m_RenderingPath: -1
-  m_TargetTexture: {fileID: 8400000, guid: c727aca0082c2374d9588da9e4bd264d, type: 2}
+  m_TargetTexture: {fileID: 0}
   m_TargetDisplay: 0
   m_TargetEye: 0
   m_HDR: 1

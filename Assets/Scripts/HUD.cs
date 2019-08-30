@@ -5,7 +5,6 @@ using UnityEngine.UI;
 
 public class HUD : MonoBehaviour {
     public Character character;
-    LevelManager levelManager;
 
     Text scoreText;
     Text timeText;
@@ -21,8 +20,6 @@ public class HUD : MonoBehaviour {
         ringsText = transform.Find("Rings Content").GetComponent<Text>();
         ringsTitleText = transform.Find("Rings Title").GetComponent<Text>();
         livesText = transform.Find("Lives Content").GetComponent<Text>();
-
-        levelManager = Utils.GetLevelManager();
     }
 
     // Start is called before the first frame update
@@ -37,14 +34,14 @@ public class HUD : MonoBehaviour {
         livesText.text = character.lives.ToString();
 
         timeText.text = (
-            Mathf.Floor(levelManager.time / 60).ToString() +
+            Mathf.Floor(character.timer / 60).ToString() +
             ":" +
-            Mathf.Floor(levelManager.time % 60).ToString().PadLeft(2, '0')
+            Mathf.Floor(character.timer % 60).ToString().PadLeft(2, '0')
         );
 
-        bool shouldFlash = (((int)(levelManager.time * 60)) % 16) > 8;
+        bool shouldFlash = (((int)(character.timer * 60)) % 16) > 8;
         if (shouldFlash) {
-            if (levelManager.time >= 9 * 60) timeTitleText.color = Color.red;
+            if (character.timer >= 9 * 60) timeTitleText.color = Color.red;
             if (character.rings <= 0) ringsTitleText.color = Color.red;
         } else {
             timeTitleText.color = Color.white;

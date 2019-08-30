@@ -229,7 +229,10 @@ public class Character : MonoBehaviour {
     }
 
     // Update is called once per frame
+    public bool timerPaused = false;
+    public float timer = 0;
     void LateUpdate() {
+        timer += Time.deltaTime;
         if (!isHarmful) destroyEnemyChain = 0;
         StateUpdate(stateCurrent);
         UpdateShield();
@@ -240,7 +243,12 @@ public class Character : MonoBehaviour {
     public Vector3 respawnPosition;
     public int checkpointId = 0;
 
-    void Respawn() { // Should only be used in multiplayer; for full respawns reload scene
+    void Respawn() {
+        timer = 0;
+        SoftRespawn();
+    }
+
+    void SoftRespawn() { // Should only be used in multiplayer; for full respawns reload scene
         _rings = 0;
         _ringLivesMax = 0;
         position = respawnPosition;
@@ -400,7 +408,6 @@ public class Character : MonoBehaviour {
     }
 
     public void OnCollisionStay(Collision collision) {
-
         switch (stateCurrent) {
             case CharacterState.rolling:
             case CharacterState.ground:
@@ -763,7 +770,7 @@ public class Character : MonoBehaviour {
         horizontalInputLockTimer = 0.5F;
 
         if (!((forwardAngle <= 270) && (forwardAngle >= 90))) {
-            groundSpeed = 0;
+        //     groundSpeed = 0;
             return;
         }
 

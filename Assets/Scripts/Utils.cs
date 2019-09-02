@@ -1,6 +1,9 @@
 using System.Collections.Generic;
+using System.Collections;
+using System;
 
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public static class Utils {
     public static float deltaTimeScale { get {
@@ -77,5 +80,36 @@ public static class Utils {
 
     public static LevelManager GetLevelManager() {
         return GameObject.FindObjectOfType<LevelManager>();
+    }
+
+    public static IEnumerator LoadLevelAsync(string scenePath, Character character, Action callback = null) {
+        Scene nextLevelScene = SceneManager.GetSceneByPath(scenePath);
+
+        if (!nextLevelScene.IsValid()) {
+            AsyncOperation asyncLoad = SceneManager.LoadSceneAsync(
+                scenePath,
+                LoadSceneMode.Additive
+            );
+            asyncLoad.allowSceneActivation = true;
+
+            while (!asyncLoad.isDone) {
+                yield return null;
+            }
+
+            nextLevelScene = SceneManager.GetSceneByPath(scenePath);
+        }
+
+        Level nextLevel = null;
+        foreach (Level level in GameObject.FindObjectsOfType<Level>()) {
+            if (level.gameObject.scene == nextLevelScene) {
+                nextLevel = level;
+                break;
+            }
+        }
+        if (nextLevel == null) yield break;
+        character.currentLevel = nextLevel;
+
+        if (callback != null)
+            callback();
     }
 }

@@ -7,6 +7,8 @@ public class Level : MonoBehaviour {
     public GameObject background;
     LevelManager levelManager;
 
+    public virtual int act { get { return 0; }}
+
     void Start() {
         levelManager = Utils.GetLevelManager();
     }

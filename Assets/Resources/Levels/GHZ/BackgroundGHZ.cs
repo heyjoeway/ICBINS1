@@ -4,10 +4,13 @@ using UnityEngine;
 
 public class BackgroundGHZ : Background {
     static Texture2D[] textures;
+    static Material material;
 
     bool _initStaticDone = false;
     void InitStatic() {
         if (_initStaticDone) return;
+
+        material = Resources.Load<Material>("Levels/GHZ/Palette Cycle");
 
         textures = new Texture2D[] {
             Resources.Load<Texture2D>("Levels/GHZ/Tiles/BG/48"), // 0
@@ -182,6 +185,7 @@ public class BackgroundGHZ : Background {
 
         SpriteRenderer spriteRenderer = chunk.AddComponent<SpriteRenderer>();
         spriteRenderer.sprite = chunkSprite;
+        spriteRenderer.material = material;
     }
 
     public override void Start() {

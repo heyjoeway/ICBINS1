@@ -25,7 +25,7 @@ char id=55 x=8 y=36 width=7 height=11 xoffset=0 yoffset=5 xadvance=8 page=0 chnl
 char id=56 x=8 y=24 width=7 height=11 xoffset=0 yoffset=5 xadvance=8 page=0 chnl=0 letter="8"
 char id=57 x=0 y=36 width=7 height=11 xoffset=0 yoffset=5 xadvance=8 page=0 chnl=0 letter="9"
 char id=58 x=0 y=24 width=7 height=11 xoffset=0 yoffset=5 xadvance=8 page=0 chnl=0 letter=":"
-char id=32 x=0 y=0 width=0 height=0 xoffset=0 yoffset=0 xadvance=4 page=0 chnl=0 letter=" "
+char id=32 x=0 y=0 width=0 height=0 xoffset=0 yoffset=0 xadvance=8 page=0 chnl=0 letter=" "
 char id=9 x=0 y=0 width=0 height=0 xoffset=0 yoffset=0 xadvance=0 page=0 chnl=0 letter="	"
 
 kernings count=0

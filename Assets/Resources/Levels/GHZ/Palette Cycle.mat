@@ -7,7 +7,7 @@ Material:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: Character Render Texture Material
+  m_Name: Palette Cycle
   m_Shader: {fileID: 4800000, guid: 89f657a43b4c4054390b971d7e9ed12b, type: 3}
   m_ShaderKeywords: DO_LERP ETC1_EXTERNAL_ALPHA _EMISSION _LERP_ON
   m_LightmapFlags: 0

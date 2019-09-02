@@ -9,6 +9,12 @@ EditorBuildSettings:
     path: 
     guid: 00000000000000000000000000000000
   - enabled: 1
-    path: Assets/Scenes/GHZ1.unity
+    path: Assets/Scenes/Level.unity
+    guid: 9629eca07f28f3c45a44ba70302ddffd
+  - enabled: 1
+    path: Assets/Resources/Levels/GHZ/GHZ1/GHZ1.unity
     guid: 180fe1d02810e074992d21634844ab4b
+  - enabled: 1
+    path: Assets/Resources/Levels/GHZ/GHZ2/GHZ2.unity
+    guid: c01e082daf25ad24ba2ebbd62fe9f8fb
   m_configObjects: {}

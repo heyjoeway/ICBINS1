@@ -232,6 +232,7 @@ public class Character : MonoBehaviour {
     public bool timerPaused = false;
     public float timer = 0;
     void LateUpdate() {
+        groundSpeedPrev = groundSpeed;
         timer += Time.deltaTime;
         if (!isHarmful) destroyEnemyChain = 0;
         StateUpdate(stateCurrent);
@@ -474,6 +475,7 @@ public class Character : MonoBehaviour {
 
     // ========================================================================
 
+    public float groundSpeedPrev = 0;
     public float _groundSpeed = 0;
     public float groundSpeed {
         get { return _groundSpeed; }
@@ -517,6 +519,7 @@ public class Character : MonoBehaviour {
         UpdateGroundRoll();
         UpdateGroundFallOff();
         UpdateInvulnerable();
+        UpdatePositionBounds();
     }
 
     // 3D-Ready: Sorta
@@ -713,7 +716,7 @@ public class Character : MonoBehaviour {
         // Final value application
         // ======================
         UpdateSpritePosition();
-        spriteObject.transform.eulerAngles = GetRotationSnap();
+        spriteObject.transform.eulerAngles = GetSpriteRotation();
         if (!ignoreFlipX) flipX = !facingRight;
     }
 
@@ -754,9 +757,30 @@ public class Character : MonoBehaviour {
         stateCurrent = CharacterState.jump;
     }
 
-    // Gets rotation rounded to original genesis restraints
-    // 3D-Ready: YES
-    Vector3 GetRotationSnap() { return (transform.eulerAngles / 45F).Round(0) * 45F; }
+    // Gets rotation for sprite
+    // 3D-Ready: No
+    Vector3 GetSpriteRotation() {
+        // return (transform.eulerAngles / 45F).Floor(0) * 45F;
+        Vector3 currentRotation = spriteObject.transform.eulerAngles;
+        bool shouldRotate = Mathf.Abs(Mathf.DeltaAngle(0, forwardAngle)) > 45;
+        
+        Vector3 targetAngle;
+        if (shouldRotate) {
+            targetAngle = transform.eulerAngles;
+            if (forwardAngle > 180 && currentRotation.z == 0)
+                currentRotation.z = 360;
+        } else {
+            targetAngle = currentRotation.z > 180 ?
+                new Vector3(0,0,360) : Vector3.zero;
+        }
+
+        return Vector3.RotateTowards(
+            currentRotation, // current
+            targetAngle, // target // TODO: 3D
+            10F * Utils.deltaTimeScale, // max rotation
+            10F * Utils.deltaTimeScale // magnitude
+        );
+    }
 
     // 3D-Ready: YES
     void UpdateGroundFallOff() {
@@ -795,11 +819,11 @@ public class Character : MonoBehaviour {
             (
                 Mathf.Abs(Mathf.DeltaAngle(
                     collisionAngle, forwardAngle
-                )) > 20F
+                )) > 30F
             ) && (
-                Mathf.Abs(Mathf.DeltaAngle(Mathf.Abs(Mathf.DeltaAngle(
-                    collisionAngle, forwardAngle
-                )), 180F)) > 20F
+                Mathf.Abs(Mathf.DeltaAngle(
+                    collisionAngle, forwardAngle + 180
+                )) > 30F
             )
         ) return;
 
@@ -837,6 +861,7 @@ public class Character : MonoBehaviour {
         UpdateSpindashAnim();
         UpdateSpindashDust();
         UpdateInvulnerable();
+        UpdatePositionBounds();
     }
 
     // 3D-Ready: YES
@@ -886,7 +911,7 @@ public class Character : MonoBehaviour {
     // 3D-Ready: YES
     void UpdateSpindashAnim() {
         UpdateSpritePosition();
-        spriteObject.transform.eulerAngles = GetRotationSnap();
+        spriteObject.transform.eulerAngles = GetSpriteRotation();
         flipX = !facingRight;
     }
 
@@ -901,6 +926,7 @@ public class Character : MonoBehaviour {
         if (!rollLock) UpdateGroundJump();
         UpdateRollingAnim();
         UpdateInvulnerable();
+        UpdatePositionBounds();
     }
 
     // 3D-Ready: YES
@@ -961,8 +987,9 @@ public class Character : MonoBehaviour {
         UpdateAirGravity();
         UpdateAirAnim();
         UpdateAirTopSoild();
-        UpdateInvulnerable();    
+        UpdateInvulnerable();
         GroundSpeedSync();
+        UpdatePositionBounds();
     }
 
     // 3D-Ready: YES
@@ -1055,7 +1082,9 @@ public class Character : MonoBehaviour {
         RaycastHit hit = (RaycastHit)potentialHit;
 
         Vector3 hitEuler = Quaternion.FromToRotation(Vector3.up, hit.normal).eulerAngles;
-        float hitAngle = hitEuler.z; // TODO: 3D
+        // Round this or any tiiiny deviation in angle can allow the character
+        // to jump at walls and stick to them
+        float hitAngle = Mathf.Round(hitEuler.z); // TODO: 3D
 
         // This looks like a mess, but honestly this is about as simple as it can be.
         // This is pretty much implemented 1:1 from the SPG, so read that for an explanation
@@ -1088,7 +1117,7 @@ public class Character : MonoBehaviour {
         // -------------------------
         transform.eulerAngles = hitEuler;
 
-        // If we can't snap to the ground, then we're still in the air and
+        // If we don't snap to the ground, then we're still in the air and
         // should keep going the speed we were before.
         if (!UpdateGroundSnap()) {
             rigidbody.velocity = velocityPrev;
@@ -1115,7 +1144,7 @@ public class Character : MonoBehaviour {
     void UpdateAirAnim() {
         UpdateAirAnimDirection();
         UpdateSpritePosition();
-        spriteObject.transform.eulerAngles = GetRotationSnap();
+        spriteObject.transform.eulerAngles = GetSpriteRotation();
         flipX = !facingRight;
     }
 
@@ -1131,6 +1160,7 @@ public class Character : MonoBehaviour {
         UpdateInvulnerable();
         UpdateRollingAirRotation();
         GroundSpeedSync();
+        UpdatePositionBounds();
     }
 
     // 3D-Ready: YES
@@ -1166,6 +1196,7 @@ public class Character : MonoBehaviour {
         UpdateJumpHeight();
         UpdateJumpAnim();
         UpdateRollingAirRotation();
+        UpdatePositionBounds();
         GroundSpeedSync();
     }
 
@@ -1296,6 +1327,7 @@ public class Character : MonoBehaviour {
         UpdateAirTopSoild();
         UpdateHurtGravity();
         UpdateHurtAnim();
+        UpdatePositionBounds();
     }
 
     // 3D-Ready: YES
@@ -1351,9 +1383,10 @@ public class Character : MonoBehaviour {
     // 3D-Ready: YES
     public void BounceMonitor(GameObject other) {
         if (!inRollingAirState) return;
+        Debug.Log("???");
 
         Vector3 velocityTemp = velocity;
-        velocityTemp.y *= -1;
+        velocityTemp.y = -Mathf.Abs(velocity.y);
         velocity = velocityTemp;
     }
 
@@ -1426,6 +1459,8 @@ public class Character : MonoBehaviour {
         }
     }}
 
+    // ========================================================================
+
     public bool isInvulnerable { get {
         return (
             inIgnoreState ||
@@ -1438,6 +1473,8 @@ public class Character : MonoBehaviour {
             inRollingState
         );
     }}
+
+    // ========================================================================
 
     public float opacity {
         get { return spriteRenderer.color.a; }
@@ -1488,4 +1525,30 @@ public class Character : MonoBehaviour {
     }
 
     public Level currentLevel;
+
+    // ========================================================================
+
+    public Vector2 positionMin = new Vector2(
+        -Mathf.Infinity,
+        -Mathf.Infinity
+    );
+    public Vector2 positionMax = new Vector2(
+        Mathf.Infinity,
+        Mathf.Infinity
+    );
+
+    void UpdatePositionBounds() {
+        Vector2 positionNew = Vector2.Min(
+            Vector2.Max(
+                position,
+                positionMin
+            ),
+            positionMax
+        );
+
+        if ((Vector2)position != positionNew) {
+            position = positionNew;
+            _groundSpeed = 0;
+        }
+    }
 }

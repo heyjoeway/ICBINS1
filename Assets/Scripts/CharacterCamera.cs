@@ -8,7 +8,7 @@ public class CharacterCamera : MonoBehaviour {
     // ========================================================================
 
     Character character;
-    new Camera camera;
+    public new Camera camera;
 
     void InitReferences() {
         character = characterObj.GetComponent<Character>();
@@ -70,18 +70,17 @@ public class CharacterCamera : MonoBehaviour {
     Vector3 position;
     Vector3 moveAmt;
     RenderTexture renderTexture;
-    Material material;
+    // Material material;
     
     void Start() {
         InitReferences();
-        
         renderTexture = new RenderTexture(camera.targetTexture);
-        
         position = transform.position;
-        material = Resources.Load<Material>("Character/Data/Character Render Texture Material");
     }
 
     float hDist;
+    public bool hLock = false;
+    public bool preventExit = false;
 
     void LateUpdate() {
         if (character.inDeadState) return;
@@ -92,7 +91,6 @@ public class CharacterCamera : MonoBehaviour {
         }
 
         moveAmt.Set(0,0,0);
-
 
         Transform characterLocation = character.spriteObject.transform;
         Vector3 characterPosition = Vector3.Min(
@@ -154,9 +152,9 @@ public class CharacterCamera : MonoBehaviour {
                 ((float)Screen.height)
             )
         );
+        camera.orthographicSize = (renderTexture.height / 32) * 0.5F;
         // renderTexture.width = Screen.width;
         // renderTexture.height = Screen.height;
-        // camera.orthographicSize = (renderTexture.height / 32) * 0.5F;
     }
 
     void OnPreRender() {
@@ -169,8 +167,8 @@ public class CharacterCamera : MonoBehaviour {
         camera.targetTexture = null;
         Graphics.Blit(
             renderTexture,
-            null as RenderTexture,
-            material
+            null as RenderTexture
+            // material
         );
     }
 }

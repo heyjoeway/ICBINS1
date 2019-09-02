@@ -10,8 +10,20 @@
     }
     SubShader
     {
+        Tags
+        {
+            "Queue"="Transparent"
+            "IgnoreProjector"="True"
+            "RenderType"="Transparent"
+            "PreviewType"="Plane"
+            "CanUseSpriteAtlas"="True"
+        }
+
         // No culling or depth
-        Cull Off ZWrite Off ZTest Always
+        Cull Off
+        ZWrite Off
+        ZTest Always
+        Blend SrcAlpha OneMinusSrcAlpha
 
         Pass
         {
@@ -87,6 +99,13 @@
                             )
                         );
 
+                        colorResult = fixed4(
+                            colorResult.r,
+                            colorResult.g,
+                            colorResult.b,
+                            col.a
+                        );
+
                         if (!doLerp) return colorResult;
 
                         // If we aren't interpolating the cycle, we stop here
@@ -96,6 +115,13 @@
                                 (float)index / colorMapWidth,
                                 1 - rowHeight - (rowHeight * cyclePositionNext)
                             )
+                        );
+
+                        colorResultNext = fixed4(
+                            colorResultNext.r,
+                            colorResultNext.g,
+                            colorResultNext.b,
+                            col.a
                         );
 
                         float lerpAmt = cyclePositionRaw - cyclePosition;

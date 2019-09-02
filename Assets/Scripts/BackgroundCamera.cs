@@ -10,7 +10,6 @@ public class BackgroundCamera : MonoBehaviour {
     // Start is called before the first frame update
     void Start() {
         camera = GetComponent<Camera>();
-        material = Resources.Load<Material>("Character/Data/Character Render Texture Material");
     }
 
     void OnPreRender() {
@@ -21,8 +20,7 @@ public class BackgroundCamera : MonoBehaviour {
         camera.targetTexture = null;
         Graphics.Blit(
             renderTexture,
-            null as RenderTexture,
-            material
+            null as RenderTexture
         );
     }
 }

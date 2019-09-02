@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 3049831602201271148}
   - component: {fileID: 2040496632431672101}
   - component: {fileID: 9112208633434523936}
+  - component: {fileID: 3698762522491038794}
   m_Layer: 10
   m_Name: Collider
   m_TagString: Untagged
@@ -78,6 +79,19 @@ MeshRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
+--- !u!65 &3698762522491038794
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1431796931756835987}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 1, y: 1, z: 1}
+  m_Center: {x: 0, y: 0, z: 0}
 --- !u!1 &1905976647083121182
 GameObject:
   m_ObjectHideFlags: 0
@@ -234,15 +248,19 @@ MonoBehaviour:
   invulnTimer: 0
   statePrev: 1
   score: 0
-  rings: 0
   lives: 3
   destroyEnemyChain: 0
+  timerPaused: 0
+  timer: 0
   respawnPosition: {x: 0, y: 0, z: 0}
   checkpointId: 0
+  groundSpeedPrev: 0
   _groundSpeed: 0
   velocityPrev: {x: 0, y: 0, z: 0}
   shield: {fileID: 0}
   currentLevel: {fileID: 0}
+  positionMin: {x: -Infinity, y: -Infinity}
+  positionMax: {x: Infinity, y: Infinity}
 --- !u!54 &1905976648882377143
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -258,7 +276,7 @@ Rigidbody:
   m_IsKinematic: 0
   m_Interpolate: 0
   m_Constraints: 120
-  m_CollisionDetection: 3
+  m_CollisionDetection: 0
 --- !u!82 &1905976648882377142
 AudioSource:
   m_ObjectHideFlags: 0
@@ -485,7 +503,7 @@ BoxCollider:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 3369227814691774370}
-  m_Material: {fileID: 13400000, guid: 934f0ca8a402e2245aa778532e05bcef, type: 2}
+  m_Material: {fileID: 0}
   m_IsTrigger: 0
   m_Enabled: 1
   serializedVersion: 2
@@ -539,7 +557,7 @@ MeshRenderer:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 3442257766808352612}
-  m_Enabled: 1
+  m_Enabled: 0
   m_CastShadows: 1
   m_ReceiveShadows: 1
   m_DynamicOccludee: 1
@@ -577,7 +595,7 @@ CapsuleCollider:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 3442257766808352612}
-  m_Material: {fileID: 13400000, guid: 934f0ca8a402e2245aa778532e05bcef, type: 2}
+  m_Material: {fileID: 0}
   m_IsTrigger: 0
   m_Enabled: 1
   m_Radius: 0.3
@@ -632,7 +650,7 @@ MeshRenderer:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 7985536205902816810}
-  m_Enabled: 1
+  m_Enabled: 0
   m_CastShadows: 1
   m_ReceiveShadows: 1
   m_DynamicOccludee: 1
@@ -670,7 +688,7 @@ CapsuleCollider:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 7985536205902816810}
-  m_Material: {fileID: 13400000, guid: 934f0ca8a402e2245aa778532e05bcef, type: 2}
+  m_Material: {fileID: 0}
   m_IsTrigger: 0
   m_Enabled: 1
   m_Radius: 0.25

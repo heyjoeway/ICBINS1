@@ -1,16 +1,25 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class ObjLevelClear : MonoBehaviour {
     Animator animator;
     AudioSource audioSource;
     Canvas canvas;
+    Text scoreTextComponent;
+    Text ringTextComponent;
+    Text timeTextComponent;
+    Text actTextComponent;
 
     void InitReferences() {
         animator = GetComponent<Animator>();
         audioSource = GetComponent<AudioSource>();
         canvas = GetComponent<Canvas>();
+        scoreTextComponent = transform.Find("Score Line/Score Value").GetComponent<Text>();
+        ringTextComponent = transform.Find("Ring Line/Ring Bonus Value").GetComponent<Text>();
+        timeTextComponent = transform.Find("Time Line/Time Bonus Value").GetComponent<Text>();
+        actTextComponent = transform.Find("Act Group/Act Value").GetComponent<Text>();
     }
 
     void Start() { InitReferences(); }
@@ -37,20 +46,24 @@ public class ObjLevelClear : MonoBehaviour {
         return 0;
     }
 
-    int timeBonus;
-    int ringBonus;
+    int timeBonus = 0;
+    int ringBonus = 0;
 
     // Update is called once per frame
     void Update() {
-        Debug.Log(character.characterPackage.camera.camera);
-        canvas.worldCamera = character.characterPackage.camera.camera; // i hate this name too, trust me
+        scoreTextComponent.text = character.score.ToString();
+        ringTextComponent.text = ringBonus.ToString();
+        timeTextComponent.text = timeBonus.ToString();
 
         if (showTimer > 0) {
             showTimer -= Time.deltaTime;
             if (showTimer <= 0) {
-                animator.Play("Items Enter");
+                // animator.Play("Items Enter");
                 timeBonus = GetTimeBonus(character.timer);
                 ringBonus = character.rings * 100;
+                canvas.worldCamera = character.characterPackage.camera.camera; // i hate this name too, trust me
+                actTextComponent.text = character.currentLevel.act.ToString();
+                character.victoryLock = true;
             }
             return;
         }
@@ -97,6 +110,8 @@ public class ObjLevelClear : MonoBehaviour {
             () => {
                 character.timer = 0;
                 character.rings = 0;
+                character.timerPause = false;
+                character.victoryLock = false;
                 Destroy(gameObject);
             }
         ));

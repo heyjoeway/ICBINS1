@@ -54,7 +54,7 @@ public class ObjMotobug : MonoBehaviour {
             Vector3.down, // direction,
             out hit,
             transform.localScale.y, // max distance
-            ~Character.solidRaycastMask
+            ~Utils.IgnoreRaycastMask
         );
         
         Vector3 newPos = transform.position;

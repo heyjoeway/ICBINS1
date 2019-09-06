@@ -31,6 +31,7 @@ public class ObjSignpost : MonoBehaviour {
         ).GetComponent<ObjLevelClear>();
         levelClearObj.character = character;
         levelClearObj.sceneReference = nextLevelRef;
+        character.timerPause = true;
     }
 
     void OnTriggerEnter(Collider other) {

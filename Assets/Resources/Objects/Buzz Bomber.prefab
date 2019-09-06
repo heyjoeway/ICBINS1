@@ -125,7 +125,7 @@ MonoBehaviour:
   positionType: 0
   axisType: 0
   distanceType: 2
-  triggerDistance: 12
+  triggerDistance: 8
   runEveryOtherFrame: 0
 --- !u!114 &6681948602588035081
 MonoBehaviour:

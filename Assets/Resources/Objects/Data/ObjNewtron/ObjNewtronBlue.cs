@@ -53,7 +53,7 @@ public class ObjNewtronBlue : MonoBehaviour {
             Vector3.down, // direction,
             out hit,
             raycastDistance,
-            ~Character.solidRaycastMask
+            ~Utils.IgnoreRaycastMask
         );
         if (hit.collider == null) return;
 

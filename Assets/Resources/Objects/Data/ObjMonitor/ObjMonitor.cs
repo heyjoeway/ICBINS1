@@ -38,7 +38,11 @@ public class ObjMonitor : MonoBehaviour {
         Character character = characters[0];
         if (!DidCharacterHitFromBottom(character)) {
             Explode(character);
-            character.BounceMonitor(gameObject);
+
+            if (!character.inRollingAirState) return;
+            Vector3 velocityTemp = character.velocity;
+            velocityTemp.y = Mathf.Abs(character.velocity.y);
+            character.velocity = velocityTemp;
         }
     }
 
@@ -48,8 +52,12 @@ public class ObjMonitor : MonoBehaviour {
         Character character = characters[0];
 
         if (DidCharacterHitFromBottom(character)) {
+            if (!character.inRollingAirState) return;
+            Vector3 velocityTemp = character.velocity;
+            velocityTemp.y = -Mathf.Abs(character.velocity.y);
+            character.velocity = velocityTemp;
+
             rigidbody.isKinematic = false;
-            character.BounceMonitor(gameObject);
             rigidbody.velocity = new Vector2(
                 0,
                 1.5F

@@ -231,9 +231,11 @@ public class Character : MonoBehaviour {
     // Update is called once per frame
     public bool timerPaused = false;
     public float timer = 0;
+    public bool timerPause = false;
+    public bool victoryLock = false;
     void LateUpdate() {
         groundSpeedPrev = groundSpeed;
-        timer += Time.deltaTime;
+        if (!timerPause) timer += Time.deltaTime;
         if (!isHarmful) destroyEnemyChain = 0;
         StateUpdate(stateCurrent);
         UpdateShield();
@@ -1320,6 +1322,7 @@ public class Character : MonoBehaviour {
             4 * physicsScale,
             velocity.z
         );
+        position += velocity / 30F; // HACK
     }
 
     // 3D-Ready: YES
@@ -1376,17 +1379,6 @@ public class Character : MonoBehaviour {
         } else {
             velocityTemp.y *= -1;
         }
-        velocity = velocityTemp;
-    }
-
-    // https://info.sonicretro.org/SPG:Rebound#Monitors
-    // 3D-Ready: YES
-    public void BounceMonitor(GameObject other) {
-        if (!inRollingAirState) return;
-        Debug.Log("???");
-
-        Vector3 velocityTemp = velocity;
-        velocityTemp.y = -Mathf.Abs(velocity.y);
         velocity = velocityTemp;
     }
 

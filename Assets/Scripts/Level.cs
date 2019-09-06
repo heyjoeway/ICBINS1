@@ -8,6 +8,7 @@ public class Level : MonoBehaviour {
     LevelManager levelManager;
 
     public virtual int act { get { return 0; }}
+    public virtual string zone { get { return "Unknown"; }}
 
     void Start() {
         levelManager = Utils.GetLevelManager();

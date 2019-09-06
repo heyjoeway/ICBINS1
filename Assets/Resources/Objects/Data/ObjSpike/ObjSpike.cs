@@ -9,24 +9,17 @@ public class ObjSpike : MonoBehaviour, ColliderListener {
     // ========================================================================
 
     CharacterGroundedDetector characterGroundedDetector;
-    ColliderBridge colliderBridge;
     GameObject topPositionObj;
 
     void InitReferences() {
-        characterGroundedDetector = transform.Find("Object").GetComponent<CharacterGroundedDetector>();
-        colliderBridge = transform.Find("Object").GetComponent<ColliderBridge>();
+        characterGroundedDetector = GetComponent<CharacterGroundedDetector>();
         topPositionObj = transform.Find("Top Position").gameObject;
     }
 
     // ========================================================================
 
     float topAngle { get {
-        Vector3 topPos = topPositionObj.transform.position;
-        Vector3 centerPos = transform.position;
-        return (360 - Vector3.Angle(
-            (topPos - centerPos).normalized,
-            Vector3.up
-        )) % 360;
+        return transform.rotation.eulerAngles.z;
     }}
 
     // ========================================================================
@@ -71,7 +64,6 @@ public class ObjSpike : MonoBehaviour, ColliderListener {
 
     void Start() {
         InitReferences();
-        colliderBridge.Initialize(this);
     }
 
     public void DoAction(Character character) {

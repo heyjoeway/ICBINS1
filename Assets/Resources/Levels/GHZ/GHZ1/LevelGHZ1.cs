@@ -2,7 +2,8 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class LevelGHZ1 : Level {
+public class LevelGHZ1 : LevelGHZ {
+    public override string zone { get { return "Unknown"; }}
     public override int act { get { return 1; }}
 
     Vector2 positionMin = new Vector2(16, -8);

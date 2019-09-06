@@ -47,4 +47,18 @@ static class ExtensionMethods {
         }
         return false;
     }
+
+    public static bool IsMovingAwayFrom(this Rigidbody rigidbody, Vector3 point) {
+        bool distanceIncreasing = (
+            Vector3.Distance(
+                rigidbody.position,
+                point
+            ) < Vector3.Distance(
+                rigidbody.position + rigidbody.velocity,
+                point
+            )
+        );
+
+        return distanceIncreasing; 
+    }
 }

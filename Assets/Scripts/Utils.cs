@@ -112,4 +112,23 @@ public static class Utils {
         if (callback != null)
             callback();
     }
+
+    public static LayerMask? _IgnoreRaycastMask = null;
+    public static LayerMask IgnoreRaycastMask {
+        get {
+            if (_IgnoreRaycastMask != null) return (LayerMask)_IgnoreRaycastMask;
+            _IgnoreRaycastMask = LayerMask.GetMask(
+                "Ignore Raycast",
+                "Player - Ignore Top Solid and Raycast",
+                "Player - Ignore Top Solid",
+                "Player - Rolling",
+                "Player - Rolling and Ignore Top Solid",
+                "Object - Ignore Other Objects",
+                "Object - Top Solid Only and Ignore Other Objects",
+                "Object - Monitor Solidity",
+                "Object - Monitor Trigger"
+            );
+            return (LayerMask)_IgnoreRaycastMask;
+        }
+    }
 }

@@ -93,13 +93,14 @@ public class CharacterCamera : MonoBehaviour {
         moveAmt.Set(0,0,0);
 
         Transform characterLocation = character.spriteObject.transform;
-        Vector3 characterPosition = Vector3.Min(
-            maxPosition,
-            Vector3.Max(
-                minPosition,
-                characterLocation.position
-            )
-        );
+        Vector3 characterPosition = characterLocation.position;
+        // Vector3 characterPosition = Vector3.Min(
+        //     maxPosition,
+        //     Vector3.Max(
+        //         minPosition,
+        //         characterLocation.position
+        //     )
+        // );
 
         // Move camera horizontally towards character but not past them,
         // only move a max of hMoveMax, and restrict self to boundaries
@@ -132,7 +133,7 @@ public class CharacterCamera : MonoBehaviour {
         position += moveAmt * (Time.deltaTime * 60F);
         position.z = characterPosition.z + zDistance;
         
-        // position = Vector3.Min(maxPosition, Vector3.Max(minPosition, position));
+        position = Vector3.Min(maxPosition, Vector3.Max(minPosition, position));
         transform.position = position;
     }
 

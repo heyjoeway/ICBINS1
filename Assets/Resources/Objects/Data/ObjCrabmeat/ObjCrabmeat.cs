@@ -90,7 +90,7 @@ void Start() { InitReferences(); }
             Vector3.down, // direction,
             out hitLeft,
             transform.localScale.y, // max distance
-            ~Character.solidRaycastMask
+            ~Utils.IgnoreRaycastMask
         );
 
         RaycastHit hitRight;
@@ -99,7 +99,7 @@ void Start() { InitReferences(); }
             Vector3.down, // direction,
             out hitRight,
             transform.localScale.y, // max distance
-            ~Character.solidRaycastMask
+            ~Utils.IgnoreRaycastMask
         );
         
         Vector3 newPos = transform.position;

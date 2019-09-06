@@ -18,12 +18,7 @@ public class ObjSpring : MonoBehaviour, ColliderListener {
     }}
 
     float topAngle { get {
-        Vector3 topPos = topPositionObj.transform.position;
-        Vector3 centerPos = transform.position;
-        return (360 - Vector3.Angle(
-            (topPos - centerPos).normalized,
-            Vector3.up
-        )) % 360;
+        return transform.rotation.eulerAngles.z;
     }}
 
     // ========================================================================
@@ -44,6 +39,8 @@ public class ObjSpring : MonoBehaviour, ColliderListener {
             Quaternion.FromToRotation(Vector3.up, hit.normal).eulerAngles.z
             + 180
         ) % 360;
+        Debug.Log(collisionAngle);
+
 
         TryAction(character, collisionAngle);
     }

@@ -5,12 +5,12 @@ using UnityEngine;
 public class LevelGHZ2 : LevelGHZ {
     public override int act { get { return 2; }}
 
-    Vector2 positionMinTransition = new Vector2(309.5F, -40);
+    // Vector2 positionMinTransition = new Vector2(309.5F, -40);
     Vector2 positionMin = new Vector2(343.2F, -40);
     Vector2 positionMax = new Vector2(605, 24);
 
     // Vector3 positionOffset = new Vector3(336, -16, 0);
-    Vector3 cameraMin0 = new Vector3(315.25F, -3.5F, -99999F);
+    // Vector3 cameraMin0 = new Vector3(315.25F, -3.5F, -99999F);
     Vector3 cameraMin1 = new Vector3(349F, -19.46875F, -99999F);
     Vector3 cameraMin2 = new Vector3(349F, -11.5F, -99999F);
     Vector3 cameraMin3 = new Vector3(349F, -27.46875F, -99999F);
@@ -26,8 +26,8 @@ public class LevelGHZ2 : LevelGHZ {
 
         characterCamera.maxPosition = cameraMax;
         if ((characterCamera.minPosition.x < cameraMin1.x) && (character.position.x < cameraMin1.x)) {
-            characterCamera.minPosition = cameraMin0;
-            character.positionMin = positionMinTransition;
+            // characterCamera.minPosition = cameraMin0;
+            // character.positionMin = positionMinTransition;
             return;
         }
         if (characterCamera.minPosition.x < cameraMin1.x) {

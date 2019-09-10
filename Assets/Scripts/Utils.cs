@@ -82,19 +82,17 @@ public static class Utils {
         return GameObject.FindObjectOfType<LevelManager>();
     }
 
-    public static IEnumerator LoadLevelAsync(string scenePath, Character character, Action callback = null) {
+    public static IEnumerator LoadLevelAsync(string scenePath, Action<Level> callback = null, bool ignoreDuplicates = false) {
         Scene nextLevelScene = SceneManager.GetSceneByPath(scenePath);
 
-        if (!nextLevelScene.IsValid()) {
+        if (ignoreDuplicates || !nextLevelScene.IsValid()) { // If scene isn't already loaded
             AsyncOperation asyncLoad = SceneManager.LoadSceneAsync(
                 scenePath,
                 LoadSceneMode.Additive
             );
             asyncLoad.allowSceneActivation = true;
 
-            while (!asyncLoad.isDone) {
-                yield return null;
-            }
+            while (!asyncLoad.isDone) yield return null;
 
             nextLevelScene = SceneManager.GetSceneByPath(scenePath);
         }
@@ -107,10 +105,9 @@ public static class Utils {
             }
         }
         if (nextLevel == null) yield break;
-        character.currentLevel = nextLevel;
 
         if (callback != null)
-            callback();
+            callback(nextLevel);
     }
 
     public static LayerMask? _IgnoreRaycastMask = null;

@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class LevelGHZ1 : LevelGHZ {
-    public override string zone { get { return "Unknown"; }}
     public override int act { get { return 1; }}
 
     Vector2 positionMin = new Vector2(16, -8);
@@ -21,12 +20,16 @@ public class LevelGHZ1 : LevelGHZ {
         if (character.position.x < positionMax.x - 16)
             character.positionMax = positionMax;
 
-        characterCamera.maxPosition = cameraMax;
+        if (character.position.x < 300) {
+            characterCamera.minPosition = cameraMin2;
+            // Also a hack-ish
+            characterCamera.maxPosition = cameraMax;
+        }
 
         if (character.position.x < 200) {
             characterCamera.minPosition = cameraMin1;
             // Hack
             character.positionMin = positionMin;
-        } else characterCamera.minPosition = cameraMin2;
+        }
     }
 }

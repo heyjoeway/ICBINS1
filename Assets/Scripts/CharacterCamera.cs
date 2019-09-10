@@ -21,16 +21,29 @@ public class CharacterCamera : MonoBehaviour {
 
     public GameObject characterObj;
     public float zDistance = -13.5F;
-    public Vector3 minPosition = new Vector3(
-        -Mathf.Infinity,
-        -Mathf.Infinity,
-        -Mathf.Infinity
-    );
-    public Vector3 maxPosition  = new Vector3(
-        Mathf.Infinity,
-        Mathf.Infinity,
-        Mathf.Infinity
-    );
+
+    Vector3 _minPositionTarget = Vector3.one * -Mathf.Infinity;
+    Vector3 _minPositionReal = Vector3.one * -Mathf.Infinity;
+    public Vector3 minPosition  {
+        get { return _minPositionTarget; }
+        set {
+            _minPositionTarget = value;
+            if (Mathf.Abs(_minPositionReal.magnitude) == Mathf.Infinity)
+                _minPositionReal = _minPositionTarget;
+        }
+    }
+
+    Vector3 _maxPositionTarget  = Vector3.one * Mathf.Infinity;
+    Vector3 _maxPositionReal  = Vector3.one * Mathf.Infinity;
+    public Vector3 maxPosition  {
+        get { return _maxPositionTarget; }
+        set {
+            _maxPositionTarget = value;
+            if (Mathf.Abs(_maxPositionReal.magnitude) == Mathf.Infinity)
+                _maxPositionReal = _maxPositionTarget;
+        }
+    }
+
     public float lagTimer = 0;
 
     // ========================================================================
@@ -70,7 +83,6 @@ public class CharacterCamera : MonoBehaviour {
     Vector3 position;
     Vector3 moveAmt;
     RenderTexture renderTexture;
-    // Material material;
     
     void Start() {
         InitReferences();
@@ -79,11 +91,51 @@ public class CharacterCamera : MonoBehaviour {
     }
 
     float hDist;
-    public bool hLock = false;
     public bool preventExit = false;
+
+
+
+    public void LockHorizontal() { LockHorizontal(transform.position.x); }
+    public void LockHorizontal(float xPos) {
+        _minPositionTarget.x = xPos;
+        _maxPositionTarget.x = xPos;
+    }
+
+    public void LockVertical() { LockVertical(transform.position.y); }
+    public void LockVertical(float yPos) {
+        _minPositionTarget.y = yPos;
+        _maxPositionTarget.y = yPos;
+    }
+
+    public void SetCharacterBoundsFromCamera() {
+        float screenHeightWorld = renderTexture.height / 32F;
+        float screenWidthWorld = renderTexture.width / 32F;
+
+        character.positionMin = new Vector3(
+            minPosition.x - (screenWidthWorld / 2F) + 0.5F,
+            minPosition.y - (screenHeightWorld / 2F) + 1F
+        );
+
+        character.positionMax = new Vector3(
+            maxPosition.x + (screenWidthWorld / 2F) - 0.5F,
+            maxPosition.y + (screenHeightWorld / 2F) + 1F
+        );
+    }
 
     void LateUpdate() {
         if (character.inDeadState) return;
+
+        _minPositionReal = Vector3.MoveTowards(
+            _minPositionReal,
+            _minPositionTarget,
+            (6F / 32F) * 60F * Time.deltaTime
+        );
+
+        _maxPositionReal = Vector3.MoveTowards(
+            _maxPositionReal,
+            _maxPositionTarget,
+            (6F / 32F) * 60F * Time.deltaTime
+        );
 
         if (lagTimer > 0) {
             lagTimer -= Time.deltaTime;
@@ -94,14 +146,7 @@ public class CharacterCamera : MonoBehaviour {
 
         Transform characterLocation = character.spriteObject.transform;
         Vector3 characterPosition = characterLocation.position;
-        // Vector3 characterPosition = Vector3.Min(
-        //     maxPosition,
-        //     Vector3.Max(
-        //         minPosition,
-        //         characterLocation.position
-        //     )
-        // );
-
+        
         // Move camera horizontally towards character but not past them,
         // only move a max of hMoveMax, and restrict self to boundaries
         float hDist = characterPosition.x - transform.position.x;
@@ -133,7 +178,13 @@ public class CharacterCamera : MonoBehaviour {
         position += moveAmt * (Time.deltaTime * 60F);
         position.z = characterPosition.z + zDistance;
         
-        position = Vector3.Min(maxPosition, Vector3.Max(minPosition, position));
+        position = Vector3.Min(
+            _maxPositionReal,
+            Vector3.Max(
+                _minPositionReal,
+                position
+            )
+        );
         transform.position = position;
     }
 

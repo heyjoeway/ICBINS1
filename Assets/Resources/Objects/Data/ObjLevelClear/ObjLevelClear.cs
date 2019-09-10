@@ -61,7 +61,7 @@ public class ObjLevelClear : MonoBehaviour {
                 // animator.Play("Items Enter");
                 timeBonus = GetTimeBonus(character.timer);
                 ringBonus = character.rings * 100;
-                canvas.worldCamera = character.characterPackage.camera.camera; // i hate this name too, trust me
+                canvas.worldCamera = character.characterCamera.camera; // i hate this name too, trust me
                 actTextComponent.text = character.currentLevel.act.ToString();
                 character.victoryLock = true;
             }
@@ -106,12 +106,21 @@ public class ObjLevelClear : MonoBehaviour {
 
         StartCoroutine(Utils.LoadLevelAsync(
             sceneReference.ScenePath,
-            character,
-            () => {
+            (Level nextLevel) => {
+                character.currentLevel = nextLevel;
                 character.timer = 0;
                 character.rings = 0;
                 character.timerPause = false;
                 character.victoryLock = false;
+                character.respawnPosition = character.currentLevel.spawnPosition;
+                ObjTitleCard titleCard = Instantiate(
+                    Resources.Load<GameObject>("Objects/Title Card"),
+                    Vector3.zero,
+                    Quaternion.identity
+                ).GetComponent<ObjTitleCard>();
+                titleCard.character = character;
+                titleCard.Init();
+                titleCard.screenFade.brightness = titleCard.screenFade.brightnessMax;
                 Destroy(gameObject);
             }
         ));

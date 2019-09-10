@@ -32,6 +32,9 @@ public class ObjSignpost : MonoBehaviour {
         levelClearObj.character = character;
         levelClearObj.sceneReference = nextLevelRef;
         character.timerPause = true;
+        
+        character.characterCamera.LockHorizontal();
+        character.characterCamera.SetCharacterBoundsFromCamera();
     }
 
     void OnTriggerEnter(Collider other) {

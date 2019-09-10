@@ -173,6 +173,12 @@ TextureImporter:
   - first:
       213: 3002699266687436928
     second: Spindash6
+  - first:
+      213: 7893028384525869340
+    second: Victory1
+  - first:
+      213: -5688961864793063451
+    second: Victory2
   externalObjects: {}
   serializedVersion: 10
   mipmaps:
@@ -1218,6 +1224,48 @@ TextureImporter:
       bones: []
       spriteID: cd4c5aafd9c27e244aad8a2a02cda5e1
       internalID: 3002699266687436928
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Victory1
+      rect:
+        serializedVersion: 2
+        x: 517
+        y: 5
+        width: 48
+        height: 48
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: e250cd58cf08d3a4baf628835fbf6514
+      internalID: 7893028384525869340
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Victory2
+      rect:
+        serializedVersion: 2
+        x: 558
+        y: 5
+        width: 48
+        height: 48
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: ee542b2e91337424d9faea98c5af1b5d
+      internalID: -5688961864793063451
       vertices: []
       indices: 
       edges: []

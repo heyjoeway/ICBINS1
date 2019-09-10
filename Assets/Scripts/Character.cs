@@ -59,7 +59,7 @@ public class Character : MonoBehaviour {
 
     // Components
     public Animator spriteAnimator;
-    CharacterCamera characterCamera;
+    public CharacterCamera characterCamera;
     public CharacterPackage characterPackage;
     public new Rigidbody rigidbody;
 
@@ -150,6 +150,7 @@ public class Character : MonoBehaviour {
         drowning,
         dead,
         hurt,
+        victory,
         obj, // behavior controlled by object
         custom // for custom behavior on extended classes
     }
@@ -246,12 +247,13 @@ public class Character : MonoBehaviour {
     public Vector3 respawnPosition;
     public int checkpointId = 0;
 
-    void Respawn() {
+    public void Respawn() {
         timer = 0;
+        characterCamera.transform.position = transform.position;
         SoftRespawn();
     }
 
-    void SoftRespawn() { // Should only be used in multiplayer; for full respawns reload scene
+    public void SoftRespawn() { // Should only be used in multiplayer; for full respawns reload scene
         _rings = 0;
         _ringLivesMax = 0;
         position = respawnPosition;
@@ -331,7 +333,12 @@ public class Character : MonoBehaviour {
             case CharacterState.dead:
                 modeGroupCurrent = null;
                 lives--;
-                Respawn();
+                ScreenFade screenFade = Instantiate(
+                    Resources.Load<GameObject>("Objects/Screen Fade Out"),
+                    Vector3.zero,
+                    Quaternion.identity
+                ).GetComponent<ScreenFade>();
+                screenFade.onComplete = () => currentLevel.Reload();
                 break;
         }
     }
@@ -388,6 +395,9 @@ public class Character : MonoBehaviour {
                 break;
             case CharacterState.hurt:
                 UpdateHurt();
+                break;
+            case CharacterState.victory:
+                UpdateVictory();
                 break;
         }
     }
@@ -522,6 +532,7 @@ public class Character : MonoBehaviour {
         UpdateGroundFallOff();
         UpdateInvulnerable();
         UpdatePositionBounds();
+        UpdateVictory();
     }
 
     // 3D-Ready: Sorta
@@ -556,7 +567,7 @@ public class Character : MonoBehaviour {
         }
 
         float slopeFactorAcc = slopeFactorGround * Mathf.Sin(forwardAngle * Mathf.Deg2Rad);
-        if (Mathf.Abs(slopeFactorAcc) > 0.025)
+        if (Mathf.Abs(slopeFactorAcc) > 0.04)
             accelerationMagnitude -= slopeFactorAcc;
 
         groundSpeed += accelerationMagnitude * physicsScale * Utils.deltaTimeScale;
@@ -864,6 +875,7 @@ public class Character : MonoBehaviour {
         UpdateSpindashDust();
         UpdateInvulnerable();
         UpdatePositionBounds();
+        UpdateVictory();
     }
 
     // 3D-Ready: YES
@@ -929,6 +941,7 @@ public class Character : MonoBehaviour {
         UpdateRollingAnim();
         UpdateInvulnerable();
         UpdatePositionBounds();
+        UpdateVictory();
     }
 
     // 3D-Ready: YES
@@ -1155,7 +1168,6 @@ public class Character : MonoBehaviour {
     // 3D-Ready: YES
     void UpdateRollingAir() {
         UpdateAirMove();
-        UpdateAirRotation();
         UpdateAirGravity();
         UpdateRollingAirAnim();
         UpdateAirTopSoild();
@@ -1543,4 +1555,22 @@ public class Character : MonoBehaviour {
             _groundSpeed = 0;
         }
     }
+
+    // ========================================================================
+
+    void UpdateVictory() {
+        if (!victoryLock) {
+            if (stateCurrent == CharacterState.victory)
+                stateCurrent = CharacterState.ground;
+        } else {
+            facingRight = true;
+            stateCurrent = CharacterState.victory;
+            spriteAnimator.Play("Victory");
+            spriteAnimator.speed = 1;
+            rigidbody.velocity = Vector3.zero;
+            groundSpeed = 0;
+        }
+
+    }
+
 }

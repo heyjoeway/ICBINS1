@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class ObjSpike : MonoBehaviour, ColliderListener {
+public class ObjSpike : MonoBehaviour {
 
     // ========================================================================
     // OBJECT AND COMPONENT REFERENCES

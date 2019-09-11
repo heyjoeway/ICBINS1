@@ -2,13 +2,9 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class ObjSpring : MonoBehaviour, ColliderListener {
+public class ObjSpring : MonoBehaviour {
     CharacterGroundedDetector characterGroundedDetector { get {
         return transform.Find("Object").GetComponent<CharacterGroundedDetector>();
-    }}
-
-    ColliderBridge colliderBridge { get {
-        return transform.Find("Object").GetComponent<ColliderBridge>();
     }}
 
     // ========================================================================
@@ -82,8 +78,6 @@ public class ObjSpring : MonoBehaviour, ColliderListener {
 
     // Start is called before the first frame update
     void Start() {
-        colliderBridge.Initialize(this);
-
         switch(type) {
             case SpringType.Yellow:
                 animator.Play("Yellow Normal");

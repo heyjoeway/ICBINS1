@@ -168,6 +168,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b25f3e2427ab3a84d8275adac765a409, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  sceneDefault:
+    sceneAsset: {fileID: 0}
+    scenePath: 
 --- !u!224 &601641300
 RectTransform:
   m_ObjectHideFlags: 0
@@ -5012,13 +5015,8 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2433295567184313095, guid: 11650c45065e7c1478dbc54d08afce7a,
         type: 3}
-      propertyPath: m_Mass
-      value: 100
-      objectReference: {fileID: 0}
-    - target: {fileID: 2433295567184313095, guid: 11650c45065e7c1478dbc54d08afce7a,
-        type: 3}
       propertyPath: m_CollisionDetection
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 698076460191201367, guid: 11650c45065e7c1478dbc54d08afce7a,
         type: 3}

@@ -18,7 +18,7 @@ public class ScreenFade : MonoBehaviour {
 
     public float fadeDelay = 5F;
     public float fadeSpeed = 0F; // percent per second
-    public float destroyDelay = 2F / 60F;
+    public float destroyDelay = 10F / 60F;
     public bool destroyWhenDone = true;
     public Action onComplete;
 
@@ -44,7 +44,7 @@ public class ScreenFade : MonoBehaviour {
 
     void Update() {
         if (isComplete && destroyWhenDone && (destroyDelay > 0)) {
-            destroyDelay -= Time.deltaTime;
+            destroyDelay -= Time.unscaledDeltaTime;
             if (destroyDelay <= 0) {
                 Destroy(gameObject);
                 return;
@@ -57,13 +57,13 @@ public class ScreenFade : MonoBehaviour {
         material.SetFloat("_BlueOffset", blueOffset);
 
         if (fadeDelay > 0) {
-            fadeDelay -= Time.deltaTime;
+            fadeDelay -= Time.unscaledDeltaTime;
             return;
         }
 
         if (fadeSpeed == 0) return;
 
-        brightness += fadeSpeed * Time.deltaTime;
+        brightness += fadeSpeed * Time.unscaledDeltaTime;
         if ((fadeSpeed > 0) && (brightness >= brightnessMax)) Complete();
         if ((fadeSpeed < 0) && (brightness <= brightnessMin)) Complete();
     }

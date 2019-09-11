@@ -112,14 +112,9 @@ public class ObjLevelClear : MonoBehaviour {
                 character.rings = 0;
                 character.timerPause = false;
                 character.victoryLock = false;
-                character.respawnPosition = character.currentLevel.spawnPosition;
-                ObjTitleCard titleCard = Instantiate(
-                    Resources.Load<GameObject>("Objects/Title Card"),
-                    Vector3.zero,
-                    Quaternion.identity
-                ).GetComponent<ObjTitleCard>();
-                titleCard.character = character;
-                titleCard.Init();
+                character.respawnData.position = character.currentLevel.spawnPosition;
+                character.checkpointId = 0;
+                ObjTitleCard titleCard = nextLevel.MakeTitleCard(character);
                 titleCard.screenFade.brightness = titleCard.screenFade.brightnessMax;
                 Destroy(gameObject);
             }

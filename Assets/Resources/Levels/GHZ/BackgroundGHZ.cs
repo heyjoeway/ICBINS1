@@ -223,13 +223,15 @@ public class BackgroundGHZ : Background {
     }
 
     // Update is called once per frame
-    void Update() {
+    public override void Update() {
+        base.Update();
+
         for(int lineIndex = 0; lineIndex < lines.Count; lineIndex++) {
             Transform line = lines[lineIndex];
             Vector3 linePosition = line.localPosition;
             linePosition.x = (
                 (Time.time * lineDeformationTime[lineIndex]) +
-                (characterPackage.camera.transform.position.x * lineDeformationCamera[lineIndex])
+                (targetPosition.x * lineDeformationCamera[lineIndex])
             );
             linePosition.x %= layout.Length * 8F;
             line.localPosition = linePosition;
@@ -238,7 +240,7 @@ public class BackgroundGHZ : Background {
         Vector3 linesPosition = linesTransform.position;
         linesPosition.y = (
             (
-                characterPackage.camera.transform.position.y *
+                targetPosition.y *
                 deformationSpeedVertical
             ) +
             3.75F

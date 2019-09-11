@@ -16,4 +16,14 @@ public class Background : MonoBehaviour {
         );
         backgroundCount++;
     }
+
+    public Vector3 targetPosition;
+    public Vector3 autoMoveSpeed;
+
+    public virtual void Update() {
+        targetPosition += autoMoveSpeed / 60F;
+
+        if (characterPackage != null)
+            targetPosition = characterPackage.camera.transform.position;
+    }
 }

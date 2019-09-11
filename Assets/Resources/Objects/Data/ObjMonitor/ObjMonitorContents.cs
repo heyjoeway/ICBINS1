@@ -52,6 +52,9 @@ public class ObjMonitorContents : MonoBehaviour {
                     Quaternion.identity
                 ).GetComponent<ObjShield>();
                 break;
+            case ContentsType.Life:
+                recipient.lives++;
+                break;
         }
     }
 

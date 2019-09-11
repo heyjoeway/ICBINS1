@@ -5,7 +5,7 @@ using UnityEngine.SceneManagement;
 
 public class Level : MonoBehaviour {
     public GameObject background;
-    LevelManager levelManager;
+    public LevelManager levelManager;
     public Vector3 spawnPosition { get {
         return transform.Find("Spawn Position").position;
     }}
@@ -19,9 +19,6 @@ public class Level : MonoBehaviour {
 
     void Update() {
         foreach(CharacterPackage characterPackage in levelManager.characterPackages) {
-            if (characterPackage.character.currentLevel == null)
-                characterPackage.character.currentLevel = this;
-    
             if (characterPackage.character.currentLevel != this) continue;
             
             DLEUpdateCharacter(characterPackage);
@@ -29,7 +26,7 @@ public class Level : MonoBehaviour {
         }
     }
 
-    void Unload() {
+    public void Unload() {
         foreach(CharacterPackage characterPackage in levelManager.characterPackages) {
             if (characterPackage.character.currentLevel == this) return;
         }
@@ -42,22 +39,27 @@ public class Level : MonoBehaviour {
             (Level nextLevel) => {
                 foreach(CharacterPackage characterPackage in levelManager.characterPackages) {
                     if (characterPackage.character.currentLevel != this) continue;
-
                     Character character = characterPackage.character;
                     character.currentLevel = nextLevel;
-                    ObjTitleCard titleCard = Instantiate(
-                        Resources.Load<GameObject>("Objects/Title Card"),
-                        Vector3.zero,
-                        Quaternion.identity
-                    ).GetComponent<ObjTitleCard>();
-                    titleCard.character = character;
-                    titleCard.Init();
+                    Debug.Log(character.currentLevel == this);
+                    MakeTitleCard(character);
                     character.Respawn();
                 }
                 SceneManager.UnloadSceneAsync(gameObject.scene);
             },
             true
         ));
+    }
+
+    public ObjTitleCard MakeTitleCard(Character character) {
+        ObjTitleCard titleCard = Instantiate(
+            Resources.Load<GameObject>("Objects/Title Card"),
+            Vector3.zero,
+            Quaternion.identity
+        ).GetComponent<ObjTitleCard>();
+        titleCard.character = character;
+        titleCard.Init();
+        return titleCard;
     }
 
     public virtual void DLEUpdateCharacter(CharacterPackage characterPackage) { }

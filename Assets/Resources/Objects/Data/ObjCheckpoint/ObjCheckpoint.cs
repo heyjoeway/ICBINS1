@@ -17,12 +17,16 @@ public class ObjCheckpoint : MonoBehaviour {
     // Start is called before the first frame update
     void Start() {
         charactersHit = new List<Character>();
+        RefreshAll();
     }
 
-    // Update is called once per frame
-    void Update()
-    {
-        
+    void RefreshAll() {
+        foreach (ObjCheckpoint checkpoint in FindObjectsOfType<ObjCheckpoint>()) {
+            if (gameObject.scene != checkpoint.gameObject.scene) continue;
+            if (checkpoint.id == 0) continue;
+            if (checkpoint.id > id) continue;
+            checkpoint.animator.Play("Active");
+        }
     }
 
     void OnTriggerEnter(Collider other) {
@@ -34,16 +38,11 @@ public class ObjCheckpoint : MonoBehaviour {
         if (id > 0) {
             if (character.checkpointId >= id) return;
             character.checkpointId = id;
-
-            foreach (ObjCheckpoint checkpoint in FindObjectsOfType<ObjCheckpoint>()) {
-                if (checkpoint.id == 0) continue;
-                if (checkpoint.id > id) continue;
-                checkpoint.animator.Play("Active");
-            }
+            RefreshAll();
         }
 
         charactersHit.Add(character);
-        character.respawnPosition = respawnPosition;
+        character.respawnData.position = respawnPosition;
         animator.Play("Hit");
         audioSource.time = 0;
         audioSource.Play();

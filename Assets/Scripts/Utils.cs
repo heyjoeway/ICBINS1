@@ -4,6 +4,7 @@ using System;
 
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using UnityEngine.Events;
 
 public static class Utils {
     public static float deltaTimeScale { get {
@@ -37,7 +38,7 @@ public static class Utils {
         HashSet<CharacterPackage> characterPackages
     ) {
         foreach(CharacterPackage characterPackage in characterPackages) {            
-            Vector2 cameraPos = characterPackage.camera.transform.position;
+            Vector2 cameraPos = characterPackage.camera.position;
             Vector2 charPos = characterPackage.character.position;
 
             float cameraDist = Mathf.Infinity;
@@ -86,6 +87,15 @@ public static class Utils {
         Scene nextLevelScene = SceneManager.GetSceneByPath(scenePath);
 
         if (ignoreDuplicates || !nextLevelScene.IsValid()) { // If scene isn't already loaded
+            UnityAction<Scene, LoadSceneMode> sceneLoaded = (Scene scene, LoadSceneMode loadSceneMode) => {
+                foreach (Level level in GameObject.FindObjectsOfType<Level>()) {
+                    if (level.gameObject.scene != scene) continue;
+                    callback(level);
+                    return;
+                }
+            };
+            if (callback != null) SceneManager.sceneLoaded += sceneLoaded;
+
             AsyncOperation asyncLoad = SceneManager.LoadSceneAsync(
                 scenePath,
                 LoadSceneMode.Additive
@@ -93,21 +103,15 @@ public static class Utils {
             asyncLoad.allowSceneActivation = true;
 
             while (!asyncLoad.isDone) yield return null;
-
-            nextLevelScene = SceneManager.GetSceneByPath(scenePath);
-        }
-
-        Level nextLevel = null;
-        foreach (Level level in GameObject.FindObjectsOfType<Level>()) {
-            if (level.gameObject.scene == nextLevelScene) {
-                nextLevel = level;
+            if (callback != null) SceneManager.sceneLoaded -= sceneLoaded;
+        } else {
+            if (callback == null) yield break;
+            foreach (Level level in GameObject.FindObjectsOfType<Level>()) {
+                if (level.gameObject.scene != nextLevelScene) continue;
+                callback(level);
                 break;
             }
         }
-        if (nextLevel == null) yield break;
-
-        if (callback != null)
-            callback(nextLevel);
     }
 
     public static LayerMask? _IgnoreRaycastMask = null;

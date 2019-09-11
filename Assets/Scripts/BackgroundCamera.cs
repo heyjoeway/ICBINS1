@@ -12,7 +12,27 @@ public class BackgroundCamera : MonoBehaviour {
         camera = GetComponent<Camera>();
     }
 
+    Vector2 resolutionPrev;
+
+    void ResizeRenderTexture() {
+        if (
+            (resolutionPrev.x == Screen.width) &&
+            (resolutionPrev.y == Screen.height)
+         ) return;
+        resolutionPrev = new Vector2(Screen.width, Screen.height);
+        
+        renderTexture.Release();
+        renderTexture.width = (int)Mathf.Round(
+            (float)renderTexture.height * (
+                ((float)Screen.width) /
+                ((float)Screen.height)
+            )
+        );
+        camera.orthographicSize = (renderTexture.height / 32) * 0.5F;
+    }
+
     void OnPreRender() {
+        ResizeRenderTexture();
         camera.targetTexture = renderTexture;
     }
 

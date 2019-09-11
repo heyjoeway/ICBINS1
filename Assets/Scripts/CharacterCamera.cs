@@ -11,8 +11,9 @@ public class CharacterCamera : MonoBehaviour {
     public new Camera camera;
 
     void InitReferences() {
-        character = characterObj.GetComponent<Character>();
         camera = GetComponent<Camera>();
+        if (characterObj == null) return;
+        character = characterObj.GetComponent<Character>();
     }
 
     // ========================================================================
@@ -44,6 +45,11 @@ public class CharacterCamera : MonoBehaviour {
         }
     }
 
+    public void MinMaxPositionSnap() {
+        _maxPositionReal = _maxPositionTarget;
+        _minPositionReal = _minPositionTarget;
+    }
+
     public float lagTimer = 0;
 
     // ========================================================================
@@ -60,27 +66,28 @@ public class CharacterCamera : MonoBehaviour {
 
     // ========================================================================
 
-    GameObject _backgroundObj;
+    public GameObject backgroundObjRaw;
     public GameObject backgroundObj {
-        get { return _backgroundObj; }
+        get { return backgroundObjRaw; }
         set {
-            if (_backgroundObj != null) return;
-            Destroy(_backgroundObj);
-            _backgroundObj = Instantiate(
+            if (backgroundObjRaw != null) return;
+            Destroy(backgroundObjRaw);
+            backgroundObjRaw = Instantiate(
                 value,
                 Vector3.zero,
                 Quaternion.identity
             );
-            Background background = _backgroundObj.GetComponent<Background>();
-            background.characterPackage = character.characterPackage;
+            Background background = backgroundObjRaw.GetComponent<Background>();
             BackgroundCamera backgroundCamera = background.backgroundCamera;
             backgroundCamera.renderTexture = renderTexture;
             backgroundCamera.GetComponent<Camera>().targetDisplay = camera.targetDisplay;
+            if (character == null) return;
+            background.characterPackage = character.characterPackage;
         }
     }
 
 
-    Vector3 position;
+    public Vector3 position;
     Vector3 moveAmt;
     RenderTexture renderTexture;
     
@@ -92,8 +99,6 @@ public class CharacterCamera : MonoBehaviour {
 
     float hDist;
     public bool preventExit = false;
-
-
 
     public void LockHorizontal() { LockHorizontal(transform.position.x); }
     public void LockHorizontal(float xPos) {
@@ -123,22 +128,23 @@ public class CharacterCamera : MonoBehaviour {
     }
 
     void LateUpdate() {
+        if (character == null) return;
         if (character.inDeadState) return;
 
         _minPositionReal = Vector3.MoveTowards(
             _minPositionReal,
             _minPositionTarget,
-            (6F / 32F) * 60F * Time.deltaTime
+            (6F / 32F) * 60F * Time.unscaledDeltaTime
         );
 
         _maxPositionReal = Vector3.MoveTowards(
             _maxPositionReal,
             _maxPositionTarget,
-            (6F / 32F) * 60F * Time.deltaTime
+            (6F / 32F) * 60F * Time.unscaledDeltaTime
         );
 
         if (lagTimer > 0) {
-            lagTimer -= Time.deltaTime;
+            lagTimer -= Time.unscaledDeltaTime;
             return;
         }
 
@@ -146,7 +152,7 @@ public class CharacterCamera : MonoBehaviour {
 
         Transform characterLocation = character.spriteObject.transform;
         Vector3 characterPosition = characterLocation.position;
-        
+
         // Move camera horizontally towards character but not past them,
         // only move a max of hMoveMax, and restrict self to boundaries
         float hDist = characterPosition.x - transform.position.x;
@@ -175,7 +181,7 @@ public class CharacterCamera : MonoBehaviour {
             }
         }
 
-        position += moveAmt * (Time.deltaTime * 60F);
+        position += moveAmt * (Time.unscaledDeltaTime * 60F);
         position.z = characterPosition.z + zDistance;
         
         position = Vector3.Min(
@@ -205,8 +211,6 @@ public class CharacterCamera : MonoBehaviour {
             )
         );
         camera.orthographicSize = (renderTexture.height / 32) * 0.5F;
-        // renderTexture.width = Screen.width;
-        // renderTexture.height = Screen.height;
     }
 
     void OnPreRender() {
@@ -220,7 +224,6 @@ public class CharacterCamera : MonoBehaviour {
         Graphics.Blit(
             renderTexture,
             null as RenderTexture
-            // material
         );
     }
 }

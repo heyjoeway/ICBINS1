@@ -197,6 +197,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   fadeDelay: 2.25
   fadeSpeed: 2.31
+  destroyDelay: 0.033333335
   destroyWhenDone: 0
   redOffset: -0.25
   blueOffset: 0
@@ -226,7 +227,7 @@ Animator:
   m_Avatar: {fileID: 0}
   m_Controller: {fileID: 9100000, guid: 1048cfadc27cb174da1181d95b0290cb, type: 2}
   m_CullingMode: 0
-  m_UpdateMode: 0
+  m_UpdateMode: 2
   m_ApplyRootMotion: 0
   m_LinearVelocityBlending: 0
   m_WarningMessage: 

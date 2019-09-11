@@ -53,8 +53,8 @@ public class ObjMonitor : MonoBehaviour {
 
         if (DidCharacterHitFromBottom(character)) {
             if (!character.inRollingAirState) return;
-            Vector3 velocityTemp = character.velocity;
-            velocityTemp.y = -Mathf.Abs(character.velocity.y);
+            Vector3 velocityTemp = character.velocityPrev;
+            velocityTemp.y = -Mathf.Abs(velocityTemp.y);
             character.velocity = velocityTemp;
 
             rigidbody.isKinematic = false;

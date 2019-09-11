@@ -65,7 +65,11 @@ public class Character : MonoBehaviour {
 
     public AudioSource audioSource;
 
-    void InitReferences() {
+    bool _initReferencesDone = false;
+
+    public void InitReferences() {
+        if (_initReferencesDone) return;
+
         characterPackage = GetComponentInParent<CharacterPackage>();
 
         spriteAnimator = spriteObject.transform.Find("Sprite").gameObject.GetComponent<Animator>();
@@ -82,6 +86,8 @@ public class Character : MonoBehaviour {
         airModeCollider = airModeGroup.transform.Find("Collider").GetComponent<Collider>();
         rollingAirModeCollider = rollingAirModeGroup.transform.Find("Collider").GetComponent<Collider>();
         dashDustPosition = spriteObject.transform.Find("Dash Dust Position");
+
+        _initReferencesDone = true;
     }
 
     // ========================================================================
@@ -163,7 +169,16 @@ public class Character : MonoBehaviour {
 
     // ========================================================================
 
-    public int score = 0;
+    int _score = 0;
+    public int score {
+        get { return _score; }
+        set {
+            if (Mathf.Floor(value / 50000F) > Mathf.Floor(_score / 50000F))
+                lives++;
+                
+            _score = value;
+        }
+    }
     int _ringLivesMax = 0;
     int _rings;
     public int rings { 
@@ -172,10 +187,6 @@ public class Character : MonoBehaviour {
             _rings = value;
             int livesPrev = lives;
             lives += Mathf.Max(0, (int)Mathf.Floor(_rings / 100F) - _ringLivesMax);
-            if (lives > livesPrev) {
-                // Play lives jingle
-
-            }
             _ringLivesMax = Mathf.Max(_ringLivesMax, (int)Mathf.Floor(_rings / 100F));
         }
     }
@@ -184,6 +195,15 @@ public class Character : MonoBehaviour {
     // ========================================================================
 
     public int destroyEnemyChain = 0;
+
+    // ========================================================================
+
+    public bool controlLockManual = false;
+    public bool controlLock { get { 
+        return controlLockManual || Time.timeScale == 0;
+    }}
+
+
 
     // ========================================================================
 
@@ -200,7 +220,7 @@ public class Character : MonoBehaviour {
         Application.targetFrameRate = Screen.currentResolution.refreshRate; // TODO
         Time.fixedDeltaTime = 1F / Application.targetFrameRate;
         StateInit(_stateCurrent);
-        respawnPosition = position;
+        respawnData.position = position;
         Respawn();
     }
 
@@ -234,29 +254,39 @@ public class Character : MonoBehaviour {
     public float timer = 0;
     public bool timerPause = false;
     public bool victoryLock = false;
+    float deltaTime { get {
+        return Time.unscaledDeltaTime;
+    }}
     void LateUpdate() {
         groundSpeedPrev = groundSpeed;
         if (!timerPause) timer += Time.deltaTime;
         if (!isHarmful) destroyEnemyChain = 0;
         StateUpdate(stateCurrent);
         UpdateShield();
+
+        if (Time.timeScale == 0)
+            transform.position = position + (velocity / 60F);
     }
 
     // ========================================================================
 
-    public Vector3 respawnPosition;
+    public class RespawnData {
+        public Vector3 position = Vector3.zero;
+    }
+    public RespawnData respawnData = new RespawnData();
+
     public int checkpointId = 0;
 
     public void Respawn() {
         timer = 0;
-        characterCamera.transform.position = transform.position;
         SoftRespawn();
+        characterCamera.position = transform.position;
     }
 
     public void SoftRespawn() { // Should only be used in multiplayer; for full respawns reload scene
         _rings = 0;
         _ringLivesMax = 0;
-        position = respawnPosition;
+        position = respawnData.position;
         stateCurrent = CharacterState.ground;
         velocity = Vector3.zero;
         _groundSpeed = 0;
@@ -267,7 +297,6 @@ public class Character : MonoBehaviour {
     // ========================================================================
 
     void StateInit(CharacterState state) {
-
         switch (state) {
             case CharacterState.spindash:
                 spindashDust = Instantiate(
@@ -311,6 +340,9 @@ public class Character : MonoBehaviour {
                 modeGroupCurrent = airModeGroup;
                 break;
             case CharacterState.dying:
+                if (Utils.GetLevelManager().characterPackages.Count == 1)
+                    Time.timeScale = 0;
+
                 RemoveShield();
                 opacity = 1;
                 velocity = new Vector3(
@@ -322,6 +354,9 @@ public class Character : MonoBehaviour {
                 modeGroupCurrent = null;
                 break;
             case CharacterState.drowning:
+                if (Utils.GetLevelManager().characterPackages.Count == 1)
+                    Time.timeScale = 0;
+  
                 RemoveShield();
                 opacity = 1;
                 velocity = Vector3.zero;
@@ -333,12 +368,16 @@ public class Character : MonoBehaviour {
             case CharacterState.dead:
                 modeGroupCurrent = null;
                 lives--;
-                ScreenFade screenFade = Instantiate(
-                    Resources.Load<GameObject>("Objects/Screen Fade Out"),
-                    Vector3.zero,
-                    Quaternion.identity
-                ).GetComponent<ScreenFade>();
-                screenFade.onComplete = () => currentLevel.Reload();
+
+                if (Utils.GetLevelManager().characterPackages.Count == 1) {
+                    ScreenFade screenFade = Instantiate(
+                        Resources.Load<GameObject>("Objects/Screen Fade Out"),
+                        Vector3.zero,
+                        Quaternion.identity
+                    ).GetComponent<ScreenFade>();
+                    screenFade.onComplete = () => currentLevel.Reload();
+                } else SoftRespawn();
+
                 break;
         }
     }
@@ -403,7 +442,6 @@ public class Character : MonoBehaviour {
     }
 
     public void OnCollisionEnter(Collision collision) {
-
         switch (stateCurrent) {
             case CharacterState.rolling:
             case CharacterState.ground:
@@ -540,10 +578,11 @@ public class Character : MonoBehaviour {
         float accelerationMagnitude = 0F;
 
         int inputDir = 0;
-        if (horizontalInputLockTimer <= 0) {
-            if (Input.GetKey(KeyCode.LeftArrow)) inputDir = -1;
+        if ((horizontalInputLockTimer <= 0) && !controlLock) {
+            // ORDER MATTERS!
             if (Input.GetKey(KeyCode.RightArrow)) inputDir = 1;
-        } else horizontalInputLockTimer -= Time.deltaTime;
+            if (Input.GetKey(KeyCode.LeftArrow)) inputDir = -1;
+        } else horizontalInputLockTimer -= deltaTime;
 
         if (inputDir == 1) {
             if (groundSpeed < 0) {
@@ -570,7 +609,7 @@ public class Character : MonoBehaviour {
         if (Mathf.Abs(slopeFactorAcc) > 0.04)
             accelerationMagnitude -= slopeFactorAcc;
 
-        groundSpeed += accelerationMagnitude * physicsScale * Utils.deltaTimeScale;
+        groundSpeed += accelerationMagnitude * physicsScale * deltaTime * 60F;
     }
 
     CharacterGroundedDetector _detectorCurrent;
@@ -656,8 +695,8 @@ public class Character : MonoBehaviour {
         if (inRollingAirState) {
             spriteAnimator.speed = 1 + ((Mathf.Abs(groundSpeed) / (topSpeed * physicsScale)) * 2F);
         } else {
-            bool pressLeft = Input.GetKey(KeyCode.LeftArrow);
-            bool pressRight = Input.GetKey(KeyCode.RightArrow) && !pressLeft;
+            bool pressLeft = Input.GetKey(KeyCode.LeftArrow) && !controlLock;
+            bool pressRight = Input.GetKey(KeyCode.RightArrow) && !pressLeft && !controlLock;
 
             // Turning
             // ======================
@@ -688,8 +727,8 @@ public class Character : MonoBehaviour {
             // Standing still, looking up/down, idle animation
             // ======================
             if (groundSpeed == 0) {
-                if (Input.GetKey(KeyCode.DownArrow)) spriteAnimator.Play("Look Down");
-                else if (Input.GetKey(KeyCode.UpArrow)) spriteAnimator.Play("Look Up");
+                if (Input.GetKey(KeyCode.DownArrow) && !controlLock) spriteAnimator.Play("Look Down");
+                else if (Input.GetKey(KeyCode.UpArrow) && !controlLock) spriteAnimator.Play("Look Up");
                 else if (balanceState != BalanceState.None) {
                     ignoreFlipX = true;
                     flipX = balanceState == BalanceState.Right;
@@ -738,6 +777,7 @@ public class Character : MonoBehaviour {
     // - Moving faster than roll threshold
     // 3D-Ready: YES
     void UpdateGroundRoll() {
+        if (controlLock) return;
         if (!Input.GetKeyDown(KeyCode.DownArrow)) return;
         if (Mathf.Abs(groundSpeed) < rollThreshold * physicsScale) return;
         stateCurrent = CharacterState.rolling;
@@ -750,6 +790,7 @@ public class Character : MonoBehaviour {
     // 3D-Ready: YES
     void UpdateGroundSpindash() {
         if (!spinDashEnabled) return;
+        if (controlLock) return;
         if (!Input.GetKey(KeyCode.DownArrow)) return;
         if (!Input.GetKeyDown(KeyCode.D)) return;
         if (groundSpeed != 0) return;
@@ -763,6 +804,7 @@ public class Character : MonoBehaviour {
     void UpdateGroundJump() {
         // Sorta hack? This function still runs even after the state has changed to spindash
         if (stateCurrent == CharacterState.spindash) return;
+        if (controlLock) return;
         if (!Input.GetKeyDown(KeyCode.D)) return;
 
         velocity += transform.up * jumpSpeed * physicsScale;
@@ -790,8 +832,8 @@ public class Character : MonoBehaviour {
         return Vector3.RotateTowards(
             currentRotation, // current
             targetAngle, // target // TODO: 3D
-            10F * Utils.deltaTimeScale, // max rotation
-            10F * Utils.deltaTimeScale // magnitude
+            10F * deltaTime * 60F, // max rotation
+            10F * deltaTime * 60F // magnitude
         );
     }
 
@@ -840,10 +882,10 @@ public class Character : MonoBehaviour {
             )
         ) return;
 
-        bool pressLeft = Input.GetKey(KeyCode.LeftArrow);
+        bool pressLeft = Input.GetKey(KeyCode.LeftArrow) && !controlLock;
         bool pushLeft = pressLeft && (collisionPoint.x < position.x);
 
-        bool pressRight = Input.GetKey(KeyCode.RightArrow) && !pressLeft;
+        bool pressRight = Input.GetKey(KeyCode.RightArrow) && !pressLeft && !controlLock;
         bool pushRight = pressRight && (collisionPoint.x > position.x);
 
         pushing = pushLeft || pushRight;
@@ -887,17 +929,17 @@ public class Character : MonoBehaviour {
 
     // 3D-Ready: YES
     void UpdateSpindashInput() {
-        if (!Input.GetKey(KeyCode.DownArrow)) {
+        if (!Input.GetKey(KeyCode.DownArrow) || controlLock) {
             SpindashRelease();
             return;
         }
 
-        if (Input.GetKeyDown(KeyCode.D)) SpindashCharge();
+        if (Input.GetKeyDown(KeyCode.D) && !controlLock) SpindashCharge();
     }
 
     // 3D-Ready: YES
     void UpdateSpindashDrain() {
-        spindashPower -= ((spindashPower / 0.125F) / 256F) * Utils.deltaTimeScale;
+        spindashPower -= ((spindashPower / 0.125F) / 256F) * deltaTime * 60F;
         spindashPower = Mathf.Max(0, spindashPower);
     }
 
@@ -955,12 +997,12 @@ public class Character : MonoBehaviour {
     void UpdateRollingMove() {
         float accelerationMagnitude = 0F;
 
-        if (Input.GetKey(KeyCode.RightArrow)) {
-            if (groundSpeed < 0)
-                accelerationMagnitude = decelerationRoll;
-        } else if (Input.GetKey(KeyCode.LeftArrow)) {
+        if (Input.GetKey(KeyCode.LeftArrow) && !controlLock) {
             if (groundSpeed > 0)
                 accelerationMagnitude = -decelerationRoll;
+        } else if (Input.GetKey(KeyCode.RightArrow) && !controlLock) {
+            if (groundSpeed < 0)
+                accelerationMagnitude = decelerationRoll;
         }
 
         if (Mathf.Abs(groundSpeed) > 0.05F * physicsScale)
@@ -968,7 +1010,7 @@ public class Character : MonoBehaviour {
 
         float slopeFactor = movingUphill ? slopeFactorRollUp : slopeFactorRollDown;
         accelerationMagnitude -= slopeFactor * Mathf.Sin(forwardAngle * Mathf.Deg2Rad);
-        groundSpeed += accelerationMagnitude * physicsScale * Utils.deltaTimeScale;
+        groundSpeed += accelerationMagnitude * physicsScale * deltaTime * 60F;
 
         // Unroll / roll lock boost
         if (Mathf.Abs(groundSpeed) < unrollThreshold * physicsScale) {
@@ -1025,13 +1067,13 @@ public class Character : MonoBehaviour {
         float accelerationMagnitude = 0;
 
         // Acceleration
-        if (Input.GetKey(KeyCode.RightArrow)) {
-            if (velocityTemp.x < topSpeed * physicsScale) {
-                accelerationMagnitude = accelerationAir;
-            }
-        } else if (Input.GetKey(KeyCode.LeftArrow)) {
+        if (Input.GetKey(KeyCode.LeftArrow) && !controlLock) {
             if (velocityTemp.x > -topSpeed * physicsScale) {
                 accelerationMagnitude = -accelerationAir;
+            }
+        } else if (Input.GetKey(KeyCode.RightArrow) && !controlLock) {
+            if (velocityTemp.x < topSpeed * physicsScale) {
+                accelerationMagnitude = accelerationAir;
             }
         }
 
@@ -1039,7 +1081,7 @@ public class Character : MonoBehaviour {
             accelerationMagnitude,
             0,
             0
-        ) * physicsScale * Utils.deltaTimeScale;
+        ) * physicsScale * deltaTime * 60F;
         velocityTemp += acceleration;
 
         // Air Drag
@@ -1054,14 +1096,14 @@ public class Character : MonoBehaviour {
         transform.eulerAngles = Vector3.RotateTowards(
             transform.eulerAngles, // current
             forwardAngle <= 180 ? Vector3.zero : new Vector3(0, 0, 360), // target // TODO: 3D
-            0.5F * Utils.deltaTimeScale, // max rotation
-            2F * Utils.deltaTimeScale // magnitude
+            0.5F * deltaTime * 60F, // max rotation
+            2F * deltaTime * 60F // magnitude
         );
     }
     
     // 3D-Ready: Yes
     void UpdateAirGravity() {
-        velocity += Vector3.up * gravity * physicsScale * Utils.deltaTimeScale;
+        velocity += Vector3.up * gravity * physicsScale * deltaTime * 60F;
     }
 
     // Handle air collisions
@@ -1142,7 +1184,11 @@ public class Character : MonoBehaviour {
         // Set state
         // -------------------------
         if (isDropDashing) DropDashRelease();
-        else if (Input.GetKey(KeyCode.DownArrow) && (Mathf.Abs(groundSpeed) >= rollThreshold * physicsScale)) {
+        else if (
+            Input.GetKey(KeyCode.DownArrow) &&
+            (Mathf.Abs(groundSpeed) >= rollThreshold * physicsScale) &&
+            !controlLock
+        ) {
             SFX.Play(audioSource, "SFX/Sonic 1/S1_BE");
             stateCurrent = CharacterState.rolling;
         } else stateCurrent = CharacterState.ground;
@@ -1152,8 +1198,8 @@ public class Character : MonoBehaviour {
     void FixedUpdate() { velocityPrev = velocity; }
 
     void UpdateAirAnimDirection() {
-        if (Input.GetKey(KeyCode.LeftArrow)) facingRight = false;
-        else if (Input.GetKey(KeyCode.RightArrow)) facingRight = true;
+        if (Input.GetKey(KeyCode.LeftArrow) && !controlLock) facingRight = false;
+        else if (Input.GetKey(KeyCode.RightArrow) && !controlLock) facingRight = true;
     }
 
     void UpdateAirAnim() {
@@ -1196,7 +1242,8 @@ public class Character : MonoBehaviour {
     public bool isDropDashing { get { return (
         (stateCurrent == CharacterState.jump) &&
         (dropDashTimer <= 0) &&
-        Input.GetKey(KeyCode.D)
+        Input.GetKey(KeyCode.D) &&
+        !controlLock
     ); }}
 
     // 3D-Ready: YES
@@ -1218,25 +1265,27 @@ public class Character : MonoBehaviour {
     void UpdateJumpDropDashStart() {
         if (!dropDashEnabled) return;
         
-        if (Input.GetKeyDown(KeyCode.D))
+        if (Input.GetKeyDown(KeyCode.D) && !controlLock)
             dropDashTimer = 0.33333F;
 
-        if (Input.GetKey(KeyCode.D) && dropDashTimer > 0) {
-            if (dropDashTimer - Time.deltaTime <= 0)
+        if (Input.GetKey(KeyCode.D) && dropDashTimer > 0 && !controlLock) {
+            if (dropDashTimer - deltaTime <= 0)
                 SFX.Play(audioSource, "SFX/Sonic 2/S2_60");
         
-            dropDashTimer -= Time.deltaTime;
+            dropDashTimer -= deltaTime;
         }
     }
 
     // 3D-Ready: YES
     void UpdateJumpHeight() {
-        if ((velocity.y > 4 * physicsScale) && !Input.GetKey(KeyCode.D))
-            velocity = new Vector3(
-                velocity.x,
-                4 * physicsScale,
-                velocity.z
-            );
+        if (!Input.GetKey(KeyCode.D) || controlLock) {
+            if (velocity.y > 4 * physicsScale)
+                velocity = new Vector3(
+                    velocity.x,
+                    4 * physicsScale,
+                    velocity.z
+                );
+        }
     }
 
     // 3D-Ready: YES
@@ -1301,7 +1350,7 @@ public class Character : MonoBehaviour {
     // 3D-Ready: YES
     void UpdateDying() {
         UpdateAirGravity();
-        dyingTimer -= Time.deltaTime;
+        dyingTimer -= deltaTime;
         if (dyingTimer <= 0) stateCurrent = CharacterState.dead;
         UpdateSpritePosition();
         spriteObject.transform.eulerAngles = Vector3.zero;
@@ -1351,7 +1400,7 @@ public class Character : MonoBehaviour {
             0,
             hurtGravity,
             0
-        ) * physicsScale * Utils.deltaTimeScale;
+        ) * physicsScale * deltaTime * 60F;
     }
 
     // 3D-Ready: YES
@@ -1494,7 +1543,7 @@ public class Character : MonoBehaviour {
     void UpdateInvulnerable() {
         if (invulnTimer <= 0) return;
 
-        invulnTimer -= Time.deltaTime;
+        invulnTimer -= deltaTime;
         if (invulnTimer <= 0) {
             opacity = 1;
         } else {

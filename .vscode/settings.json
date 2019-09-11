@@ -52,5 +52,8 @@
         "ProjectSettings/":true,
         "temp/":true,
         "Temp/":true
-    }
+    },
+    "line-counter.includes": [
+        "**/*.cs"
+    ]
 }

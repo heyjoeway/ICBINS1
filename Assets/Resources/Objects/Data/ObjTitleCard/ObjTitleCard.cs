@@ -12,6 +12,10 @@ public class ObjTitleCard : MonoBehaviour {
     Text zoneTextComponent;
     Text actTextComponent;
 
+    public void StartTime() {
+        Time.timeScale = 1;
+    }
+
     public void Init() {
         actTextComponent = transform.Find("Act Value").GetComponent<Text>();
         zoneTextComponent = transform.Find("Zone Name").GetComponent<Text>();

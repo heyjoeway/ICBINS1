@@ -7,22 +7,32 @@ public class LevelManager : MonoBehaviour {
     public SceneReference sceneDefault;
     public HashSet<CharacterPackage> characterPackages = new HashSet<CharacterPackage>();
 
-    void InitCharacters() {
+    void InitCharacterPackage(CharacterPackage characterPackage) {
         Level levelDefault = FindObjectOfType<Level>();
-        foreach (CharacterPackage characterPackage in FindObjectsOfType<CharacterPackage>()) {
-            characterPackages.Add(characterPackage);
+        characterPackages.Add(characterPackage);
 
-            Character character = characterPackage.character;
-            character.InitReferences();
+        Character character = characterPackage.character;
+        character.InitReferences();
 
-            if (character.currentLevel == null) {
-                character.currentLevel = levelDefault;
-                character.respawnData.position = levelDefault.spawnPosition;
-                character.Respawn();
-            }
-
-            character.currentLevel.MakeTitleCard(character);
+        if (character.currentLevel == null) {
+            character.currentLevel = levelDefault;
+            character.respawnData.position = levelDefault.spawnPosition;
+            character.Respawn();
         }
+
+        character.currentLevel.MakeTitleCard(character);
+    }
+
+    void InitCharacters() {
+        foreach (CharacterPackage characterPackage in FindObjectsOfType<CharacterPackage>())
+            InitCharacterPackage(characterPackage);
+
+        if (characterPackages.Count == 0) {
+            InitCharacterPackage(Instantiate(
+                Resources.Load<GameObject>("Character/Character Package")
+            ).GetComponent<CharacterPackage>());
+        }
+
         Time.timeScale = 0;
     }
 

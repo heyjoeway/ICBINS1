@@ -25,7 +25,7 @@ public class Character : MonoBehaviour {
     // Objects
     public GameObject spriteObject;
     public GameObject cameraObject;
-    public Transform dashDustPosition;
+    Transform dashDustPosition;
     SpriteRenderer spriteRenderer;
 
     Transform groundModeGroup;
@@ -85,7 +85,7 @@ public class Character : MonoBehaviour {
 
         airModeCollider = airModeGroup.transform.Find("Collider").GetComponent<Collider>();
         rollingAirModeCollider = rollingAirModeGroup.transform.Find("Collider").GetComponent<Collider>();
-        dashDustPosition = spriteObject.transform.Find("Dash Dust Position");
+        dashDustPosition = spriteObject.transform.Find("Spindash Dust Position");
 
         _initReferencesDone = true;
     }
@@ -175,7 +175,7 @@ public class Character : MonoBehaviour {
         set {
             if (Mathf.Floor(value / 50000F) > Mathf.Floor(_score / 50000F))
                 lives++;
-                
+
             _score = value;
         }
     }
@@ -217,8 +217,8 @@ public class Character : MonoBehaviour {
         airModeGroup.gameObject.SetActive(false);
 
     
-        Application.targetFrameRate = Screen.currentResolution.refreshRate; // TODO
-        Time.fixedDeltaTime = 1F / Application.targetFrameRate;
+        Application.targetFrameRate = 60; // TODO
+        // Time.fixedDeltaTime = 1F / Application.targetFrameRate;
         StateInit(_stateCurrent);
         respawnData.position = position;
         Respawn();

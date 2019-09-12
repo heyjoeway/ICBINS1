@@ -5,6 +5,8 @@ using UnityEngine.SceneManagement;
 
 public class Level : MonoBehaviour {
     public GameObject background;
+    public AudioClip musicIntro;
+    public AudioClip musicLoop;
     public LevelManager levelManager;
     public Vector3 spawnPosition { get {
         return transform.Find("Spawn Position").position;

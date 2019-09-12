@@ -26,6 +26,7 @@ public class ScreenFade : MonoBehaviour {
     public float blueOffset = 0;
     public float greenOffset = -0.125F;
     public float brightness = 0F;
+    public bool stopTime = false;
     public float brightnessMin { get {
         return Mathf.Max(redOffset, blueOffset, greenOffset);
     }}
@@ -40,9 +41,12 @@ public class ScreenFade : MonoBehaviour {
             onComplete = null;
         }
         isComplete = true;
+        Time.timeScale = stopTime ? 0 : 1;
     }
 
     void Update() {
+        Time.timeScale = stopTime ? 0 : 1;
+
         if (isComplete && destroyWhenDone && (destroyDelay > 0)) {
             destroyDelay -= Time.unscaledDeltaTime;
             if (destroyDelay <= 0) {
@@ -66,5 +70,9 @@ public class ScreenFade : MonoBehaviour {
         brightness += fadeSpeed * Time.unscaledDeltaTime;
         if ((fadeSpeed > 0) && (brightness >= brightnessMax)) Complete();
         if ((fadeSpeed < 0) && (brightness <= brightnessMin)) Complete();
+    }
+
+    void OnDestroy() {
+        if (stopTime) Time.timeScale = 1;
     }
 }

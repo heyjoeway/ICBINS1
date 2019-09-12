@@ -7,20 +7,13 @@ public class CharacterCamera : MonoBehaviour {
     // OBJECT AND COMPONENT REFERENCES
     // ========================================================================
 
-    Character character;
     public new Camera camera;
-
-    void InitReferences() {
-        camera = GetComponent<Camera>();
-        if (characterObj == null) return;
-        character = characterObj.GetComponent<Character>();
-    }
 
     // ========================================================================
     // PUBLIC VARIABLES
     // ========================================================================
 
-    public GameObject characterObj;
+    public Character character;
     public float zDistance = -13.5F;
 
     Vector3 _minPositionTarget = Vector3.one * -Mathf.Infinity;
@@ -86,14 +79,13 @@ public class CharacterCamera : MonoBehaviour {
         }
     }
 
-
     public Vector3 position;
     Vector3 moveAmt;
     RenderTexture renderTexture;
     
     void Start() {
-        InitReferences();
         renderTexture = new RenderTexture(camera.targetTexture);
+        renderTexture.filterMode = FilterMode.Point;
         position = transform.position;
     }
 
@@ -104,6 +96,9 @@ public class CharacterCamera : MonoBehaviour {
     public void LockHorizontal(float xPos) {
         _minPositionTarget.x = xPos;
         _maxPositionTarget.x = xPos;
+        _minPositionReal.x = xPos;
+        _maxPositionReal.x = xPos;
+        position.x = xPos;
     }
 
     public void LockVertical() { LockVertical(transform.position.y); }
@@ -128,6 +123,17 @@ public class CharacterCamera : MonoBehaviour {
     }
 
     void LateUpdate() {
+        if (float.IsNaN(_maxPositionReal.x))
+            _maxPositionReal = _maxPositionTarget;
+
+        if (float.IsNaN(_minPositionReal.x))
+            _minPositionReal = _minPositionTarget;
+
+        // Debug.Log(_minPositionTarget);
+        // Debug.Log(_maxPositionTarget);
+        // Debug.Log(_minPositionReal);
+        // Debug.Log(_maxPositionReal);
+
         if (character == null) return;
         if (character.inDeadState) return;
 

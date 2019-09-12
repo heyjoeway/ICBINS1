@@ -248,9 +248,9 @@ MonoBehaviour:
   spinDashEnabled: 1
   invulnTimer: 0
   statePrev: 1
-  score: 0
   lives: 3
   destroyEnemyChain: 0
+  controlLockManual: 0
   timerPaused: 0
   timer: 0
   timerPause: 0
@@ -278,7 +278,7 @@ Rigidbody:
   m_IsKinematic: 0
   m_Interpolate: 0
   m_Constraints: 120
-  m_CollisionDetection: 0
+  m_CollisionDetection: 1
 --- !u!82 &1905976648882377142
 AudioSource:
   m_ObjectHideFlags: 0
@@ -288,7 +288,8 @@ AudioSource:
   m_GameObject: {fileID: 1905976648882377140}
   m_Enabled: 1
   serializedVersion: 4
-  OutputAudioMixerGroup: {fileID: 0}
+  OutputAudioMixerGroup: {fileID: -8577423528246303672, guid: 936b30df18d59004b8060790dd7b520a,
+    type: 2}
   m_audioClip: {fileID: 0}
   m_PlayOnAwake: 0
   m_Volume: 1

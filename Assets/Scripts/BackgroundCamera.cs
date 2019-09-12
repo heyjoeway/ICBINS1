@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class BackgroundCamera : MonoBehaviour {
+    [HideInInspector]
     public new Camera camera;
     public RenderTexture renderTexture;
     Material material;

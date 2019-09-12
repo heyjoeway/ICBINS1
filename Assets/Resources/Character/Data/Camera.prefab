@@ -45,11 +45,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 840807b85b5409248a24546ed2eedabb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  characterObj: {fileID: 0}
+  camera: {fileID: 495726082896974522}
+  character: {fileID: 0}
   zDistance: -13.5
-  minPosition: {x: -99999, y: -99999, z: -99999}
-  maxPosition: {x: 99999, y: 99999, z: 99999}
   lagTimer: 0
+  backgroundObjRaw: {fileID: 0}
+  position: {x: 0, y: 0, z: 0}
+  preventExit: 0
 --- !u!20 &495726082896974522
 Camera:
   m_ObjectHideFlags: 0
@@ -83,7 +85,7 @@ Camera:
     serializedVersion: 2
     m_Bits: 4294967295
   m_RenderingPath: -1
-  m_TargetTexture: {fileID: 0}
+  m_TargetTexture: {fileID: 8600000, guid: 75ab778f13c69ed4e980f40719e9f500, type: 2}
   m_TargetDisplay: 0
   m_TargetEye: 0
   m_HDR: 1

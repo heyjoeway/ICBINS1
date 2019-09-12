@@ -85,6 +85,11 @@ public class ObjLevelClear : MonoBehaviour {
             int transferAmtTime = Mathf.Min(100, timeBonus);
             int transferAmtRing = Mathf.Min(100, ringBonus);
 
+            if (Input.GetKeyDown(KeyCode.Return)) {
+                transferAmtTime = timeBonus;
+                transferAmtRing = ringBonus;
+            }
+
             timeBonus -= transferAmtTime;
             ringBonus -= transferAmtRing;
 

@@ -46,14 +46,23 @@ public class ObjMonitorContents : MonoBehaviour {
                 break;
             case ContentsType.Shield:
                 SFX.Play(audioSource, "SFX/Sonic 1/S1_AF");
-                recipient.shield = Instantiate(
-                    Resources.Load<GameObject>("Objects/Shield (Normal)"),
-                    recipient.position,
-                    Quaternion.identity
-                ).GetComponent<ObjShield>();
+                recipient.shield = Instantiate(Resources.Load<GameObject>(
+                    "Objects/Shield (Normal)"
+                )).GetComponent<ObjShield>();
+                recipient.shield.character = recipient;
                 break;
             case ContentsType.Life:
                 recipient.lives++;
+                break;
+            case ContentsType.Shoes:
+                recipient.speedUpTimer += 20F;
+                break;
+            case ContentsType.Invincibility:
+                recipient.invincibilityTimer += 20F;
+                ObjShield stars = Instantiate(Resources.Load<GameObject>(
+                    "Objects/Invincibility Stars"
+                )).GetComponent<ObjShield>();
+                stars.character = recipient;
                 break;
         }
     }

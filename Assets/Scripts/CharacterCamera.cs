@@ -16,9 +16,9 @@ public class CharacterCamera : MonoBehaviour {
     public Character character;
     public float zDistance = -13.5F;
 
-    Vector3 _minPositionTarget = Vector3.one * -Mathf.Infinity;
-    Vector3 _minPositionReal = Vector3.one * -Mathf.Infinity;
-    public Vector3 minPosition  {
+    Vector2 _minPositionTarget = Vector2.one * -Mathf.Infinity;
+    Vector2 _minPositionReal = Vector2.one * -Mathf.Infinity;
+    public Vector2 minPosition  {
         get { return _minPositionTarget; }
         set {
             _minPositionTarget = value;
@@ -27,9 +27,9 @@ public class CharacterCamera : MonoBehaviour {
         }
     }
 
-    Vector3 _maxPositionTarget  = Vector3.one * Mathf.Infinity;
-    Vector3 _maxPositionReal  = Vector3.one * Mathf.Infinity;
-    public Vector3 maxPosition  {
+    Vector2 _maxPositionTarget  = Vector2.one * Mathf.Infinity;
+    Vector2 _maxPositionReal  = Vector2.one * Mathf.Infinity;
+    public Vector2 maxPosition  {
         get { return _maxPositionTarget; }
         set {
             _maxPositionTarget = value;
@@ -65,11 +65,7 @@ public class CharacterCamera : MonoBehaviour {
         set {
             if (backgroundObjRaw != null) return;
             Destroy(backgroundObjRaw);
-            backgroundObjRaw = Instantiate(
-                value,
-                Vector3.zero,
-                Quaternion.identity
-            );
+            backgroundObjRaw = Instantiate(value);
             Background background = backgroundObjRaw.GetComponent<Background>();
             BackgroundCamera backgroundCamera = background.backgroundCamera;
             backgroundCamera.renderTexture = renderTexture;
@@ -80,7 +76,7 @@ public class CharacterCamera : MonoBehaviour {
     }
 
     public Vector3 position;
-    Vector3 moveAmt;
+    Vector2 moveAmt;
     RenderTexture renderTexture;
     
     void Start() {
@@ -108,53 +104,60 @@ public class CharacterCamera : MonoBehaviour {
     }
 
     public void SetCharacterBoundsFromCamera() {
-        float screenHeightWorld = renderTexture.height / 32F;
-        float screenWidthWorld = renderTexture.width / 32F;
+        float screenHeightWorld = 224 / 32F;
+        float screenWidthWorld = 398 / 32F;
 
-        character.positionMin = new Vector3(
+        character.positionMin = new Vector2(
             minPosition.x - (screenWidthWorld / 2F) + 0.5F,
             minPosition.y - (screenHeightWorld / 2F) + 1F
         );
 
-        character.positionMax = new Vector3(
+        character.positionMax = new Vector2(
             maxPosition.x + (screenWidthWorld / 2F) - 0.5F,
             maxPosition.y + (screenHeightWorld / 2F) + 1F
         );
     }
 
+    const float minMaxMoveAmtMax = (6F / 32F) * 60F;
+
+    void MoveMinMaxTowardsTarget() {
+        float minXDist = _minPositionTarget.x - _minPositionReal.x;
+        _minPositionReal.x += Mathf.Min(
+            Mathf.Abs(minXDist),
+            minMaxMoveAmtMax * Utils.cappedUnscaledDeltaTime
+        ) * Mathf.Sign(minXDist);
+
+        float maxXDist = _maxPositionTarget.x - _maxPositionReal.x;
+        _maxPositionReal.x += Mathf.Min(
+            Mathf.Abs(maxXDist),
+            minMaxMoveAmtMax * Utils.cappedUnscaledDeltaTime
+        ) * Mathf.Sign(maxXDist);
+
+        float minYDist = _minPositionTarget.y - _minPositionReal.y; 
+        _minPositionReal.y += Mathf.Min(
+            Mathf.Abs(minYDist),
+            minMaxMoveAmtMax * Utils.cappedUnscaledDeltaTime
+        ) * Mathf.Sign(minYDist);
+
+        float maxYDist = _maxPositionTarget.y - _maxPositionReal.y; 
+        _maxPositionReal.y += Mathf.Min(
+            Mathf.Abs(maxYDist),
+            minMaxMoveAmtMax * Utils.cappedUnscaledDeltaTime
+        ) * Mathf.Sign(maxYDist);
+    }
+
     void LateUpdate() {
-        if (float.IsNaN(_maxPositionReal.x))
-            _maxPositionReal = _maxPositionTarget;
-
-        if (float.IsNaN(_minPositionReal.x))
-            _minPositionReal = _minPositionTarget;
-
-        // Debug.Log(_minPositionTarget);
-        // Debug.Log(_maxPositionTarget);
-        // Debug.Log(_minPositionReal);
-        // Debug.Log(_maxPositionReal);
-
         if (character == null) return;
         if (character.inDeadState) return;
 
-        _minPositionReal = Vector3.MoveTowards(
-            _minPositionReal,
-            _minPositionTarget,
-            (6F / 32F) * 60F * Time.unscaledDeltaTime
-        );
-
-        _maxPositionReal = Vector3.MoveTowards(
-            _maxPositionReal,
-            _maxPositionTarget,
-            (6F / 32F) * 60F * Time.unscaledDeltaTime
-        );
+        MoveMinMaxTowardsTarget();
 
         if (lagTimer > 0) {
-            lagTimer -= Time.unscaledDeltaTime;
+            lagTimer -= Utils.cappedUnscaledDeltaTime;
             return;
         }
 
-        moveAmt.Set(0,0,0);
+        moveAmt = Vector2.zero;
 
         Transform characterLocation = character.spriteObject.transform;
         Vector3 characterPosition = characterLocation.position;
@@ -187,16 +190,16 @@ public class CharacterCamera : MonoBehaviour {
             }
         }
 
-        position += moveAmt * (Time.unscaledDeltaTime * 60F);
-        position.z = characterPosition.z + zDistance;
-        
-        position = Vector3.Min(
+        position += (Vector3)moveAmt * (Utils.cappedUnscaledDeltaTime * 60F);
+        position = Vector2.Min(
             _maxPositionReal,
-            Vector3.Max(
+            Vector2.Max(
                 _minPositionReal,
                 position
             )
         );
+        position.z = characterPosition.z + zDistance;
+
         transform.position = position;
     }
 

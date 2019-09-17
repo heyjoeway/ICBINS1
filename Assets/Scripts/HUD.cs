@@ -39,6 +39,9 @@ public class HUD : MonoBehaviour {
             Mathf.Floor(character.timer % 60).ToString().PadLeft(2, '0')
         );
 
+        if (GlobalOptions.Get<bool>("centisecondTimer"))
+            timeText.text += ":" + Mathf.Floor((character.timer % 1) * 100F).ToString().PadLeft(2, '0');
+
         bool shouldFlash = (((int)(Time.unscaledTime * 60)) % 16) > 8;
         if (shouldFlash) {
             if (character.timer >= 9 * 60) timeTitleText.color = Color.red;

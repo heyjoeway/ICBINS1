@@ -6,7 +6,7 @@ public class RollZone : MonoBehaviour {
     public bool lockLeft = false;
 
     void OnTriggerStay(Collider other) {
-        Character[] characters = other.transform.gameObject.GetComponentsInParent<Character>();
+        Character[] characters = other.gameObject.GetComponentsInParent<Character>();
 
         foreach (Character character in characters) {
             // if (character.position.x > transform.position.x)

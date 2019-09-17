@@ -45,7 +45,7 @@ public class ObjBuzzBomber : MonoBehaviour {
     void Update() {
         rigidbody.velocity = Vector3.zero;
         if (pauseTimer > 0) {
-            pauseTimer -= Time.deltaTime;
+            pauseTimer -= Utils.cappedDeltaTime;
             moveTimer = moveTimerMax;
             return;
         }
@@ -54,7 +54,7 @@ public class ObjBuzzBomber : MonoBehaviour {
         animator.Play("Flying");
 
         if (moveTimer > 0) {
-            moveTimer -= Time.deltaTime;
+            moveTimer -= Utils.cappedDeltaTime;
 
             if (!hasFired) {
                 // Check if character is near

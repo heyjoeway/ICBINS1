@@ -39,7 +39,7 @@ public class ObjMotobug : MonoBehaviour {
 
     void Update() {
         if (turnTimer > 0) {
-            turnTimer -= Time.deltaTime;
+            turnTimer -= Utils.cappedDeltaTime;
             if (turnTimer > 0) return;
             turnTimer = 0;
             moveRight = !moveRight;

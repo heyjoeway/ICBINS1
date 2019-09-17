@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using ActionCode2D.Renderers;
 
 public class Character : MonoBehaviour {
     public static LayerMask? _solidRaycastMask = null;
@@ -66,6 +67,14 @@ public class Character : MonoBehaviour {
     public AudioSource audioSource;
 
     bool _initReferencesDone = false;
+    
+    SpriteGhostTrailRenderer spriteGhostTrail;
+    bool spriteGhostTrailEnabled { get {
+        return (
+            (speedUpTimer > 0) &&
+            GlobalOptions.Get<bool>("afterImages")
+        );
+    }}
 
     public void InitReferences() {
         if (_initReferencesDone) return;
@@ -74,6 +83,7 @@ public class Character : MonoBehaviour {
 
         spriteAnimator = spriteObject.transform.Find("Sprite").gameObject.GetComponent<Animator>();
         spriteRenderer = spriteObject.transform.Find("Sprite").gameObject.GetComponent<SpriteRenderer>();
+        spriteGhostTrail = spriteObject.transform.Find("Sprite").gameObject.GetComponent<SpriteGhostTrailRenderer>();
         characterCamera = characterPackage.camera;
         rigidbody = GetComponent<Rigidbody>();
         audioSource = GetComponent<AudioSource>();
@@ -94,13 +104,37 @@ public class Character : MonoBehaviour {
     // CONSTANTS
     // ========================================================================
 
-    const float accelerationGround = 0.046875F;
-    const float accelerationAir = 0.09375F;
-    const float frictionGround = 0.046875F;
-    const float frictionRoll = 0.0234375F;
-    const float topSpeed = 6F;
+    const float accelerationGroundNormal = 0.046875F;
+    const float accelerationGroundSpeedUp = 0.09375F;
+    float accelerationGround { get {
+        return speedUpTimer > 0 ? accelerationGroundSpeedUp : accelerationGroundNormal;
+    }}
+
+    const float accelerationAirNormal = 0.09375F;
+    const float accelerationAirSpeedUp = 0.1875F;
+    float accelerationAir { get {
+        return speedUpTimer > 0 ? accelerationAirSpeedUp : accelerationAirNormal;
+    }}
+    
+    const float frictionGroundNormal = 0.046875F;
+    const float frictionGroundSpeedUp = 0.09375F;
+    float frictionGround { get {
+        return speedUpTimer > 0 ? frictionGroundSpeedUp : frictionGroundNormal;
+    }}
+
+    const float frictionRollNormal = 0.0234375F;
+    const float frictionRollSpeedUp = 0.046875F;
+    float frictionRoll { get {
+        return speedUpTimer > 0 ? frictionRollSpeedUp : frictionRollNormal;
+    }}
+
+    const float topSpeedNormal = 6F;
+    const float topSpeedSpeedUp = 12F;
+    float topSpeed { get {
+        return speedUpTimer > 0 ? topSpeedSpeedUp : topSpeedNormal;
+    }}
+
     const float terminalSpeed = 16.5F;
-    const float minRollSpeed = 1.03125F; // TODO
     const float decelerationGround = 0.5F;
     const float decelerationRoll = 0.125F;
     const float slopeFactorGround = 0.125F;
@@ -190,7 +224,21 @@ public class Character : MonoBehaviour {
             _ringLivesMax = Mathf.Max(_ringLivesMax, (int)Mathf.Floor(_rings / 100F));
         }
     }
-    public int lives = 3;
+    int _lives = 3;
+    public int lives {
+        get { return _lives; }
+        set {
+            if (value > _lives) {
+                Utils.GetMusicManager().Add(new MusicManager.MusicStackEntry{
+                    introPath = "Music/1-Up",
+                    disableSfx = true,
+                    fadeInAfter = true,
+                    priority = 10
+                });
+            }
+            _lives = value;
+        }
+    }
 
     // ========================================================================
 
@@ -203,7 +251,8 @@ public class Character : MonoBehaviour {
         return controlLockManual || Time.timeScale == 0;
     }}
 
-
+    public float speedUpTimer = 0F;
+    public float invincibilityTimer = 0F;
 
     // ========================================================================
 
@@ -216,12 +265,12 @@ public class Character : MonoBehaviour {
         rollingAirModeGroup.gameObject.SetActive(false);
         airModeGroup.gameObject.SetActive(false);
 
-    
-        Application.targetFrameRate = 60; // TODO
-        // Time.fixedDeltaTime = 1F / Application.targetFrameRate;
         StateInit(_stateCurrent);
         respawnData.position = position;
         Respawn();
+
+        dropDashEnabled = GlobalOptions.Get<bool>("dropDash");
+        spinDashEnabled = GlobalOptions.Get<bool>("spindash");
     }
 
     public Vector3 velocity {
@@ -255,17 +304,20 @@ public class Character : MonoBehaviour {
     public bool timerPause = false;
     public bool victoryLock = false;
     float deltaTime { get {
-        return Time.unscaledDeltaTime;
+        return Utils.cappedUnscaledDeltaTime;
     }}
     void LateUpdate() {
         groundSpeedPrev = groundSpeed;
-        if (!timerPause) timer += Time.deltaTime;
+        if (!timerPause) timer += Utils.cappedDeltaTime;
         if (!isHarmful) destroyEnemyChain = 0;
-        StateUpdate(stateCurrent);
-        UpdateShield();
+        
+        if (speedUpTimer > 0) speedUpTimer -= Utils.cappedUnscaledDeltaTime;
+        Utils.GetMusicManager().tempo = speedUpTimer > 0 ? 1.25F : 1;
+        spriteGhostTrail.enabled = spriteGhostTrailEnabled;
 
-        if (Time.timeScale == 0)
-            transform.position = position + (velocity / 60F);
+        if (invincibilityTimer > 0) invincibilityTimer -= Utils.cappedUnscaledDeltaTime;
+
+        StateUpdate(stateCurrent);
     }
 
     // ========================================================================
@@ -280,12 +332,19 @@ public class Character : MonoBehaviour {
     public void Respawn() {
         timer = 0;
         SoftRespawn();
+        if (checkpointId == 0)
+            currentLevel.cameraZoneStart.Set(this);
+
+        characterCamera.MinMaxPositionSnap();
         characterCamera.position = transform.position;
     }
 
     public void SoftRespawn() { // Should only be used in multiplayer; for full respawns reload scene
         _rings = 0;
         _ringLivesMax = 0;
+        speedUpTimer = 0;
+        invincibilityTimer = 0;
+        invulnTimer = 0;
         position = respawnData.position;
         stateCurrent = CharacterState.ground;
         velocity = Vector3.zero;
@@ -368,18 +427,26 @@ public class Character : MonoBehaviour {
             case CharacterState.dead:
                 modeGroupCurrent = null;
                 lives--;
-
-                if (Utils.GetLevelManager().characterPackages.Count == 1) {
-                    ScreenFade screenFade = Instantiate(
-                        Resources.Load<GameObject>("Objects/Screen Fade Out"),
-                        Vector3.zero,
-                        Quaternion.identity
-                    ).GetComponent<ScreenFade>();
-                    screenFade.onComplete = () => currentLevel.Reload();
-                } else SoftRespawn();
-
+                ReloadLevel();
                 break;
         }
+    }
+
+    public void ReloadLevel() {
+        if (Utils.GetLevelManager().characterPackages.Count == 1) {
+            Time.timeScale = 0;
+            ScreenFade screenFade = Instantiate(
+                Resources.Load<GameObject>("Objects/Screen Fade Out"),
+                Vector3.zero,
+                Quaternion.identity
+            ).GetComponent<ScreenFade>();
+            Utils.GetMusicManager().FadeOut();
+            screenFade.onComplete = () => {
+                victoryLock = false;
+                timerPause = false;
+                currentLevel.Reload();
+            };
+        } else SoftRespawn();
     }
 
     void StateDeinit(CharacterState state) {
@@ -693,7 +760,12 @@ public class Character : MonoBehaviour {
 
         // Check if we are transitioning to a rolling air state. If so, set the speed of it
         if (inRollingAirState) {
-            spriteAnimator.speed = 1 + ((Mathf.Abs(groundSpeed) / (topSpeed * physicsScale)) * 2F);
+            spriteAnimator.speed = 1 + (
+                (
+                    Mathf.Abs(groundSpeed) /
+                    (topSpeedNormal * physicsScale)
+                ) * 2F
+            );
         } else {
             bool pressLeft = Input.GetKey(KeyCode.LeftArrow) && !controlLock;
             bool pressRight = Input.GetKey(KeyCode.RightArrow) && !pressLeft && !controlLock;
@@ -743,7 +815,7 @@ public class Character : MonoBehaviour {
             // ======================
             } else if (pushing) {
                 spriteAnimator.Play("Push");
-                spriteAnimator.speed = 1 + (Mathf.Abs(groundSpeed) / (topSpeed * physicsScale));
+                spriteAnimator.speed = 1 + (Mathf.Abs(groundSpeed) / (topSpeedNormal * physicsScale));
             // Skidding, again
             // ======================
             } else if (skidding && canSkid) {
@@ -753,14 +825,14 @@ public class Character : MonoBehaviour {
                 spriteAnimator.Play("Skid");
             // Walking
             // ======================
-            } else if (Mathf.Abs(groundSpeed) < topSpeed * physicsScale) {
+            } else if (Mathf.Abs(groundSpeed) < topSpeedNormal * physicsScale) {
                 spriteAnimator.Play("Walk");
-                spriteAnimator.speed = 1 + (Mathf.Abs(groundSpeed) / (topSpeed * physicsScale));
+                spriteAnimator.speed = 1 + (Mathf.Abs(groundSpeed) / (topSpeedNormal * physicsScale));
             } else {
             // Running
             // ======================
                 spriteAnimator.Play("Run");
-                spriteAnimator.speed = Mathf.Abs(groundSpeed) / (topSpeed * physicsScale);
+                spriteAnimator.speed = Mathf.Abs(groundSpeed) / (topSpeedNormal * physicsScale);
             }
             // (Peel out anim goes here)
         }
@@ -815,7 +887,9 @@ public class Character : MonoBehaviour {
     // Gets rotation for sprite
     // 3D-Ready: No
     Vector3 GetSpriteRotation() {
-        // return (transform.eulerAngles / 45F).Floor(0) * 45F;
+        if (!GlobalOptions.Get<bool>("smoothRotation"))
+            return (transform.eulerAngles / 45F).Round(0) * 45F;
+    
         Vector3 currentRotation = spriteObject.transform.eulerAngles;
         bool shouldRotate = Mathf.Abs(Mathf.DeltaAngle(0, forwardAngle)) > 45;
         
@@ -1029,7 +1103,7 @@ public class Character : MonoBehaviour {
     // 3D-Ready: YES
     void UpdateRollingAnim() {
         spriteAnimator.Play("Roll");
-        spriteAnimator.speed = 1 + ((Mathf.Abs(groundSpeed) / (topSpeed * physicsScale)) * 2F);
+        spriteAnimator.speed = 1 + ((Mathf.Abs(groundSpeed) / (topSpeedNormal * physicsScale)) * 2F);
         UpdateSpritePosition();
         spriteObject.transform.eulerAngles = Vector3.zero;
         flipX = !facingRight;
@@ -1269,7 +1343,7 @@ public class Character : MonoBehaviour {
             dropDashTimer = 0.33333F;
 
         if (Input.GetKey(KeyCode.D) && dropDashTimer > 0 && !controlLock) {
-            if (dropDashTimer - deltaTime <= 0)
+            if (isDropDashing && (dropDashTimer - deltaTime <= 0))
                 SFX.Play(audioSource, "SFX/Sonic 2/S2_60");
         
             dropDashTimer -= deltaTime;
@@ -1355,6 +1429,9 @@ public class Character : MonoBehaviour {
         UpdateSpritePosition();
         spriteObject.transform.eulerAngles = Vector3.zero;
         flipX = false;
+
+        if (Time.timeScale == 0)
+            transform.position = position + (velocity / 60F);
     }
  
     // ========================================================================
@@ -1427,7 +1504,7 @@ public class Character : MonoBehaviour {
     // https://info.sonicretro.org/SPG:Rebound#Badniks
     // 3D-Ready: YES
     public void BounceEnemy(GameObject enemyObj) {
-        if (!inRollingAirState) return;
+        if (inGroundedState) return;
 
         bool shouldntRebound = (
             (position.y < enemyObj.transform.position.y) ||
@@ -1517,13 +1594,15 @@ public class Character : MonoBehaviour {
     public bool isInvulnerable { get {
         return (
             inIgnoreState ||
-            (invulnTimer > 0)
+            (invulnTimer > 0) ||
+            (invincibilityTimer > 0)
         );
     } }
 
     public bool isHarmful { get {
         return(
-            inRollingState
+            inRollingState ||
+            (invincibilityTimer > 0)
         );
     }}
 
@@ -1561,20 +1640,10 @@ public class Character : MonoBehaviour {
 
     // 3D-Ready: YES
 
-    void RemoveShield() {
+    public void RemoveShield() {
         if (shield == null) return;
         Destroy(shield.gameObject);
         shield = null;
-    }
-
-    // 3D-Ready: YES
-
-    void UpdateShield() {
-        if (shield == null) return;
-        shield.transform.position = position;
-        if (!inRollingState) shield.transform.position += new Vector3(
-            0, 0.125F, 0
-        );
     }
 
     public Level currentLevel;

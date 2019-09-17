@@ -19,7 +19,7 @@ public class ObjEnemy : MonoBehaviour {
         if (characters.Length == 0) return;
         Character character = characters[0];
 
-        if (character.inRollingState) Explode(character);
+        if (character.isHarmful) Explode(character);
         else character.Hurt(character.position.x <= transform.position.x);
     }
 

@@ -8,7 +8,7 @@ using UnityEngine.Events;
 
 public static class Utils {
     public static float deltaTimeScale { get {
-        return 60F * Time.deltaTime;
+        return 60F * Utils.cappedDeltaTime;
     }}
 
     public static float physicsScale = 1.875F; // 60 (framerate) / 32 (pixels per unit)
@@ -83,19 +83,32 @@ public static class Utils {
         return GameObject.FindObjectOfType<LevelManager>();
     }
 
+    public static MusicManager GetMusicManager() {
+        return GameObject.FindObjectOfType<MusicManager>();
+    }
+
+    // Start hack because fuck unity; "SceneManager.sceneLoaded -=" DOESN'T. FUCKING. WORK.
+    // I'm not even kidding. try it yourself. fuck this shitty engine.
+    static bool _LoadLevelAsyncEverUsed = false;
+    static Level _LoadLevelAsyncLevel;
+    static void _LoadLevelAsyncOnSceneLoaded(Scene scene, LoadSceneMode loadSceneMode) {
+        foreach (Level level in GameObject.FindObjectsOfType<Level>()) {
+            if (level.gameObject.scene != scene) continue;
+            _LoadLevelAsyncLevel = level;
+            return;
+        }
+    }
+    // End hack, mostly
+
     public static IEnumerator LoadLevelAsync(string scenePath, Action<Level> callback = null, bool ignoreDuplicates = false) {
+        if (!_LoadLevelAsyncEverUsed) {
+            SceneManager.sceneLoaded += _LoadLevelAsyncOnSceneLoaded;
+            _LoadLevelAsyncEverUsed = true;
+        }
+
         Scene nextLevelScene = SceneManager.GetSceneByPath(scenePath);
 
         if (ignoreDuplicates || !nextLevelScene.IsValid()) { // If scene isn't already loaded
-            UnityAction<Scene, LoadSceneMode> sceneLoaded = (Scene scene, LoadSceneMode loadSceneMode) => {
-                foreach (Level level in GameObject.FindObjectsOfType<Level>()) {
-                    if (level.gameObject.scene != scene) continue;
-                    callback(level);
-                    return;
-                }
-            };
-            if (callback != null) SceneManager.sceneLoaded += sceneLoaded;
-
             AsyncOperation asyncLoad = SceneManager.LoadSceneAsync(
                 scenePath,
                 LoadSceneMode.Additive
@@ -103,7 +116,10 @@ public static class Utils {
             asyncLoad.allowSceneActivation = true;
 
             while (!asyncLoad.isDone) yield return null;
-            if (callback != null) SceneManager.sceneLoaded -= sceneLoaded;
+            if (callback != null) {
+                callback(_LoadLevelAsyncLevel);
+                _LoadLevelAsyncLevel = null;
+            }
         } else {
             if (callback == null) yield break;
             foreach (Level level in GameObject.FindObjectsOfType<Level>()) {
@@ -132,4 +148,24 @@ public static class Utils {
             return (LayerMask)_IgnoreRaycastMask;
         }
     }
+
+    public static void SetFramerate() {
+        Application.targetFrameRate = Screen.currentResolution.refreshRate;
+        Time.fixedDeltaTime = 1F / Application.targetFrameRate;
+        Time.maximumDeltaTime = 0.25F;
+    }
+
+    public static float cappedUnscaledDeltaTime { get {
+        return Mathf.Min(
+            Time.unscaledDeltaTime,
+            0.25F
+        );
+    }}
+
+    public static float cappedDeltaTime { get {
+        return Mathf.Min(
+            Time.deltaTime,
+            0.25F
+        );
+    }}
 }

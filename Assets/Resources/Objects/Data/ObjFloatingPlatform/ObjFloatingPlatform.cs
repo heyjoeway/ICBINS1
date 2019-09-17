@@ -59,9 +59,9 @@ public class ObjFloatingPlatform : MonoBehaviour {
 
     void UpdateNudge() {
         if (groundedDetector.characters.Count == 0)
-            nudgeTime -= Time.deltaTime;
+            nudgeTime -= Utils.cappedDeltaTime;
         else
-            nudgeTime += Time.deltaTime;
+            nudgeTime += Utils.cappedDeltaTime;
 
         nudgeTime = Mathf.Max(0, Mathf.Min(nudgeTimeMax, nudgeTime));
         offsetNudge.y = EasingFunction.EaseOutSine(
@@ -86,7 +86,7 @@ public class ObjFloatingPlatform : MonoBehaviour {
                 }
 
                 if (touchedEver) {
-                    fallTimer -= Time.deltaTime;
+                    fallTimer -= Utils.cappedDeltaTime;
                     falling = fallTimer <= 0; 
                 } else if (touched) {
                     touchedEver = true;
@@ -94,7 +94,7 @@ public class ObjFloatingPlatform : MonoBehaviour {
                 }
                 break;
             case PlatformType.moving:
-                moveTime += Time.deltaTime;
+                moveTime += Utils.cappedDeltaTime;
                 moveTime %= moveTimeMax;
                 float movePercentage = 1 - Mathf.Abs(((moveTime / moveTimeMax) - 0.5F) * 2);
                 

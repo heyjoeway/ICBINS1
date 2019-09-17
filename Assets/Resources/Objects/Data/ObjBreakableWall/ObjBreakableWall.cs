@@ -17,7 +17,7 @@ public class ObjBreakableWall : MonoBehaviour {
     // Update is called once per frame
     void Update() {
         if (!hit) return;
-        destroyTimer -= Time.deltaTime;
+        destroyTimer -= Utils.cappedDeltaTime;
         if (destroyTimer <= 0) Destroy(gameObject);
     }
 

@@ -80,7 +80,7 @@ public class ObjBreakablePlatforms : MonoBehaviour {
             Destroy(gameObject);
         }
 
-        timer += Time.deltaTime;
+        timer += Utils.cappedDeltaTime;
 
     }
 }

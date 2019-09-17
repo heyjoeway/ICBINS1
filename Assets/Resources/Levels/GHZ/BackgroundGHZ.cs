@@ -186,6 +186,12 @@ public class BackgroundGHZ : Background {
         SpriteRenderer spriteRenderer = chunk.AddComponent<SpriteRenderer>();
         spriteRenderer.sprite = chunkSprite;
         spriteRenderer.material = material;
+
+        // Hack?
+        material.SetFloat(
+            "_Lerp",
+            GlobalOptions.Get<bool>("linearInterpolation") ? 1 : 0
+        );
     }
 
     public override void Start() {

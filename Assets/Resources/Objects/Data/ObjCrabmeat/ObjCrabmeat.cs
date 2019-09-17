@@ -64,7 +64,7 @@ void Start() { InitReferences(); }
 
     void Update() {
         if (turnTimer > 0) {
-            turnTimer -= Time.deltaTime;
+            turnTimer -= Utils.cappedDeltaTime;
             if (turnTimer > 0) return;
 
             if (!hasFired) {
@@ -104,7 +104,7 @@ void Start() { InitReferences(); }
         
         Vector3 newPos = transform.position;
 
-        walkTimer -= Time.deltaTime;
+        walkTimer -= Utils.cappedDeltaTime;
 
         if ((walkTimer < 0) || (hitLeft.collider == null) || (hitRight.collider == null)) {
             turnTimer = 1F;

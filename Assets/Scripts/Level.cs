@@ -7,15 +7,18 @@ public class Level : MonoBehaviour {
     public GameObject background;
     public AudioClip musicIntro;
     public AudioClip musicLoop;
-    public LevelManager levelManager;
+    public CameraZone cameraZoneStart;
+
+    LevelManager levelManager;
     public Vector3 spawnPosition { get {
         return transform.Find("Spawn Position").position;
     }}
 
-    public virtual int act { get { return 0; }}
-    public virtual string zone { get { return "Unknown"; }}
+    public int act = 0;
+    public string zone = "Unknown";
 
     void Start() {
+        Utils.SetFramerate();
         levelManager = Utils.GetLevelManager();
     }
 
@@ -43,7 +46,6 @@ public class Level : MonoBehaviour {
                     if (characterPackage.character.currentLevel != this) continue;
                     Character character = characterPackage.character;
                     character.currentLevel = nextLevel;
-                    Debug.Log(character.currentLevel == this);
                     MakeTitleCard(character);
                     character.Respawn();
                 }

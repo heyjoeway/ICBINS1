@@ -8,7 +8,7 @@ public class LayerZone : MonoBehaviour {
     public bool groundedOnly = false;
 
     void OnTriggerStay(Collider other) {
-        Character[] characters = other.transform.gameObject.GetComponentsInParent<Character>();
+        Character[] characters = other.gameObject.GetComponentsInParent<Character>();
 
         foreach (Character character in characters) {
             Vector3 characterPos = character.position;

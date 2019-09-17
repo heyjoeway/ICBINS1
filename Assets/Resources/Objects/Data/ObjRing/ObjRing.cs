@@ -163,7 +163,7 @@ public class ObjRing : MonoBehaviour {
             animator.Play("Spin");
             rigidbody.velocity += new Vector3(0, gravity * Utils.physicsScale, 0);
 
-            fallingTimer -= Time.deltaTime;
+            fallingTimer -= Utils.cappedDeltaTime;
             animator.speed = (fallingTimer / fallingTimerMax) * 4;
 
             if (fallingTimer <= 0)

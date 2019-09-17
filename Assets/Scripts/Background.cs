@@ -21,7 +21,7 @@ public class Background : MonoBehaviour {
     public Vector3 autoMoveSpeed;
 
     public virtual void Update() {
-        targetPosition += autoMoveSpeed * Time.deltaTime;
+        targetPosition += autoMoveSpeed * Utils.cappedDeltaTime;
 
         if (characterPackage != null)
             targetPosition = characterPackage.camera.transform.position;

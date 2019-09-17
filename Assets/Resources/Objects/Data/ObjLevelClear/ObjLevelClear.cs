@@ -49,6 +49,31 @@ public class ObjLevelClear : MonoBehaviour {
     int timeBonus = 0;
     int ringBonus = 0;
 
+    void StartNextLevel(Level nextLevel) {
+        character.currentLevel = nextLevel;
+        character.timer = 0;
+        character.rings = 0;
+        character.respawnData.position = character.currentLevel.spawnPosition;
+        character.checkpointId = 0;
+
+        if (GlobalOptions.Get<bool>("levelTransitions")) {
+            character.timerPause = false;
+            character.victoryLock = false;
+            character.positionMax = Mathf.Infinity * Vector2.one;
+            character.characterCamera.maxPosition = Mathf.Infinity * Vector2.one;
+            ObjTitleCard titleCard = nextLevel.MakeTitleCard(character);
+            titleCard.screenFade.brightness = titleCard.screenFade.brightnessMax;
+        } else character.ReloadLevel();
+        Destroy(gameObject);
+    }
+
+    void LoadNextLevel() {
+        StartCoroutine(Utils.LoadLevelAsync(
+            sceneReference.ScenePath,
+            StartNextLevel
+        ));
+    }
+
     // Update is called once per frame
     void Update() {
         scoreTextComponent.text = character.score.ToString();
@@ -56,7 +81,7 @@ public class ObjLevelClear : MonoBehaviour {
         timeTextComponent.text = timeBonus.ToString();
 
         if (showTimer > 0) {
-            showTimer -= Time.deltaTime;
+            showTimer -= Utils.cappedDeltaTime;
             if (showTimer <= 0) {
                 // animator.Play("Items Enter");
                 timeBonus = GetTimeBonus(character.timer);
@@ -64,19 +89,27 @@ public class ObjLevelClear : MonoBehaviour {
                 canvas.worldCamera = character.characterCamera.camera; // i hate this name too, trust me
                 actTextComponent.text = character.currentLevel.act.ToString();
                 character.victoryLock = true;
+
+                character.invincibilityTimer = 0;
+                character.speedUpTimer = 0;
+                character.invulnTimer = 0;
+
+                Utils.GetMusicManager().Play(new MusicManager.MusicStackEntry{
+                    introPath = "Music/Level Clear"
+                });
             }
             return;
         }
 
         if (tallyTimer > 0) {
-            tallyTimer -= Time.deltaTime;
+            tallyTimer -= Utils.cappedDeltaTime;
             return;
         }
 
 
         if ((timeBonus > 0) || (ringBonus > 0)) {
             if (tallyFrameTimer > 0) {
-                tallyFrameTimer -= Time.deltaTime;
+                tallyFrameTimer -= Utils.cappedDeltaTime;
                 if (tallyFrameTimer <= 0)
                     tallyFrameTimer = 1F / 60F;
                 else return;
@@ -95,35 +128,19 @@ public class ObjLevelClear : MonoBehaviour {
 
             character.score += transferAmtTime;
             character.score += transferAmtRing;
-            SFX.PlayOneShot(audioSource, "SFX/Sonic 1/S1_CD");
+            SFX.PlayOneShot(audioSource, "SFX/Sonic 1/S1_CD", 0.5F);
 
             if ((timeBonus <= 0) && (ringBonus <= 0)) {
                 SFX.PlayOneShot(audioSource, "SFX/Sonic 1/S1_C5");
-                animator.Play("Items Exit");
+                if (GlobalOptions.Get<bool>("levelTransitions"))
+                    animator.Play("Items Exit");
             }
             return;
         }
 
         if (endTimer > 0) {
-            endTimer -= Time.deltaTime;
-            return;
+            endTimer -= Utils.cappedDeltaTime;
+            if (endTimer <= 0) LoadNextLevel();
         }
-
-        StartCoroutine(Utils.LoadLevelAsync(
-            sceneReference.ScenePath,
-            (Level nextLevel) => {
-                character.currentLevel = nextLevel;
-                character.timer = 0;
-                character.rings = 0;
-                character.timerPause = false;
-                character.victoryLock = false;
-                character.respawnData.position = character.currentLevel.spawnPosition;
-                character.checkpointId = 0;
-                ObjTitleCard titleCard = nextLevel.MakeTitleCard(character);
-                titleCard.screenFade.brightness = titleCard.screenFade.brightnessMax;
-                Destroy(gameObject);
-            }
-        ));
-
     }
 }

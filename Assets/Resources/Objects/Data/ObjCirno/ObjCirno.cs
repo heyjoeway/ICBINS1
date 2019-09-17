@@ -2,8 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class ObjCirno : MonoBehaviour
-{
+public class ObjCirno : MonoBehaviour {
     static GameObject bulletGameObject;
 
     static bool _initStaticDone = false;
@@ -13,6 +12,13 @@ public class ObjCirno : MonoBehaviour
         bulletGameObject = Resources.Load<GameObject>("Objects/Data/ObjCirno/Bullet");
 
         _initStaticDone = true;
+    }
+
+    public void PlayMusic() {
+        Utils.GetMusicManager().Add(new MusicManager.MusicStackEntry {
+            loopPath = "Music/Cirno Easter Egg",
+            priority = 999999999
+        });
     }
 
     public void ExplodeBullets() {

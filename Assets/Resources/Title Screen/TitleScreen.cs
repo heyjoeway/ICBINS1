@@ -4,8 +4,11 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 
 public class TitleScreen : MonoBehaviour {
-    void Update() {
-        if (!Input.GetKeyDown(KeyCode.Return)) return;
+    void Start() {
+        Utils.SetFramerate();
+    }
+
+    public void StartScene(string scenePath) {
         ScreenFade screenFade = Instantiate(
             Resources.Load<GameObject>("Objects/Screen Fade Out"),
             Vector3.zero,
@@ -14,7 +17,7 @@ public class TitleScreen : MonoBehaviour {
         screenFade.stopTime = true;
         screenFade.onComplete = () => {
             AsyncOperation asyncLoad = SceneManager.LoadSceneAsync(
-                "Scenes/Level",
+                scenePath,
                 LoadSceneMode.Single
             );
             asyncLoad.allowSceneActivation = true;

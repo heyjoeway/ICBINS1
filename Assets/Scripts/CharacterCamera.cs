@@ -118,7 +118,7 @@ public class CharacterCamera : MonoBehaviour {
         );
     }
 
-    const float minMaxMoveAmtMax = (6F / 32F) * 60F;
+    const float minMaxMoveAmtMax = (3F / 32F) * 60F;
 
     void MoveMinMaxTowardsTarget() {
         float minXDist = _minPositionTarget.x - _minPositionReal.x;
@@ -199,6 +199,37 @@ public class CharacterCamera : MonoBehaviour {
             )
         );
         position.z = characterPosition.z + zDistance;
+
+
+        bool canSnapX = (
+            (
+                Mathf.Abs(position.x - character.position.x) <
+                (hBorderDistance * valScale)
+            ) && (
+                position.x > _minPositionTarget.x
+            ) && (
+                position.x < _maxPositionTarget.x
+            )
+        );
+        if (canSnapX) {
+            _minPositionReal.x = _minPositionTarget.x;
+            _maxPositionReal.x = _maxPositionTarget.x;
+        }
+
+        bool canSnapY = (
+            (
+                Mathf.Abs(position.y - character.position.y) <
+                (vBorderDistanceAir * valScale)
+            ) && (
+                position.y > _minPositionTarget.y
+            ) && (
+                position.y < _maxPositionTarget.y
+            )
+        );
+        if (canSnapY) {
+            _minPositionReal.y = _minPositionTarget.y;
+            _maxPositionReal.y = _maxPositionTarget.y;
+        }
 
         transform.position = position;
     }

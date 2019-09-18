@@ -44,6 +44,6 @@ public class ObjShield : MonoBehaviour {
         if (!character.inRollingState) transform.position += new Vector3(
             0, 0.125F, 0
         );
-        spriteRenderer.enabled = character.invincibilityTimer < 0;
+        spriteRenderer.enabled = character.invincibilityTimer <= 0;
     }
 }

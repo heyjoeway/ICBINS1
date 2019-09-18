@@ -54,17 +54,14 @@ public class ObjRing : MonoBehaviour {
 
             // set the ring's vertical speed to sine(angle)*speed
             // set the ring's horizontal speed to -cosine(angle)*speed
-            ring.rigidbody.velocity = new Vector2(
+            ring.initialVelocity = new Vector2(
                 Mathf.Sin(angle * Mathf.Deg2Rad) * speed,
                 -Mathf.Cos(angle * Mathf.Deg2Rad) * speed
             ) * Utils.physicsScale;
 
             if (flipHSpeed) {
                 // multiply the ring's horizontal speed by -1
-                ring.rigidbody.velocity = new Vector2(
-                    -ring.rigidbody.velocity.x,
-                    ring.rigidbody.velocity.y
-                );
+                ring.initialVelocity.x *= -1;
                 // increase angle by 22.5
                 angle += 22.5F;
             }
@@ -93,9 +90,12 @@ public class ObjRing : MonoBehaviour {
         _initReferencesDone = true;
     }
 
+    public Vector3 initialVelocity = Vector3.zero;
+
     void Start() {
         StaticInit();
         InitReferences();
+
     }
 
     // ========================================================================
@@ -156,6 +156,11 @@ public class ObjRing : MonoBehaviour {
 
     void Update() {
         if (collected) return;
+
+        if (initialVelocity != Vector3.zero) { // Hack
+            rigidbody.velocity = initialVelocity;
+            initialVelocity = Vector3.zero;
+        }
 
         rigidbody.isKinematic = !falling;
         if (falling) {

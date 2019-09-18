@@ -46,6 +46,10 @@ public class LevelManager : MonoBehaviour {
         } else InitCharacters();
     }
 
+    void Update() {
+        Physics.Simulate(Utils.cappedDeltaTime);
+    }
+
     public void UnloadUnpopulatedLevels() {
         foreach (Level level in FindObjectsOfType<Level>())
             level.Unload();          

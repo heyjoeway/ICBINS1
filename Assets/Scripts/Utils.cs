@@ -151,6 +151,7 @@ public static class Utils {
 
     public static void SetFramerate() {
         Application.targetFrameRate = Screen.currentResolution.refreshRate;
+        // Application.targetFrameRate = 120;
         Time.fixedDeltaTime = 1F / Application.targetFrameRate;
         Time.maximumDeltaTime = 0.25F;
     }
@@ -158,14 +159,14 @@ public static class Utils {
     public static float cappedUnscaledDeltaTime { get {
         return Mathf.Min(
             Time.unscaledDeltaTime,
-            0.25F
+            Time.maximumDeltaTime
         );
     }}
 
     public static float cappedDeltaTime { get {
         return Mathf.Min(
             Time.deltaTime,
-            0.25F
+            Time.maximumDeltaTime
         );
     }}
 }

@@ -318,6 +318,7 @@ public class Character : MonoBehaviour {
         if (invincibilityTimer > 0) invincibilityTimer -= Utils.cappedUnscaledDeltaTime;
 
         StateUpdate(stateCurrent);
+        velocityPrev = velocity;
     }
 
     // ========================================================================
@@ -1160,7 +1161,9 @@ public class Character : MonoBehaviour {
 
         // Air Drag
         if ((velocityTemp.y > 0 ) && (velocityTemp.y < 4F * physicsScale))
-            velocityTemp.x -= ((int)(velocityTemp.x / 0.125F)) / 256F;
+            velocityTemp.x -= (
+                ((int)(velocityTemp.x / 0.125F)) / 256F
+            ) * (Utils.cappedUnscaledDeltaTime * 60F);
 
         velocity = velocityTemp;
     }
@@ -1269,7 +1272,7 @@ public class Character : MonoBehaviour {
     }
 
     public Vector3 velocityPrev;
-    void FixedUpdate() { velocityPrev = velocity; }
+    // void FixedUpdate() { velocityPrev = velocity; }
 
     void UpdateAirAnimDirection() {
         if (Input.GetKey(KeyCode.LeftArrow) && !controlLock) facingRight = false;

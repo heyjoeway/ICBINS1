@@ -12,6 +12,9 @@ EditorBuildSettings:
     path: Assets/Scenes/Sega Logo.unity
     guid: 4f35b3f213c21a84b9900553665eaad3
   - enabled: 1
+    path: Assets/Scenes/Presents Screen.unity
+    guid: 821f79a622cdac24c9da1f19f0d4fd53
+  - enabled: 1
     path: Assets/Scenes/Title Screen.unity
     guid: 6689b4528d106dc46bc8e9e664bbfa23
   - enabled: 1
@@ -29,4 +32,7 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Resources/Levels/GHZ/GHZ3/GHZ3.unity
     guid: 2163690874be5a8488e909fa0ecd947c
+  - enabled: 1
+    path: Assets/Scenes/Demo End.unity
+    guid: 492e6838e03034c439e1c424d49f494d
   m_configObjects: {}

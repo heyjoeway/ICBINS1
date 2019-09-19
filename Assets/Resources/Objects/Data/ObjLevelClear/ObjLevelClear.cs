@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Events;
 using UnityEngine.UI;
 
 public class ObjLevelClear : MonoBehaviour {
@@ -25,6 +26,7 @@ public class ObjLevelClear : MonoBehaviour {
     void Start() { InitReferences(); }
 
     public SceneReference sceneReference;
+    public UnityEvent onNextLevel;
 
     public Character character;
     float showTimer = 2F;
@@ -68,10 +70,12 @@ public class ObjLevelClear : MonoBehaviour {
     }
 
     void LoadNextLevel() {
-        StartCoroutine(Utils.LoadLevelAsync(
-            sceneReference.ScenePath,
-            StartNextLevel
-        ));
+        if (sceneReference.ScenePath != "") {
+            StartCoroutine(Utils.LoadLevelAsync(
+                sceneReference.ScenePath,
+                StartNextLevel
+            ));
+        } else onNextLevel.Invoke();
     }
 
     // Update is called once per frame

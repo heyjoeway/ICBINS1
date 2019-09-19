@@ -304,11 +304,13 @@ public class Character : MonoBehaviour {
     public bool timerPause = false;
     public bool victoryLock = false;
     float deltaTime;
+    float deltaTimeScaled;
     public void UpdateDelta(float deltaTime) {
         this.deltaTime = deltaTime; // hack
+        this.deltaTimeScaled = deltaTime * Time.timeScale; // hack
 
         groundSpeedPrev = groundSpeed;
-        if (!timerPause) timer += deltaTime;
+        if (!timerPause) timer += deltaTimeScaled;
         if (!isHarmful) destroyEnemyChain = 0;
         
         if (speedUpTimer > 0) speedUpTimer -= deltaTime;
@@ -1347,10 +1349,10 @@ public class Character : MonoBehaviour {
             dropDashTimer = 0.33333F;
 
         if (Input.GetKey(KeyCode.D) && dropDashTimer > 0 && !controlLock) {
-            if (isDropDashing && (dropDashTimer - deltaTime <= 0))
-                SFX.Play(audioSource, "SFX/Sonic 2/S2_60");
-        
             dropDashTimer -= deltaTime;
+
+            if (isDropDashing)
+                SFX.Play(audioSource, "SFX/Sonic 2/S2_60");
         }
     }
 
@@ -1435,7 +1437,7 @@ public class Character : MonoBehaviour {
         flipX = false;
 
         if (Time.timeScale == 0)
-            transform.position = position + (velocity / 60F);
+            transform.position = position + (velocity * deltaTime);
     }
  
     // ========================================================================

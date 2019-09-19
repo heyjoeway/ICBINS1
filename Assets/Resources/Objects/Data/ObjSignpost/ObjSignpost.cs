@@ -1,12 +1,13 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.SceneManagement;
+using UnityEngine.Events;
 
 public class ObjSignpost : MonoBehaviour {
     Animator animator;
     AudioSource audioSource;
     public SceneReference nextLevelRef;
+    public UnityEvent onNextLevel;
 
     void InitReferences() {
         animator = GetComponent<Animator>();
@@ -31,6 +32,7 @@ public class ObjSignpost : MonoBehaviour {
         ).GetComponent<ObjLevelClear>();
         levelClearObj.character = character;
         levelClearObj.sceneReference = nextLevelRef;
+        levelClearObj.onNextLevel = onNextLevel;
         character.timerPause = true;
         
         character.characterCamera.LockHorizontal();

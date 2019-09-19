@@ -192,6 +192,7 @@ public class ObjectCuller : MonoBehaviour
 
         if (enableType == EnableType.Reset) {
             clone = Instantiate(gameObject);
+            clone.GetComponent<ObjectCuller>().enableWait = true;
             clone.SetActive(false);
             clone.transform.parent = transform.parent;
         }
@@ -225,6 +226,7 @@ public class ObjectCuller : MonoBehaviour
 
     // Update is called once per frame
     bool inRangePrev;
+    public bool enableWait = false;
 
     void Update() {
         if (runEveryOtherFrame) {
@@ -248,7 +250,7 @@ public class ObjectCuller : MonoBehaviour
                 else DestroySelf();
                 break;
             case EnableType.Reset:
-                if (inRange && !inRangePrev) EnableSelf(); // Coming into range
+                if (inRange && (!inRangePrev || !enableWait)) EnableSelf(); // Coming into range
                 else if (!inRange && inRangePrev) { // Going out of range
                     clone.SetActive(true);
                     DestroySelf();

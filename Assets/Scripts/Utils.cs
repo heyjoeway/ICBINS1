@@ -150,8 +150,9 @@ public static class Utils {
     }
 
     public static void SetFramerate() {
-        Application.targetFrameRate = Screen.currentResolution.refreshRate;
+        // Application.targetFrameRate = Screen.currentResolution.refreshRate;
         // Application.targetFrameRate = 120;
+        Application.targetFrameRate = 60;
         Time.fixedDeltaTime = 1F / Application.targetFrameRate;
         Time.maximumDeltaTime = 0.25F;
     }

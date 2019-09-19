@@ -47,7 +47,19 @@ public class LevelManager : MonoBehaviour {
     }
 
     void Update() {
-        Physics.Simulate(Utils.cappedDeltaTime);
+        float deltaTime = Utils.cappedUnscaledDeltaTime;
+        while (deltaTime > 0) {
+            float modDeltaTime = deltaTime > 1F / 60F ? 1F / 60F : deltaTime;
+            Physics.Simulate(modDeltaTime * Time.timeScale);
+            foreach (CharacterPackage characterPackage in characterPackages) {
+                if (deltaTime == Utils.cappedUnscaledDeltaTime)
+                    InputCustom.PreventRepeatReset();
+    
+                characterPackage.character.UpdateDelta(modDeltaTime);
+                characterPackage.camera.UpdateDelta(modDeltaTime);
+            }
+            deltaTime -= modDeltaTime;
+        }
     }
 
     public void UnloadUnpopulatedLevels() {

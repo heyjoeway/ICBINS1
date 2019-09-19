@@ -303,19 +303,19 @@ public class Character : MonoBehaviour {
     public float timer = 0;
     public bool timerPause = false;
     public bool victoryLock = false;
-    float deltaTime { get {
-        return Utils.cappedUnscaledDeltaTime;
-    }}
-    void LateUpdate() {
+    float deltaTime;
+    public void UpdateDelta(float deltaTime) {
+        this.deltaTime = deltaTime; // hack
+
         groundSpeedPrev = groundSpeed;
-        if (!timerPause) timer += Utils.cappedDeltaTime;
+        if (!timerPause) timer += deltaTime;
         if (!isHarmful) destroyEnemyChain = 0;
         
-        if (speedUpTimer > 0) speedUpTimer -= Utils.cappedUnscaledDeltaTime;
+        if (speedUpTimer > 0) speedUpTimer -= deltaTime;
         Utils.GetMusicManager().tempo = speedUpTimer > 0 ? 1.25F : 1;
         spriteGhostTrail.enabled = spriteGhostTrailEnabled;
 
-        if (invincibilityTimer > 0) invincibilityTimer -= Utils.cappedUnscaledDeltaTime;
+        if (invincibilityTimer > 0) invincibilityTimer -= deltaTime;
 
         StateUpdate(stateCurrent);
         velocityPrev = velocity;
@@ -851,7 +851,7 @@ public class Character : MonoBehaviour {
     // 3D-Ready: YES
     void UpdateGroundRoll() {
         if (controlLock) return;
-        if (!Input.GetKeyDown(KeyCode.DownArrow)) return;
+        if (!InputCustom.GetKeyDownPreventRepeat(KeyCode.DownArrow)) return;
         if (Mathf.Abs(groundSpeed) < rollThreshold * physicsScale) return;
         stateCurrent = CharacterState.rolling;
     }
@@ -865,7 +865,7 @@ public class Character : MonoBehaviour {
         if (!spinDashEnabled) return;
         if (controlLock) return;
         if (!Input.GetKey(KeyCode.DownArrow)) return;
-        if (!Input.GetKeyDown(KeyCode.D)) return;
+        if (!InputCustom.GetKeyDownPreventRepeat(KeyCode.D)) return;
         if (groundSpeed != 0) return;
         stateCurrent = CharacterState.spindash;
     }
@@ -878,7 +878,7 @@ public class Character : MonoBehaviour {
         // Sorta hack? This function still runs even after the state has changed to spindash
         if (stateCurrent == CharacterState.spindash) return;
         if (controlLock) return;
-        if (!Input.GetKeyDown(KeyCode.D)) return;
+        if (!InputCustom.GetKeyDownPreventRepeat(KeyCode.D)) return;
 
         velocity += transform.up * jumpSpeed * physicsScale;
         SFX.PlayOneShot(audioSource, "SFX/Sonic 1/S1_A0");
@@ -1009,7 +1009,7 @@ public class Character : MonoBehaviour {
             return;
         }
 
-        if (Input.GetKeyDown(KeyCode.D) && !controlLock) SpindashCharge();
+        if (InputCustom.GetKeyDownPreventRepeat(KeyCode.D) && !controlLock) SpindashCharge();
     }
 
     // 3D-Ready: YES
@@ -1022,6 +1022,7 @@ public class Character : MonoBehaviour {
     void SpindashCharge() {
         spriteAnimator.Play("Spindash", 0, 0);
         spindashPower += 2;
+        Debug.Log(spindashPower);
         SFX.Play(audioSource, "SFX/Sonic 2/S2_60",
             1 + ((spindashPower / (spindashPowerMax + 2)) * 0.5F)
         );
@@ -1163,7 +1164,7 @@ public class Character : MonoBehaviour {
         if ((velocityTemp.y > 0 ) && (velocityTemp.y < 4F * physicsScale))
             velocityTemp.x -= (
                 ((int)(velocityTemp.x / 0.125F)) / 256F
-            ) * (Utils.cappedUnscaledDeltaTime * 60F);
+            ) * (deltaTime * 60F);
 
         velocity = velocityTemp;
     }
@@ -1342,7 +1343,7 @@ public class Character : MonoBehaviour {
     void UpdateJumpDropDashStart() {
         if (!dropDashEnabled) return;
         
-        if (Input.GetKeyDown(KeyCode.D) && !controlLock)
+        if (InputCustom.GetKeyDownPreventRepeat(KeyCode.D) && !controlLock)
             dropDashTimer = 0.33333F;
 
         if (Input.GetKey(KeyCode.D) && dropDashTimer > 0 && !controlLock) {

@@ -146,14 +146,16 @@ public class CharacterCamera : MonoBehaviour {
         ) * Mathf.Sign(maxYDist);
     }
 
-    void LateUpdate() {
+    void Update() { }
+
+    public void UpdateDelta(float deltaTime) {
         if (character == null) return;
         if (character.inDeadState) return;
 
         MoveMinMaxTowardsTarget();
 
         if (lagTimer > 0) {
-            lagTimer -= Utils.cappedUnscaledDeltaTime;
+            lagTimer -= deltaTime;
             return;
         }
 
@@ -190,7 +192,7 @@ public class CharacterCamera : MonoBehaviour {
             }
         }
 
-        position += (Vector3)moveAmt * (Utils.cappedUnscaledDeltaTime * 60F);
+        position += (Vector3)moveAmt * deltaTime * 60F;
         position = Vector2.Min(
             _maxPositionReal,
             Vector2.Max(
@@ -199,7 +201,6 @@ public class CharacterCamera : MonoBehaviour {
             )
         );
         position.z = characterPosition.z + zDistance;
-
 
         bool canSnapX = (
             (

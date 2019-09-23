@@ -318,7 +318,7 @@ Font:
     vert:
       serializedVersion: 2
       x: 0
-      y: 27
+      y: 26
       width: 15
       height: -16
     advance: 16

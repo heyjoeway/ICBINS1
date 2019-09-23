@@ -17,7 +17,7 @@ char id=76 x=49 y=34 width=15 height=16 xoffset=0 yoffset=0 xadvance=16 page=0 c
 char id=77 x=24 y=0 width=16 height=16 xoffset=0 yoffset=0 xadvance=17 page=0 chnl=0 letter="M"
 char id=78 x=41 y=0 width=15 height=16 xoffset=0 yoffset=0 xadvance=16 page=0 chnl=0 letter="N"
 char id=79 x=17 y=17 width=16 height=16 xoffset=0 yoffset=0 xadvance=17 page=0 chnl=0 letter="O"
-char id=80 x=34 y=17 width=15 height=16 xoffset=0 yoffset=-1 xadvance=16 page=0 chnl=0 letter="P"
+char id=80 x=34 y=17 width=15 height=16 xoffset=0 yoffset=0 xadvance=16 page=0 chnl=0 letter="P"
 char id=81 x=0 y=68 width=16 height=16 xoffset=0 yoffset=0 xadvance=17 page=0 chnl=0 letter="Q"
 char id=82 x=17 y=68 width=15 height=16 xoffset=0 yoffset=0 xadvance=16 page=0 chnl=0 letter="R"
 char id=83 x=66 y=17 width=14 height=16 xoffset=0 yoffset=0 xadvance=15 page=0 chnl=0 letter="S"

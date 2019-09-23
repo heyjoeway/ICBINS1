@@ -132,10 +132,10 @@ public class ObjLevelClear : MonoBehaviour {
 
             character.score += transferAmtTime;
             character.score += transferAmtRing;
-            SFX.PlayOneShot(audioSource, "SFX/Sonic 1/S1_CD", 0.5F);
+            SFX.Play(audioSource, "SFX/Sonic 1/S1_CD");
 
             if ((timeBonus <= 0) && (ringBonus <= 0)) {
-                SFX.PlayOneShot(audioSource, "SFX/Sonic 1/S1_C5");
+                SFX.Play(audioSource, "SFX/Sonic 1/S1_C5");
                 if (GlobalOptions.Get<bool>("levelTransitions"))
                     animator.Play("Items Exit");
             }

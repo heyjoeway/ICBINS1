@@ -78,21 +78,32 @@ public class Character : MonoBehaviour {
     public List<CharacterEffect> effects = new List<CharacterEffect>();
 
     public void UpdateEffects(float deltaTime) {
-        // iterate backwards to prevent things from getting screwy
+        // iterate backwards to prevent index from shifting
+        // (effects remove themselves once complete)
         for (int i = effects.Count - 1; i >= 0; i--) {
             CharacterEffect effect = effects[i];
-            effect.Update(deltaTime);
-            if (effect.duration <= 0) {
-                effects.RemoveAt(i);
-            }
+            effect.UpdateBase(deltaTime);
+
         }
     }
 
-    public bool HasEffect(string effectName) {
+    public CharacterEffect GetEffect(string effectName) {
         foreach (CharacterEffect effect in effects) {
-            if (effectName == effect.name) return true;
+            if (effectName == effect.name) return effect;
         }
-        return false;
+        return null;
+    }
+
+    public bool HasEffect(string effectName) {
+        return GetEffect(effectName) != null;
+    }
+
+    public void ClearEffects() {
+        // iterate backwards to prevent index from shifting
+        for (int i = effects.Count - 1; i >= 0; i--) {
+            CharacterEffect effect = effects[i];
+            effect.DestroyBase();
+        }
     }
 
     // ========================================================================
@@ -579,6 +590,14 @@ public class Character : MonoBehaviour {
     }
 
     // ========================================================================
+    public bool pressingLeft { get {
+        return Input.GetKey(KeyCode.LeftArrow) && !controlLock;
+    }}
+    public bool pressingRight { get {
+        return Input.GetKey(KeyCode.RightArrow) && !pressingLeft && !controlLock;
+    }}
+
+    // ========================================================================
 
     public void UpdateDelta(float deltaTime) {
         groundSpeedPrev = groundSpeed;
@@ -586,14 +605,16 @@ public class Character : MonoBehaviour {
         if (!isHarmful) destroyEnemyChain = 0;
         
         UpdateEffects(deltaTime);
-        // Utils.GetMusicManager().tempo = speedUpTimer > 0 ? 1.25F : 1;
-        // spriteGhostTrail.enabled = spriteGhostTrailEnabled;
 
         foreach (CharacterCapability capability in capabilities)
             capability.Update(deltaTime);
 
         velocityPrev = velocity;
+
+        LimitPosition();
     }
+
+    // ========================================================================
 
     public void OnCollisionEnter(Collision collision) {
         foreach (CharacterCapability capability in capabilities)

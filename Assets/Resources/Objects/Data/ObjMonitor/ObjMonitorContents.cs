@@ -55,14 +55,10 @@ public class ObjMonitorContents : MonoBehaviour {
                 recipient.lives++;
                 break;
             case ContentsType.Shoes:
-                recipient.effects.Add(new CharacterEffect("speedUp", 20F));
+                recipient.effects.Add(new CharacterEffectSpeedUp(recipient));
                 break;
             case ContentsType.Invincibility:
-                recipient.effects.Add(new CharacterEffect("invincible", 20F));
-                ObjShield stars = Instantiate(Resources.Load<GameObject>(
-                    "Objects/Invincibility Stars"
-                )).GetComponent<ObjShield>();
-                stars.character = recipient;
+                recipient.effects.Add(new CharacterEffectInvincible(recipient));
                 break;
         }
     }

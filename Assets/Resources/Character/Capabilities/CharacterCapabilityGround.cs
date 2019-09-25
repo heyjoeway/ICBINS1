@@ -124,21 +124,18 @@ public class CharacterCapabilityGround : CharacterCapability {
                 ) * 2F
             );
         } else {
-            bool pressLeft = Input.GetKey(KeyCode.LeftArrow) && !character.controlLock;
-            bool pressRight = Input.GetKey(KeyCode.RightArrow) && !pressLeft && !character.controlLock;
-
             // Turning
             // ======================
-            if (pressLeft && (character.groundSpeed < 0))
+            if (character.pressingLeft && (character.groundSpeed < 0))
                 character.facingRight = false;
-            else if (pressRight && (character.groundSpeed > 0))
+            else if (character.pressingRight && (character.groundSpeed > 0))
                 character.facingRight = true;
 
             // Skidding
             // ======================
             bool skidding = (
-                (pressRight && character.groundSpeed < 0) ||
-                (pressLeft && character.groundSpeed > 0)
+                (character.pressingRight && character.groundSpeed < 0) ||
+                (character.pressingLeft && character.groundSpeed > 0)
             );
 
             // You can only trigger a skid state if:
@@ -266,11 +263,8 @@ public class CharacterCapabilityGround : CharacterCapability {
             )
         ) return;
 
-        bool pressLeft = Input.GetKey(KeyCode.LeftArrow) && !character.controlLock;
-        bool pushLeft = pressLeft && (collisionPoint.x < character.position.x);
-
-        bool pressRight = Input.GetKey(KeyCode.RightArrow) && !pressLeft && !character.controlLock;
-        bool pushRight = pressRight && (collisionPoint.x > character.position.x);
+        bool pushLeft = character.pressingLeft && (collisionPoint.x < character.position.x);
+        bool pushRight = character.pressingRight && (collisionPoint.x > character.position.x);
 
         pushing = pushLeft || pushRight;
 

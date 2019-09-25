@@ -16,6 +16,7 @@ GameObject:
   - component: {fileID: 2912323669966354153}
   - component: {fileID: 2912323669966354150}
   - component: {fileID: 2912323669966354151}
+  - component: {fileID: 3391259054641960304}
   m_Layer: 2
   m_Name: Newtron (Blue)
   m_TagString: Untagged
@@ -138,6 +139,7 @@ MonoBehaviour:
   distanceType: 2
   triggerDistance: 8
   runEveryOtherFrame: 0
+  enableWait: 0
 --- !u!54 &2912323669966354153
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -177,6 +179,18 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 430bca042054c994b8dfd1b05ec6151c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &3391259054641960304
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2912323669966354159}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 977baad7bda34014487aa36da8dde36d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!1 &2912323670227095361

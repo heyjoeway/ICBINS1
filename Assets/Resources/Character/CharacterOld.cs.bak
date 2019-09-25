@@ -1,15 +1,12 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using ActionCode2D.Renderers;
 
 public class CharacterOld : MonoBehaviour {
     
-    SpriteGhostTrailRenderer spriteGhostTrail;
     bool spriteGhostTrailEnabled { get {
         return (
-            (speedUpTimer > 0) &&
-            GlobalOptions.Get<bool>("afterImages")
+            
         );
     }}
 
@@ -101,12 +98,6 @@ public class CharacterOld : MonoBehaviour {
 
     // 3D-Ready: YES
     void UpdateInvulnerable() {
-        float invulnTimer = 
-        if (invulnTimer <= 0) {
-            opacity = 1;
-        } else {
-            int frame = (int)Mathf.Round(invulnTimer * 60);
-            opacity = (frame % 8) > 3 ? 1 : 0;
-        }
+
     }
 }

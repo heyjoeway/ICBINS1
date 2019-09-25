@@ -15,6 +15,7 @@ GameObject:
   - component: {fileID: 8416335051462198357}
   - component: {fileID: 8416335051462198361}
   - component: {fileID: 8416335051462198360}
+  - component: {fileID: 4616870788308929221}
   m_Layer: 2
   m_Name: Motobug
   m_TagString: Untagged
@@ -131,9 +132,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   enableType: 1
+  positionType: 0
   axisType: 0
   distanceType: 2
   triggerDistance: 9
+  runEveryOtherFrame: 0
+  enableWait: 0
 --- !u!65 &8416335051462198361
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -159,4 +163,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d59a6fef61bcc9f438546a1b56af63a2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  moveRight: 0
+--- !u!114 &4616870788308929221
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8416335051462198355}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 977baad7bda34014487aa36da8dde36d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 

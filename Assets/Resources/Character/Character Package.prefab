@@ -766,7 +766,7 @@ GameObject:
   - component: {fileID: 5670853833999626033}
   - component: {fileID: 914858130183286462}
   m_Layer: 5
-  m_Name: Lives Content (1)
+  m_Name: Lives Cross
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1111,12 +1111,12 @@ PrefabInstance:
     - target: {fileID: 1270225352832179917, guid: a1fec59b78a2a7340b99785376fa817b,
         type: 3}
       propertyPath: m_Enabled
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 9112208633434523936, guid: a1fec59b78a2a7340b99785376fa817b,
         type: 3}
       propertyPath: m_Enabled
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 1905976647104845429, guid: a1fec59b78a2a7340b99785376fa817b,
         type: 3}

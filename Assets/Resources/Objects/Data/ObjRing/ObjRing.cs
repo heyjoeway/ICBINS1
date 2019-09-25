@@ -137,7 +137,12 @@ public class ObjRing : MonoBehaviour {
         } else {
             Character character = characters[0];
             if (character.InStateGroup("ignore")) return;
-            // if (character.invulnTimer > 1.5F) return;
+
+            CharacterEffect effectInvuln = character.GetEffect("invulnerable");
+            if (effectInvuln != null) {
+                float invulnTimer = effectInvuln.duration;
+                if (invulnTimer > 1.5F) return;
+            }
 
             character.rings++;
             panStereo = -panStereo;

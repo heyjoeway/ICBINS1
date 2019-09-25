@@ -15,6 +15,8 @@ public class CharacterCapabilityVictory : CharacterCapability {
             if (character.stateCurrent == "victory")
                 character.stateCurrent = "ground";
         } else {
+            if (!character.InStateGroup("ground")) return;
+
             character.facingRight = true;
             character.stateCurrent = "victory";
             character.spriteAnimator.Play("Victory");

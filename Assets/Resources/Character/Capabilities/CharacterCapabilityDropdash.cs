@@ -30,14 +30,21 @@ public class CharacterCapabilityDropdash : CharacterCapability {
     public override void Update(float deltaTime) {
         if (character.stateCurrent != "jump") return;
 
+        if (!Input.GetKey(KeyCode.D) || character.controlLock) {
+            character.spriteAnimator.Play("Roll");
+            dropDashTimer = Mathf.Infinity;
+        }
+
         if (InputCustom.GetKeyDownPreventRepeat(KeyCode.D) && !character.controlLock)
             dropDashTimer = 0.33333F;
 
         if (Input.GetKey(KeyCode.D) && dropDashTimer > 0 && !character.controlLock) {
             dropDashTimer -= deltaTime;
 
-            if (dropDashTimer <= 0)
+            if (dropDashTimer <= 0) {
                 SFX.Play(character.audioSource, "SFX/Sonic 2/S2_60");
+                character.spriteAnimator.Play("Drop Dash");
+            }
         }
     }
 

@@ -9,11 +9,17 @@ public class RollZone : MonoBehaviour {
         Character[] characters = other.gameObject.GetComponentsInParent<Character>();
 
         foreach (Character character in characters) {
-            // if (character.velocity.x > 0.05) character.rollLock = !lockLeft;
-            // if (character.velocity.x < 0.05) character.rollLock = lockLeft;
+            bool rollLock = false;
+            if (character.velocity.x < 0.05) rollLock = lockLeft;
+            if (character.velocity.x > 0.05) rollLock = !lockLeft;
+           
+            if (rollLock && character.InStateGroup("ground")) {
+                if (!character.InStateGroup("rolling"))
+                    SFX.PlayOneShot(character.audioSource, "SFX/Sonic 1/S1_BE");
 
-            // if (character.rollLock && character.inGroundedState)
-            //     character.stateCurrent = Character.CharacterState.rolling;
+                character.stateCurrent = "rollLock";
+            } else if (!rollLock && character.stateCurrent == "rollLock")
+                character.stateCurrent = "rolling";
         }
     }
 }

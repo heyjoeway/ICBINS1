@@ -52,9 +52,7 @@ public class LevelManager : MonoBehaviour {
             float modDeltaTime = deltaTime > 1F / 60F ? 1F / 60F : deltaTime;
             Physics.Simulate(modDeltaTime * Time.timeScale);
             foreach (CharacterPackage characterPackage in characterPackages) {
-                if (deltaTime == Utils.cappedUnscaledDeltaTime)
-                    InputCustom.PreventRepeatReset();
-    
+                InputCustom.preventRepeatLock = deltaTime != Utils.cappedUnscaledDeltaTime;    
                 characterPackage.character.UpdateDelta(modDeltaTime);
                 characterPackage.camera.UpdateDelta(modDeltaTime);
             }

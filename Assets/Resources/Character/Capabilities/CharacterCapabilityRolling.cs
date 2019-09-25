@@ -39,42 +39,36 @@ public class CharacterCapabilityRolling : CharacterCapability {
         character.AddStateGroup("harmful", "rolling");
         character.AddStateGroup("ground", "rolling");
         character.AddStateGroup("rolling", "rolling");
+
+        character.AddStateGroup("harmful", "rollLock");
+        character.AddStateGroup("ground", "rollLock");
+        character.AddStateGroup("rolling", "rollLock");
+        character.AddStateGroup("noJump", "rollLock");
     }
 
     public override void StateInit(string stateName, string prevStateName) {
-        if (
-            character.InStateGroup("air", prevStateName) &&
-            character.InStateGroup("ground") &&
-            Input.GetKey(KeyCode.DownArrow) &&
-            (Mathf.Abs(character.groundSpeed) >= rollThreshold) &&
-            !character.controlLock
-        ) {
-            SFX.Play(character.audioSource, "SFX/Sonic 1/S1_BE");
-            character.stateCurrent = "rolling";
-        }
+        if (!(
+            character.InStateGroup("rolling") &&
+            character.InStateGroup("ground")
+        )) return;
 
-        if (character.stateCurrent != name) return;
-
-        switch(prevStateName) {
-            default:
-                SFX.PlayOneShot(character.audioSource, "SFX/Sonic 1/S1_BE");
-                break;
-            case "jump":
-            case "spindash":
-                break;
-        }
         character.modeGroupCurrent = character.rollingModeGroup;
     }
 
     public override void Update(float deltaTime) {
         if (character.stateCurrent == "ground") {
+            if (character.pressingLeft || character.pressingRight) return;
             if (character.controlLock) return;
-            if (!InputCustom.GetKeyDownPreventRepeat(KeyCode.DownArrow)) return;
+            if (!Input.GetKey(KeyCode.DownArrow)) return;
             if (Mathf.Abs(character.groundSpeed) < rollThreshold) return;
             character.stateCurrent = "rolling";
+            SFX.PlayOneShot(character.audioSource, "SFX/Sonic 1/S1_BE");
         }
 
-        if (character.stateCurrent != name) return;
+        if (!(
+            character.InStateGroup("rolling") &&
+            character.InStateGroup("ground")
+        )) return;
         UpdateRollingMove(deltaTime);
         UpdateRollingAnim();
         UpdateTerminalSpeed();
@@ -110,11 +104,9 @@ public class CharacterCapabilityRolling : CharacterCapability {
         accelerationMagnitude -= slopeFactor * Mathf.Sin(character.forwardAngle * Mathf.Deg2Rad);
         character.groundSpeed += accelerationMagnitude * deltaTime * 60F;
 
-        bool rollLock = false; // TODO
-
         // Unroll / roll lock boost
         if (Mathf.Abs(character.groundSpeed) < unrollThreshold) {
-            if (rollLock) {
+            if (character.stateCurrent == "rollLock") {
                 if ((character.forwardAngle < 270) && (character.forwardAngle > 180))
                     character.facingRight = true;
                 if ((character.forwardAngle > 45) && (character.forwardAngle < 180))

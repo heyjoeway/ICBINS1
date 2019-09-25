@@ -92,9 +92,9 @@ public class CharacterCamera : MonoBehaviour {
     public void LockHorizontal(float xPos) {
         _minPositionTarget.x = xPos;
         _maxPositionTarget.x = xPos;
-        _minPositionReal.x = xPos;
-        _maxPositionReal.x = xPos;
-        position.x = xPos;
+        // _minPositionReal.x = xPos;
+        // _maxPositionReal.x = xPos;
+        // position.x = xPos;
     }
 
     public void LockVertical() { LockVertical(transform.position.y); }
@@ -108,13 +108,13 @@ public class CharacterCamera : MonoBehaviour {
         float screenWidthWorld = 398 / 32F;
 
         character.positionMin = new Vector2(
-            minPosition.x - (screenWidthWorld / 2F) + 0.5F,
-            minPosition.y - (screenHeightWorld / 2F) + 1F
+            _minPositionTarget.x - (screenWidthWorld / 2F) + 0.5F,
+            _minPositionTarget.y - (screenHeightWorld / 2F) + 1F
         );
 
         character.positionMax = new Vector2(
-            maxPosition.x + (screenWidthWorld / 2F) - 0.5F,
-            maxPosition.y + (screenHeightWorld / 2F) + 1F
+            _maxPositionTarget.x + (screenWidthWorld / 2F) - 0.5F,
+            _maxPositionTarget.y + (screenHeightWorld / 2F) + 1F
         );
     }
 

@@ -18,19 +18,13 @@ public class CharacterCapabilityJump : CharacterCapability {
     }
 
     public override void Update(float deltaTime) {
-
         if (character.InStateGroup("ground")) {
-            if (
-                character.InStateGroup("rolling") &&
-                character.HasEffect("rollLock")
-            ) return;
             UpdateGroundJump();
             return;
         }
 
         if (!character.InStateGroup("jump")) return;
         UpdateJumpHeight();
-        // UpdateJumpDropDashStart();
     }
 
     // Switches the character to jump state if connditions are met:
@@ -38,8 +32,7 @@ public class CharacterCapabilityJump : CharacterCapability {
     // See: https://info.sonicretro.org/SPG:Solid_Tiles
     // 3D-Ready: YES
     void UpdateGroundJump() {
-        // Sorta hack? This function still runs even after the state has changed to spindash
-        // if (character.stateCurrent == "spindash") return;
+        if (character.InStateGroup("noJump")) return;
         if (character.controlLock) return;
         if (!InputCustom.GetKeyDownPreventRepeat(KeyCode.D)) return;
 

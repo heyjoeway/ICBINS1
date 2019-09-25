@@ -11,7 +11,7 @@ public class GlobalOptions : MonoBehaviour {
         ["smoothRotation"] = "ON",
         ["afterImages"] = "ON",
         ["linearInterpolation"] = "ON",
-        ["centisecondTimer"] = "ON",
+        ["timerType"] = "NORMAL",
     };
 
     public static string Get(string key) {

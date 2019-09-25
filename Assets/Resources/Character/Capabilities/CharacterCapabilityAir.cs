@@ -31,6 +31,7 @@ public class CharacterCapabilityAir : CharacterCapability {
     public override void StateInit(string stateName, string prevStateName) {
         if (!character.InStateGroup("airCollision")) return;
         UpdateAirTopSoild();
+        character.groundedDetectorCurrent = null;
         if (character.InStateGroup("rolling")) return;
         character.modeGroupCurrent = character.airModeGroup;
     }
@@ -48,7 +49,7 @@ public class CharacterCapabilityAir : CharacterCapability {
 
     // 3D-Ready: YES
     void UpdateAirTopSoild() {
-        if (character.velocity.y >= 0) {
+        if (character.velocity.y > 0) {
             character.rollingAirModeCollider.gameObject.layer = LayerMask.NameToLayer("Player - Rolling and Ignore Top Solid");
             character.airModeCollider.gameObject.layer = LayerMask.NameToLayer("Player - Ignore Top Solid");
         } else {

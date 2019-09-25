@@ -21,7 +21,7 @@ public class CharacterCapabilitySpindash : CharacterCapability {
 
     public override void Init() {
         name = "spindash";
-        character.AddStateGroup("rolling", "spindash");
+        character.AddStateGroup("noJump", "spindash");
         character.AddStateGroup("ground", "spindash");
         character.AddStateGroup("harmful", "spindash");
 
@@ -58,13 +58,13 @@ public class CharacterCapabilitySpindash : CharacterCapability {
     public override void Update(float deltaTime) {
         if (character.stateCurrent == "ground") {
             // Switches the character to spindash state if connditions are met:
-            // - Spindash enabled
             // - Pressing spindash key combo
             // - Standing still
             if (character.controlLock) return;
             if (!Input.GetKey(KeyCode.DownArrow)) return;
             if (!InputCustom.GetKeyDownPreventRepeat(KeyCode.D)) return;
             if (character.groundSpeed != 0) return;
+            Debug.Log("huh");
             character.stateCurrent = name;
             return;
         } else if (character.stateCurrent != name) return;

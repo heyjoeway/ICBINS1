@@ -704,7 +704,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: CENTISECOND TIMER
+  m_Text: TIMER TYPE
 --- !u!222 &675045240
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -1307,7 +1307,7 @@ PrefabInstance:
     - target: {fileID: 8361336751016143413, guid: c0eb15b28adccff4a833343b9b5f8ec6,
         type: 3}
       propertyPath: key
-      value: centisecondTimer
+      value: timerType
       objectReference: {fileID: 0}
     - target: {fileID: 2860379239486449495, guid: c0eb15b28adccff4a833343b9b5f8ec6,
         type: 3}
@@ -1367,7 +1367,7 @@ PrefabInstance:
     - target: {fileID: 2860379239486449495, guid: c0eb15b28adccff4a833343b9b5f8ec6,
         type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: 130
+      value: 99.99
       objectReference: {fileID: 0}
     - target: {fileID: 2860379239486449495, guid: c0eb15b28adccff4a833343b9b5f8ec6,
         type: 3}
@@ -1404,20 +1404,25 @@ PrefabInstance:
       propertyPath: m_Pivot.y
       value: 0.5
       objectReference: {fileID: 0}
+    - target: {fileID: 2860379239486449495, guid: c0eb15b28adccff4a833343b9b5f8ec6,
+        type: 3}
+      propertyPath: m_SizeDelta.x
+      value: 124.03
+      objectReference: {fileID: 0}
     - target: {fileID: 2860379239486449494, guid: c0eb15b28adccff4a833343b9b5f8ec6,
         type: 3}
       propertyPath: m_Options.m_Options.Array.size
-      value: 2
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 2860379239486449494, guid: c0eb15b28adccff4a833343b9b5f8ec6,
         type: 3}
       propertyPath: m_Options.m_Options.Array.data[0].m_Text
-      value: ON
+      value: NORMAL
       objectReference: {fileID: 0}
     - target: {fileID: 2860379239486449494, guid: c0eb15b28adccff4a833343b9b5f8ec6,
         type: 3}
       propertyPath: m_Options.m_Options.Array.data[1].m_Text
-      value: OFF
+      value: CENTISECOND
       objectReference: {fileID: 0}
     - target: {fileID: 2860379239486449494, guid: c0eb15b28adccff4a833343b9b5f8ec6,
         type: 3}
@@ -1434,10 +1439,15 @@ PrefabInstance:
       propertyPath: m_Navigation.m_SelectOnDown
       value: 
       objectReference: {fileID: 1085513559}
+    - target: {fileID: 2860379239486449494, guid: c0eb15b28adccff4a833343b9b5f8ec6,
+        type: 3}
+      propertyPath: m_Options.m_Options.Array.data[2].m_Text
+      value: FRAMES
+      objectReference: {fileID: 0}
     - target: {fileID: 2860379239167768386, guid: c0eb15b28adccff4a833343b9b5f8ec6,
         type: 3}
       propertyPath: m_Text
-      value: ON
+      value: NORMAL
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: c0eb15b28adccff4a833343b9b5f8ec6, type: 3}
@@ -1808,7 +1818,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1676348845}
   m_Layer: 5
-  m_Name: Centisecond Timer
+  m_Name: Timer Type
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

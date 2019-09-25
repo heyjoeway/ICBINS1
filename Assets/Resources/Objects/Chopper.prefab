@@ -16,6 +16,7 @@ GameObject:
   - component: {fileID: 8832037238207843308}
   - component: {fileID: 7356571578148599956}
   - component: {fileID: 5708171160154805358}
+  - component: {fileID: 6121623003587707870}
   m_Layer: 2
   m_Name: Chopper
   m_TagString: Untagged
@@ -159,9 +160,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   enableType: 0
+  positionType: 0
   axisType: 0
   distanceType: 2
   triggerDistance: 8
+  runEveryOtherFrame: 0
+  enableWait: 0
 --- !u!54 &5708171160154805358
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -178,3 +182,15 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 122
   m_CollisionDetection: 0
+--- !u!114 &6121623003587707870
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8832037238207843287}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 977baad7bda34014487aa36da8dde36d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 

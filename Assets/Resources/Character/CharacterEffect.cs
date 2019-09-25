@@ -1,11 +1,19 @@
 using UnityEngine;
 
 public class CharacterEffect {
-    string effectName;
-    float duration;
+    public string name;
+    public float duration;
 
-    public CharacterEffect(string effectName, float duration = Mathf.Infinity) {
-        this.effectName = effectName;
-        this.duration = Mathf.Infinity;
+    public CharacterEffect(string name, float duration = Mathf.Infinity) {
+        this.name = name;
+        this.duration = duration;
     }
+
+    public void Update(float deltaTime) {
+        this.duration -= deltaTime;
+    }
+
+    public override string ToString() => name;
+
+    
 }

@@ -12,7 +12,7 @@ public class LevelManager : MonoBehaviour {
         characterPackages.Add(characterPackage);
 
         Character character = characterPackage.character;
-        character.InitReferences();
+        // character.InitReferences();
 
         if (character.currentLevel == null) {
             character.currentLevel = levelDefault;

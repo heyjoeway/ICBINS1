@@ -1,21 +1,27 @@
-public class CharacterCapability {
-    Character character;
+using UnityEngine;
 
-    string _stateName;
-    public string stateName { // Prevent setting statename externally
-        get { return _stateName; }
-    }
+public class CharacterCapability {
+    public string name;
+    public Character character;
+    public Transform transform;
 
     bool _initDone = false;
     public CharacterCapability(Character character) {
         if (_initDone) return;
         _initDone = true;
         this.character = character;
+        this.transform = character.transform;
         Init();
     }
 
     public virtual void Init() { }
-    public virtual void StateInit(string prevStateName) { }
-    public virtual void StateDeinit(string nextStateName) { }
+    public virtual void StateInit(string stateName, string prevStateName) { }
+    public virtual void StateDeinit(string stateName, string nextStateName) { }
     public virtual void Update(float deltaTime) { }
+    public virtual void OnCollisionEnter(Collision collision) { }
+    public virtual void OnCollisionStay(Collision collision) { }
+    public virtual void OnTriggerExit(Collider other) { }
+    public virtual void OnTriggerEnter(Collider other) { }
+    public virtual void OnTriggerStay(Collider other) { }
+    public virtual void OnCollisionExit(Collision collision) { }
 }

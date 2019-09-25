@@ -60,12 +60,18 @@ public class ObjLevelClear : MonoBehaviour {
 
         if (GlobalOptions.Get<bool>("levelTransitions")) {
             character.timerPause = false;
-            character.victoryLock = false;
+            character.TryGetCapability("victory", (CharacterCapability capability) => {
+                ((CharacterCapabilityVictory)capability).victoryLock = false;
+            });
             character.positionMax = Mathf.Infinity * Vector2.one;
             character.characterCamera.maxPosition = Mathf.Infinity * Vector2.one;
             ObjTitleCard titleCard = nextLevel.MakeTitleCard(character);
             titleCard.screenFade.brightness = titleCard.screenFade.brightnessMax;
-        } else character.ReloadLevel();
+        } else {
+            if (Utils.GetLevelManager().characterPackages.Count == 1) {
+                character.currentLevel.ReloadFadeOut();
+            } else character.SoftRespawn();
+        }
         Destroy(gameObject);
     }
 
@@ -92,11 +98,11 @@ public class ObjLevelClear : MonoBehaviour {
                 ringBonus = character.rings * 100;
                 canvas.worldCamera = character.characterCamera.camera; // i hate this name too, trust me
                 actTextComponent.text = character.currentLevel.act.ToString();
-                character.victoryLock = true;
 
-                character.invincibilityTimer = 0;
-                character.speedUpTimer = 0;
-                character.invulnTimer = 0;
+                character.TryGetCapability("victory", (CharacterCapability capability) => {
+                    ((CharacterCapabilityVictory)capability).victoryLock = true;
+                });
+                character.effects.Clear();
 
                 Utils.GetMusicManager().Play(new MusicManager.MusicStackEntry{
                     introPath = "Music/Level Clear"

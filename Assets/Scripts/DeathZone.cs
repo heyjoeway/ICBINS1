@@ -7,7 +7,7 @@ public class DeathZone : MonoBehaviour {
         Character[] characters = other.gameObject.GetComponentsInParent<Character>();
         if (characters.Length == 0) return;
         Character character = characters[0];
-        if (character.inDeadState) return;
-        character.stateCurrent = Character.CharacterState.dying;
+        if (character.InStateGroup("death")) return;
+        character.stateCurrent = "dying";
     }
 }

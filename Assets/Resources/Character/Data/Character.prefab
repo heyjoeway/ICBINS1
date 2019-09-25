@@ -232,37 +232,39 @@ MonoBehaviour:
   m_GameObject: {fileID: 1905976648882377140}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 4138d0e768381a2459e91d8b4420cafb, type: 3}
+  m_Script: {fileID: 11500000, guid: 6fd92a84abd014145b4eb735119a19ab, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  spriteObject: {fileID: 0}
-  cameraObject: {fileID: 0}
-  dashDustPosition: {fileID: 0}
-  spriteAnimator: {fileID: 0}
-  characterCamera: {fileID: 0}
-  characterPackage: {fileID: 0}
-  rigidbody: {fileID: 0}
-  audioSource: {fileID: 0}
-  rollLock: 0
-  dropDashEnabled: 1
-  spinDashEnabled: 1
-  invulnTimer: 0
-  statePrev: 1
-  lives: 3
-  destroyEnemyChain: 0
-  controlLockManual: 0
-  timerPaused: 0
-  timer: 0
-  timerPause: 0
-  victoryLock: 0
-  checkpointId: 0
+  statePrev: ground
+  rigidbody: {fileID: 1905976648882377143}
+  velocityPrev: {x: 0, y: 0, z: 0}
   groundSpeedPrev: 0
   _groundSpeed: 0
-  velocityPrev: {x: 0, y: 0, z: 0}
+  balanceState: 0
+  audioSource: {fileID: 1905976648882377142}
+  spriteAnimator: {fileID: 0}
+  facingRight: 1
+  sprite: {fileID: 0}
   shield: {fileID: 0}
   currentLevel: {fileID: 0}
+  timer: 0
+  timerPause: 0
+  destroyEnemyChain: 0
+  characterCamera: {fileID: 0}
+  checkpointId: 0
   positionMin: {x: -Infinity, y: -Infinity}
   positionMax: {x: Infinity, y: Infinity}
+  horizontalInputLockTimer: 0
+  controlLockManual: 0
+  colliderCurrent: {fileID: 0}
+  isHarmful: 1
+  groundModeGroup: {fileID: 1905976647176223908}
+  rollingModeGroup: {fileID: 1905976647083121177}
+  airModeGroup: {fileID: 1905976648834570164}
+  rollingAirModeGroup: {fileID: 1905976649059061199}
+  rollingAirModeCollider: {fileID: 3698762522491038794}
+  airModeCollider: {fileID: 2624509330523262470}
+  characterPackage: {fileID: 0}
 --- !u!54 &1905976648882377143
 Rigidbody:
   m_ObjectHideFlags: 0

@@ -40,8 +40,25 @@ public class ObjEnemy : MonoBehaviour {
         10000
     };
 
+    void CharacterBounceEnemy(Character character, GameObject enemyObj) {
+        if (character.InStateGroup("ground")) return;
+
+        bool shouldntRebound = (
+            (character.position.y < enemyObj.transform.position.y) ||
+            (character.velocity.y > 0)
+        );
+
+        Vector3 velocityTemp = character.velocity;
+        if (shouldntRebound) {
+            velocityTemp.y -= Mathf.Sign(velocityTemp.y) * character.physicsScale;
+        } else {
+            velocityTemp.y *= -1;
+        }
+        character.velocity = velocityTemp;
+    }
+
     void Explode(Character sourceCharacter) {
-        sourceCharacter.BounceEnemy(gameObject);
+        CharacterBounceEnemy(sourceCharacter, gameObject);
 
         int points = pointsTable[Mathf.Min(
             sourceCharacter.destroyEnemyChain,

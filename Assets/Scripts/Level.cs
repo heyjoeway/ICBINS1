@@ -38,6 +38,17 @@ public class Level : MonoBehaviour {
         SceneManager.UnloadSceneAsync(gameObject.scene);
     }
 
+    public void ReloadFadeOut() {
+        Time.timeScale = 0;
+        ScreenFade screenFade = Instantiate(
+            Resources.Load<GameObject>("Objects/Screen Fade Out"),
+            Vector3.zero,
+            Quaternion.identity
+        ).GetComponent<ScreenFade>();
+        Utils.GetMusicManager().FadeOut();
+        screenFade.onComplete = () => Reload();
+    }
+
     public void Reload() {
         StartCoroutine(Utils.LoadLevelAsync(
             gameObject.scene.path,

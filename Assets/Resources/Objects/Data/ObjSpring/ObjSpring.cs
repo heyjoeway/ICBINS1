@@ -35,8 +35,6 @@ public class ObjSpring : MonoBehaviour {
             Quaternion.FromToRotation(Vector3.up, hit.normal).eulerAngles.z
             + 180
         ) % 360;
-        Debug.Log(collisionAngle);
-
 
         TryAction(character, collisionAngle);
     }
@@ -97,22 +95,22 @@ public class ObjSpring : MonoBehaviour {
     }}
 
     public void DoAction(Character character) {
-        if (character.isDropDashing) return; // Allow drop dash on spring
+        // if (character.isDropDashing) return; // Allow drop dash on spring
 
         if (!keepGrounded) {
-            character.stateCurrent = Character.CharacterState.air;
+            character.stateCurrent = "air";
             character.spriteAnimator.Play("Spring");
             character.spriteAnimator.speed = 1;
         }
 
         Vector3 velocityRaw = (topPositionObj.transform.position - transform.position).normalized * springPower;
-        character.rigidbody.velocity = new Vector3(
-            Mathf.Abs(velocityRaw.x) > springPower / 3 ? velocityRaw.x * character.physicsScale : character.rigidbody.velocity.x,
-            Mathf.Abs(velocityRaw.y) > springPower / 3 ? velocityRaw.y * character.physicsScale : character.rigidbody.velocity.y,
-            Mathf.Abs(velocityRaw.z) > springPower / 3 ? velocityRaw.z * character.physicsScale : character.rigidbody.velocity.z
+        character.velocity = new Vector3(
+            Mathf.Abs(velocityRaw.x) > springPower / 3 ? velocityRaw.x * character.physicsScale : character.velocity.x,
+            Mathf.Abs(velocityRaw.y) > springPower / 3 ? velocityRaw.y * character.physicsScale : character.velocity.y,
+            Mathf.Abs(velocityRaw.z) > springPower / 3 ? velocityRaw.z * character.physicsScale : character.velocity.z
         );
 
-        character.position += character.rigidbody.velocity / 60F;
+        character.position += character.velocity / 60F;
 
         if (keepGrounded)
             character.GroundSpeedSync();

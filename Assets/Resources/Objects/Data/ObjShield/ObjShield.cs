@@ -26,7 +26,7 @@ public class ObjShield : MonoBehaviour {
         if (character == null) return;
         bool shouldDestroy = (
             (!isInvincibility && (character.shield != this)) ||
-            (isInvincibility && character.invincibilityTimer <= 0F)
+            (isInvincibility && character.HasEffect("invincible"))
         );
         if (shouldDestroy) {
             if (musicStackEntry != null)
@@ -41,9 +41,9 @@ public class ObjShield : MonoBehaviour {
             character.position.y,
             transform.position.z
         );
-        if (!character.inRollingState) transform.position += new Vector3(
+        if (!character.InStateGroup("rolling")) transform.position += new Vector3(
             0, 0.125F, 0
         );
-        spriteRenderer.enabled = character.invincibilityTimer <= 0;
+        spriteRenderer.enabled = character.HasEffect("invincible");
     }
 }

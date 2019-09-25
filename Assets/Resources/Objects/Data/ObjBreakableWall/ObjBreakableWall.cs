@@ -80,7 +80,7 @@ public class ObjBreakableWall : MonoBehaviour {
         if (characters.Length == 0) return;
         Character character = characters[0];
 
-        if (!character.inRollingState || !character.inGroundedState) return;
+        if (!character.InStateGroup("rolling") || !character.InStateGroup("ground")) return;
         if (Mathf.Abs(character.groundSpeedPrev) < 4.5F) return;
         character.groundSpeed = character.groundSpeedPrev;
 

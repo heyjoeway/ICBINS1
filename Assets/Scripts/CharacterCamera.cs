@@ -150,7 +150,7 @@ public class CharacterCamera : MonoBehaviour {
 
     public void UpdateDelta(float deltaTime) {
         if (character == null) return;
-        if (character.inDeadState) return;
+        if (character.InStateGroup("death")) return;
 
         MoveMinMaxTowardsTarget();
 
@@ -161,7 +161,7 @@ public class CharacterCamera : MonoBehaviour {
 
         moveAmt = Vector2.zero;
 
-        Transform characterLocation = character.spriteObject.transform;
+        Transform characterLocation = character.spriteContainer;
         Vector3 characterPosition = characterLocation.position;
 
         // Move camera horizontally towards character but not past them,
@@ -174,7 +174,7 @@ public class CharacterCamera : MonoBehaviour {
         }
         
         float vDist = characterPosition.y - transform.position.y;
-        if (character.inGroundedState) {
+        if (character.InStateGroup("ground")) {
             if (Mathf.Abs(vDist) > 0) {
                 moveAmt.y = Mathf.Abs(vDist);
                 if (character.velocity.y <= 6F * character.physicsScale)

@@ -39,7 +39,7 @@ public class ObjMonitor : MonoBehaviour {
         if (!DidCharacterHitFromBottom(character)) {
             Explode(character);
 
-            if (!character.inRollingAirState) return;
+            if (!(character.InStateGroup("rolling") && character.InStateGroup("air"))) return;
             Vector3 velocityTemp = character.velocity;
             velocityTemp.y = Mathf.Abs(character.velocity.y);
             character.velocity = velocityTemp;
@@ -52,7 +52,7 @@ public class ObjMonitor : MonoBehaviour {
         Character character = characters[0];
 
         if (DidCharacterHitFromBottom(character)) {
-            if (!character.inRollingAirState) return;
+            if (!(character.InStateGroup("rolling") && character.InStateGroup("air"))) return;
             Vector3 velocityTemp = character.velocityPrev;
             velocityTemp.y = -Mathf.Abs(velocityTemp.y);
             character.velocity = velocityTemp;

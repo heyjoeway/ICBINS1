@@ -13,7 +13,7 @@ public class LayerZone : MonoBehaviour {
         foreach (Character character in characters) {
             Vector3 characterPos = character.position;
 
-            if (groundedOnly && !character.inGroundedState)
+            if (groundedOnly && !character.InStateGroup("ground"))
                 return;
 
             if (characterPos.x > transform.position.x) characterPos.z = zRight;

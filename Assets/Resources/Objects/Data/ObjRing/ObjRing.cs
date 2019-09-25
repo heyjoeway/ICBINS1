@@ -136,8 +136,8 @@ public class ObjRing : MonoBehaviour {
             rigidbody.velocity = velocity;
         } else {
             Character character = characters[0];
-            if (character.inIgnoreState) return;
-            if (character.invulnTimer > 1.5F) return;
+            if (character.InStateGroup("ignore")) return;
+            // if (character.invulnTimer > 1.5F) return;
 
             character.rings++;
             panStereo = -panStereo;

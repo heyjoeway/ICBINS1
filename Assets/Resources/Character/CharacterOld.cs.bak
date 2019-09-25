@@ -1,0 +1,112 @@
+﻿using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+using ActionCode2D.Renderers;
+
+public class CharacterOld : MonoBehaviour {
+    
+    SpriteGhostTrailRenderer spriteGhostTrail;
+    bool spriteGhostTrailEnabled { get {
+        return (
+            (speedUpTimer > 0) &&
+            GlobalOptions.Get<bool>("afterImages")
+        );
+    }}
+
+
+    // ========================================================================
+    // CONSTANTS
+    // ========================================================================
+
+
+
+
+
+
+
+
+
+
+
+    
+
+
+
+    // ========================================================================
+    // VARIABLES
+    // ========================================================================
+
+    public bool rollLock = false;
+
+    public float invulnTimer = 0;
+
+    // Dynamic Variables
+
+
+
+    // ========================================================================
+
+
+    // ========================================================================
+
+    // ========================================================================
+
+    void StateInit(CharacterState state) {
+        switch (state) {
+
+            case CharacterState.dead:
+                modeGroupCurrent = null;
+
+                break;
+        }
+    }
+
+    public void ReloadLevel() {
+
+    }
+
+    // ========================================================================
+
+
+
+
+
+
+    // ========================================================================
+
+
+    // 3D-Ready: YES
+    void UpdateDying() {
+
+    }
+ 
+    // ========================================================================
+
+    // ========================================================================
+
+    // https://info.sonicretro.org/SPG:Rebound#Badniks
+    // 3D-Ready: YES
+
+
+    // ========================================================================
+
+
+
+
+
+    // ========================================================================
+
+
+
+
+    // 3D-Ready: YES
+    void UpdateInvulnerable() {
+        float invulnTimer = 
+        if (invulnTimer <= 0) {
+            opacity = 1;
+        } else {
+            int frame = (int)Mathf.Round(invulnTimer * 60);
+            opacity = (frame % 8) > 3 ? 1 : 0;
+        }
+    }
+}

@@ -22,8 +22,25 @@ public class CharacterCamera : MonoBehaviour {
         get { return _minPositionTarget; }
         set {
             _minPositionTarget = value;
+
             if (Mathf.Abs(_minPositionReal.magnitude) == Mathf.Infinity)
                 _minPositionReal = _minPositionTarget;
+
+            // if (renderTexture == null) return;
+
+            // _minPositionReal.x = Mathf.Max(
+            //     _minPositionTarget.x - ((renderTexture.width / 2) / 32),
+            //     _minPositionReal.x,
+            //     _minPositionTarget.x
+            // );
+
+            // _minPositionReal.y = Mathf.Max(
+            //     _minPositionTarget.y - ((renderTexture.height / 2) / 32),
+            //     _minPositionReal.y,
+            //     _minPositionTarget.y
+            // );
+
+            // Debug.Log("uwu");
         }
     }
 
@@ -79,11 +96,20 @@ public class CharacterCamera : MonoBehaviour {
     Vector2 moveAmt;
     RenderTexture renderTexture;
     
-    void Start() {
+    bool _initDone = false;
+    public void Init() {
+        if (_initDone) return;
+
         renderTexture = new RenderTexture(camera.targetTexture);
         renderTexture.filterMode = FilterMode.Point;
         position = transform.position;
+        ResizeRenderTexture();
+        UpdateDelta(0);
+
+        _initDone = true;
     }
+
+    void Start() { Init(); }
 
     float hDist;
     public bool preventExit = false;
@@ -92,9 +118,16 @@ public class CharacterCamera : MonoBehaviour {
     public void LockHorizontal(float xPos) {
         _minPositionTarget.x = xPos;
         _maxPositionTarget.x = xPos;
-        // _minPositionReal.x = xPos;
-        // _maxPositionReal.x = xPos;
-        // position.x = xPos;
+        _minPositionReal.x = Mathf.Max(
+            xPos - ((renderTexture.width / 2) / 32),
+            _minPositionReal.x,
+            xPos
+        );
+        _maxPositionReal.x = Mathf.Min(
+            xPos + ((renderTexture.width / 2) / 32),
+            _maxPositionReal.x,
+            xPos
+        );
     }
 
     public void LockVertical() { LockVertical(transform.position.y); }
@@ -237,7 +270,7 @@ public class CharacterCamera : MonoBehaviour {
 
     Vector2 resolutionPrev;
 
-    void ResizeRenderTexture() {
+    public void ResizeRenderTexture() {
         if (
             (resolutionPrev.x == Screen.width) &&
             (resolutionPrev.y == Screen.height)

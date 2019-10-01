@@ -20,9 +20,12 @@ public class LevelManager : MonoBehaviour {
             character.Respawn();
         }
 
+        character.characterCamera.Init();
+
         ObjTitleCard titleCard = character.currentLevel.MakeTitleCard(character);
-        titleCard.screenFade.InitReferences(); // Hack to prevent flicker while loading
-        titleCard.screenFade.Update(); // Hack to prevent flicker while loading
+        // titleCard.GetComponent<RectTransform>().ForceUpdateRectTransforms(); // Hack to prevent flicker while loading
+        // titleCard.screenFade.InitReferences(); // Hack to prevent flicker while loading
+        // titleCard.screenFade.Update(); // Hack to prevent flicker while loading
     }
 
     void InitCharacters() {

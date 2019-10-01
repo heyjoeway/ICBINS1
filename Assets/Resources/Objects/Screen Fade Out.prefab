@@ -35,7 +35,7 @@ RectTransform:
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 0, y: 0}
+  m_SizeDelta: {x: 1000, y: 1000}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &1276396720821278654
 CanvasRenderer:
@@ -189,8 +189,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   fadeDelay: 0
   fadeSpeed: -2.31
+  destroyDelay: 0.16666667
   destroyWhenDone: 1
   redOffset: -0.25
   blueOffset: 0
   greenOffset: -0.25
   brightness: 1.25
+  stopTime: 0

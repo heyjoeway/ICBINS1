@@ -18,7 +18,7 @@ public class LayerZone : MonoBehaviour {
     void Update() {
         foreach (CharacterPackage characterPackage in levelManager.characterPackages) {
             Character character = characterPackage.character;
-            if (!renderer.bounds.Contains(character.position)) continue;
+            if (!renderer.bounds.Intersects(character.colliderCurrent.bounds)) continue;
             
             Vector3 characterPos = character.position;
 
@@ -28,7 +28,7 @@ public class LayerZone : MonoBehaviour {
             if (characterPos.x > transform.position.x) characterPos.z = zRight;
             else characterPos.z = zLeft;
 
-            character.position = characterPos;;
+            character.position = characterPos;
         }
     }
 }

@@ -7,7 +7,7 @@ public class ObjTitleCard : MonoBehaviour {
     [HideInInspector]
     public Character character;
     [HideInInspector]
-    public ScreenFade screenFade;
+    public ScreenFade screenFade { get { return GetComponent<ScreenFade>(); }}
     Canvas canvas;
     Text zoneTextComponent;
     Text actTextComponent;
@@ -19,7 +19,6 @@ public class ObjTitleCard : MonoBehaviour {
     public void Init() {
         actTextComponent = transform.Find("Act Value").GetComponent<Text>();
         zoneTextComponent = transform.Find("Zone Name").GetComponent<Text>();
-        screenFade = GetComponent<ScreenFade>();
         canvas = GetComponent<Canvas>();
         canvas.worldCamera = character.characterCamera.camera;
 

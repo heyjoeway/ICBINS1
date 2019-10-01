@@ -215,12 +215,21 @@ public class BackgroundGHZ : Background {
                 0
             );
 
+            // Normal pieces
             for (int layoutIndex = 0; layoutIndex < layout.Length; layoutIndex++)
                 AddPieceToLine(line, layoutIndex, lineIndex);
 
+            // Right side padding
             for (int layoutIndex = 0; layoutIndex < layoutPaddingCount; layoutIndex++)
                 AddPieceToLine(line, layoutIndex, lineIndex, new Vector2(
                     layout.Length * 256 / 32F,
+                    0
+                ));
+
+            // Left side padding
+            for (int layoutIndex = 0; layoutIndex < layoutPaddingCount; layoutIndex++)
+                AddPieceToLine(line, layout.Length - 1 - layoutIndex, lineIndex, new Vector2(
+                    -layout.Length * 256 / 32F,
                     0
                 ));
 

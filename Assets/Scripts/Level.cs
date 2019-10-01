@@ -66,14 +66,16 @@ public class Level : MonoBehaviour {
         ));
     }
 
-    public ObjTitleCard MakeTitleCard(Character character) {
+    public ObjTitleCard MakeTitleCard(Character character = null) {
         ObjTitleCard titleCard = Instantiate(
             Resources.Load<GameObject>("Objects/Title Card"),
             Vector3.zero,
             Quaternion.identity
         ).GetComponent<ObjTitleCard>();
-        titleCard.character = character;
-        titleCard.Init();
+        if (character != null) {
+            titleCard.character = character;
+            titleCard.Init();
+        }
         return titleCard;
     }
 

@@ -102,7 +102,7 @@ Animator:
   m_Enabled: 1
   m_Avatar: {fileID: 0}
   m_Controller: {fileID: 9100000, guid: 7d2832e72d7cef849938f4a4c9d5c115, type: 2}
-  m_CullingMode: 0
+  m_CullingMode: 1
   m_UpdateMode: 0
   m_ApplyRootMotion: 0
   m_LinearVelocityBlending: 0
@@ -126,9 +126,8 @@ MonoBehaviour:
   positionType: 0
   axisType: 0
   distanceType: 2
-  triggerDistance: 8
+  triggerDistance: 10
   runEveryOtherFrame: 0
-  enableWait: 0
 --- !u!114 &6681948602588035081
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -206,6 +205,7 @@ GameObject:
   - component: {fileID: 6681948603491823044}
   - component: {fileID: 6681948603491823066}
   - component: {fileID: 6681948603491823067}
+  - component: {fileID: 4339070962194306002}
   m_Layer: 0
   m_Name: Wings
   m_TagString: Untagged
@@ -296,6 +296,18 @@ Animator:
   m_HasTransformHierarchy: 1
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorControllerStateOnDisable: 0
+--- !u!114 &4339070962194306002
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6681948603491823045}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 61f80708c9e28d54f8b76d7d1bb83225, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &6681948603766486648
 GameObject:
   m_ObjectHideFlags: 0

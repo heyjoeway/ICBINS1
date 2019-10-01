@@ -245,6 +245,7 @@ MonoBehaviour:
   spriteAnimator: {fileID: 0}
   facingRight: 1
   sprite: {fileID: 0}
+  spriteContainer: {fileID: 0}
   shield: {fileID: 0}
   currentLevel: {fileID: 0}
   timer: 0
@@ -257,7 +258,6 @@ MonoBehaviour:
   horizontalInputLockTimer: 0
   controlLockManual: 0
   colliderCurrent: {fileID: 0}
-  isHarmful: 1
   groundModeGroup: {fileID: 1905976647176223908}
   rollingModeGroup: {fileID: 1905976647083121177}
   airModeGroup: {fileID: 1905976648834570164}

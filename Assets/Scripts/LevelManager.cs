@@ -8,11 +8,11 @@ public class LevelManager : MonoBehaviour {
     public HashSet<CharacterPackage> characterPackages = new HashSet<CharacterPackage>();
 
     void InitCharacterPackage(CharacterPackage characterPackage) {
+        // characterPackage.gameObject.SetActive(false);
         Level levelDefault = FindObjectOfType<Level>();
         characterPackages.Add(characterPackage);
 
         Character character = characterPackage.character;
-        // character.InitReferences();
 
         if (character.currentLevel == null) {
             character.currentLevel = levelDefault;
@@ -20,7 +20,9 @@ public class LevelManager : MonoBehaviour {
             character.Respawn();
         }
 
-        character.currentLevel.MakeTitleCard(character);
+        ObjTitleCard titleCard = character.currentLevel.MakeTitleCard(character);
+        titleCard.screenFade.InitReferences(); // Hack to prevent flicker while loading
+        titleCard.screenFade.Update(); // Hack to prevent flicker while loading
     }
 
     void InitCharacters() {
@@ -48,14 +50,17 @@ public class LevelManager : MonoBehaviour {
 
     void Update() {
         float deltaTime = Utils.cappedUnscaledDeltaTime;
+
+        InputCustom.preventRepeatLock = false;
         while (deltaTime > 0) {
             float modDeltaTime = deltaTime > 1F / 60F ? 1F / 60F : deltaTime;
+            if (modDeltaTime < 1F / (Application.targetFrameRate * 2)) break;
             Physics.Simulate(modDeltaTime * Time.timeScale);
             foreach (CharacterPackage characterPackage in characterPackages) {
-                InputCustom.preventRepeatLock = deltaTime != Utils.cappedUnscaledDeltaTime;    
                 characterPackage.character.UpdateDelta(modDeltaTime);
                 characterPackage.camera.UpdateDelta(modDeltaTime);
             }
+            InputCustom.preventRepeatLock = true;    
             deltaTime -= modDeltaTime;
         }
     }

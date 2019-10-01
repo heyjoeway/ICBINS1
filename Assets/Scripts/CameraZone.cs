@@ -2,6 +2,8 @@ using UnityEngine;
 
 public class CameraZone : MonoBehaviour {
     Level level;
+    new Renderer renderer;
+    LevelManager levelManager;
     public Vector2 cameraMin;
     public Vector2 cameraMax;
     public Vector2 positionMin;
@@ -10,6 +12,8 @@ public class CameraZone : MonoBehaviour {
 
     void Start() {
         level = GetComponentInParent<Level>();
+        renderer = GetComponent<Renderer>();
+        levelManager = Utils.GetLevelManager();
 
         if (cameraMin == Vector2.zero) cameraMin = Vector2.one * -Mathf.Infinity;
         if (cameraMax == Vector2.zero) cameraMax = Vector2.one * Mathf.Infinity;
@@ -24,6 +28,7 @@ public class CameraZone : MonoBehaviour {
     }
 
     public void Set(Character character) {
+        if (character.currentLevel != level) return;
         CharacterCamera characterCamera = character.characterCamera;
         characterCamera.minPosition = cameraMin;
         characterCamera.maxPosition = cameraMax;
@@ -31,10 +36,11 @@ public class CameraZone : MonoBehaviour {
         if (positionMax != Vector2.zero) character.positionMax = positionMax;
     }
 
-    void OnTriggerStay(Collider other) {
-        Character[] characters = other.gameObject.GetComponentsInParent<Character>();
-        if (characters.Length == 0) return;
-        Character character = characters[0];
-        Set(character);
+    void Update() {
+        foreach (CharacterPackage characterPackage in levelManager.characterPackages) {
+            Character character = characterPackage.character;
+            if (!renderer.bounds.Contains(character.position)) return;
+            Set(character);
+        }
     }
 }

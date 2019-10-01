@@ -1,13 +1,17 @@
 ﻿using UnityEngine;
+using System;
 
 namespace ActionCode2D.Renderers
 {
     [RequireComponent(typeof(SpriteRenderer))]
 	public sealed class SpriteGhostTrailRenderer : MonoBehaviour 
 	{
-        public Color color = Color.white * 0.5f;
+        public Color colorClosest = Color.white * 0.5f;
+        public Color colorFarthest = Color.white * 0.5f;
         public bool enableOnAwake = true;
         public bool singleColorShader = true;
+        public bool shareSprite = true;
+        public bool fauxTransparency = true;
         [Range(0.016f, 1f)] public float updateInterval = 0.1f;
         [Range(1, 10)] public int ghosts = 4;
 
@@ -27,16 +31,37 @@ namespace ActionCode2D.Renderers
             InitializeGhosts();
             enabled = enableOnAwake;
         }
-        private void Update()
-        {
+        private void Update() {
             _currentTime += Utils.cappedDeltaTime;
-            if (_currentTime > updateInterval)
-            {
+            if (_currentTime > updateInterval) {
                 _currentTime = 0f;
+
                 _ghostIndex = (_ghostIndex + 1) % _ghostRenderers.Length;
                 _ghostRenderers[_ghostIndex].gameObject.SetActive(true);
                 PlaceGhost(_ghostRenderers[_ghostIndex]);
+                UpdateGhostSprite(_ghostRenderers[_ghostIndex]);
+
+                for (int i = 0; i < _ghostRenderers.Length; i++) {
+                    SpriteRenderer ghost = _ghostRenderers[(i  + _ghostIndex + 1) % _ghostRenderers.Length];
+                    UpdateGhostColor(
+                        ghost,
+                        i / (float)(_ghostRenderers.Length - 1)
+                    );
+                    if (shareSprite) UpdateGhostSprite(ghost);
+                }
             }
+
+            // for (int i = 0; i < _ghostRenderers.Length; i++) {
+            //     SpriteRenderer ghost = _ghostRenderers[(i  + _ghostIndex + 1) % _ghostRenderers.Length];
+            //     UpdateFauxTransparency(
+            //         ghost,
+            //         Mathf.Lerp(
+            //             colorFarthest.a,
+            //             colorClosest.a,
+            //             i / (float)(_ghostRenderers.Length - 1)
+            //         )
+            //     );
+            // }
         }
 
         private void OnEnable()
@@ -47,16 +72,14 @@ namespace ActionCode2D.Renderers
                 ghost.gameObject.SetActive(true);
             }
         }
-        private void OnDisable()
-        {
+        private void OnDisable() {
             if (!gameObject.activeInHierarchy) return;
 
             _currentTime = 0f;
             _ghostIndex = 0;
 
             _ghostContainer.parent = transform;
-            foreach (SpriteRenderer ghost in _ghostRenderers)
-            {
+            foreach (SpriteRenderer ghost in _ghostRenderers) {
                 ghost.gameObject.SetActive(false);
                 PlaceGhost(ghost);
             }
@@ -90,12 +113,10 @@ namespace ActionCode2D.Renderers
             _ghostRenderers[0] = baseGhost.AddComponent<SpriteRenderer>();
             _ghostRenderers[0].material = material;
             _ghostRenderers[0].sprite = _spriteRenderer.sprite;
-            _ghostRenderers[0].color = color;
             _ghostRenderers[0].sortingLayerID = _spriteRenderer.sortingLayerID;
             // _ghostRenderers[0].sortingOrder = _spriteRenderer.sortingOrder - 1;
 
-            for (int i = 1; i < _ghostRenderers.Length; i++)
-            {
+            for (int i = 1; i < _ghostRenderers.Length; i++) {
                 GameObject ghost = Instantiate<GameObject>(baseGhost, _ghostContainer);
                 ghost.name = "Ghost-" + i;
                 _ghostRenderers[i] = ghost.GetComponent<SpriteRenderer>();
@@ -110,9 +131,34 @@ namespace ActionCode2D.Renderers
 
             ghost.transform.position = transform.position + (Vector3.forward * 0.01F);
             ghost.transform.rotation = transform.rotation;
+        }
+
+        private void UpdateGhostSprite(SpriteRenderer ghost) {
             ghost.flipX = _spriteRenderer.flipX;
             ghost.flipY = _spriteRenderer.flipY;
             ghost.sprite = _spriteRenderer.sprite;
         }
+
+        private void UpdateGhostColor(SpriteRenderer ghost, float lerpAmt) {
+            ghost.color = Color.Lerp(
+                colorFarthest,
+                colorClosest,
+                lerpAmt
+            );
+        }
+
+        // private void UpdateFauxTransparency(SpriteRenderer ghost, float alpha) {
+        //     Tuple<int, int> frameCounts = Utils.CalculateFauxTransparencyFrameCount(alpha);
+        //     Debug.Log(alpha);
+        //     Debug.Log(frameCounts);
+
+        //     int frames = (int)Time.time * 60;
+        //     frames %= frameCounts.Item1 + frameCounts.Item2;
+
+        //     Color color = ghost.color;
+        //     if (frames < frameCounts.Item1) color.a = 1;
+        //     else color.a = 0;
+        //     ghost.color = color;
+        // }
 	}
 }

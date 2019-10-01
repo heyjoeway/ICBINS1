@@ -73,6 +73,10 @@ public class ObjBreakableWall : MonoBehaviour {
     }
 
     void OnCollisionEnter(Collision collision) {
+        OnCollisionStay(collision);
+    }
+
+    void OnCollisionStay(Collision collision) {
         if (hit) return;
 
         GameObject other = collision.gameObject;

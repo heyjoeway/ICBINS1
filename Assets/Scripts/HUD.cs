@@ -39,10 +39,10 @@ public class HUD : MonoBehaviour {
             Mathf.Floor(character.timer % 60).ToString().PadLeft(2, '0')
         );
 
-        if (GlobalOptions.Get("timerType").ToLower() == "centisecond")
+        if (GlobalOptions.Get("timerType") == "CENTISECOND")
             timeText.text += ":" + Mathf.Floor((character.timer % 1) * 100F).ToString().PadLeft(2, '0');
         
-        if (GlobalOptions.Get("timerType").ToLower() == "frames")
+        if (GlobalOptions.Get("timerType") == "FRAMES")
             timeText.text += ":" + Mathf.Floor((character.timer * 60) % 60).ToString().PadLeft(2, '0');
 
         bool shouldFlash = (((int)(Time.unscaledTime * 60)) % 16) > 8;

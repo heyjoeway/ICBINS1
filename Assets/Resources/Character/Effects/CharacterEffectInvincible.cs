@@ -9,10 +9,12 @@ public class CharacterEffectInvincible : CharacterEffect {
         : base(character, "invincible", duration) {
         musicManager = Utils.GetMusicManager();
 
-        ObjShield stars = GameObject.Instantiate(Resources.Load<GameObject>(
-            "Objects/Invincibility Stars"
-        )).GetComponent<ObjShield>();
-        stars.character = character;
+        if (!character.HasEffect("invincible")) {
+            ObjShield stars = GameObject.Instantiate(Resources.Load<GameObject>(
+                "Objects/Invincibility Stars"
+            )).GetComponent<ObjShield>();
+            stars.character = character;
+        }
 
         musicStackEntry = new MusicManager.MusicStackEntry {
             introPath = "Music/Invincibility Intro",

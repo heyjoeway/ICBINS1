@@ -20,7 +20,7 @@ public class CharacterCapabilityDropdash : CharacterCapability {
         if (nextStateName != "ground") return;
         if (
             (dropDashTimer <= 0) &&
-            Input.GetKey(KeyCode.D) &&
+            InputCustom.GetButtons("Secondary", "Tertiary") &&
             !character.controlLock
         ) DropDashRelease();
     }
@@ -30,15 +30,15 @@ public class CharacterCapabilityDropdash : CharacterCapability {
     public override void Update(float deltaTime) {
         if (character.stateCurrent != "jump") return;
 
-        if (!Input.GetKey(KeyCode.D) || character.controlLock) {
+        if (!InputCustom.GetButtons("Secondary", "Tertiary") || character.controlLock) {
             character.spriteAnimator.Play("Roll");
             dropDashTimer = Mathf.Infinity;
         }
 
-        if (InputCustom.GetKeyDownPreventRepeat(KeyCode.D) && !character.controlLock)
+        if (InputCustom.GetButtonsDownPreventRepeat("Secondary", "Tertiary") && !character.controlLock)
             dropDashTimer = 0.33333F;
 
-        if (Input.GetKey(KeyCode.D) && dropDashTimer > 0 && !character.controlLock) {
+        if (InputCustom.GetButtons("Secondary", "Tertiary") && dropDashTimer > 0 && !character.controlLock) {
             dropDashTimer -= deltaTime;
 
             if (dropDashTimer <= 0) {
@@ -91,5 +91,6 @@ public class CharacterCapabilityDropdash : CharacterCapability {
             }
         }
         character.groundSpeed = dashSpeed * character.physicsScale;
+        character.groundSpeedPrev = character.groundSpeed; // Hack for breakable walls
     }
 }

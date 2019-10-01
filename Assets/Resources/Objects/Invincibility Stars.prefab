@@ -95,9 +95,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cafae8e7a91caea4896c3a37383e10fe, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  color: {r: 1, g: 1, b: 1, a: 0.78431374}
+  colorClosest: {r: 1, g: 1, b: 1, a: 1}
+  colorFarthest: {r: 1, g: 1, b: 1, a: 0.09803922}
   enableOnAwake: 1
   singleColorShader: 0
+  shareSprite: 1
   updateInterval: 0.11666667
   ghosts: 4
   _spriteRenderer: {fileID: 6583553026951681914}

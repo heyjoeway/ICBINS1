@@ -496,7 +496,7 @@ public class Character : MonoBehaviour {
     public float horizontalInputLockTimer = 0;
     public bool controlLockManual = false;
     public bool controlLock { get { 
-        return controlLockManual || Time.timeScale == 0;
+        return controlLockManual || Time.timeScale == 0 || InStateGroup("noControl");
     }}
 
     // ========================================================================
@@ -591,10 +591,10 @@ public class Character : MonoBehaviour {
 
     // ========================================================================
     public bool pressingLeft { get {
-        return Input.GetKey(KeyCode.LeftArrow) && !controlLock;
+        return InputCustom.GetAxesNegative("Horizontal") && !controlLock;
     }}
     public bool pressingRight { get {
-        return Input.GetKey(KeyCode.RightArrow) && !pressingLeft && !controlLock;
+        return InputCustom.GetAxesPositive("Horizontal") && !pressingLeft && !controlLock;
     }}
 
     // ========================================================================

@@ -14,6 +14,12 @@ public class CharacterCapabilityDeath : CharacterCapability {
         character.AddStateGroup("death", "dying");
         character.AddStateGroup("death", "drowning");
         character.AddStateGroup("death", "dead");
+        character.AddStateGroup("noControl", "dying");
+        character.AddStateGroup("noControl", "drowning");
+        character.AddStateGroup("noControl", "dead");
+        character.AddStateGroup("ignore", "dying");
+        character.AddStateGroup("ignore", "drowning");
+        character.AddStateGroup("ignore", "dead");
         character.AddStateGroup("dying", "dying");
         character.AddStateGroup("dying", "drowning");
         character.AddStateGroup("dead", "dead");

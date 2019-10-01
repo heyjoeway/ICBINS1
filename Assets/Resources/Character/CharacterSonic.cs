@@ -12,7 +12,12 @@ public class CharacterSonic : Character {
         if (GlobalOptions.Get<bool>("dropDash"))
             capabilities.Add(new CharacterCapabilityDropdash(this));
 
-        capabilities.Add(new CharacterCapabilityHomingAttack(this));
+        if (GlobalOptions.Get<bool>("homingAttack"))
+            capabilities.Add(new CharacterCapabilityHomingAttack(this));
+    
+        if (GlobalOptions.Get<bool>("lightDash"))
+            capabilities.Add(new CharacterCapabilityLightDash(this));
+            
         capabilities.Add(new CharacterCapabilityJump(this));
         capabilities.Add(new CharacterCapabilityRolling(this));
         capabilities.Add(new CharacterCapabilityRollingAir(this));

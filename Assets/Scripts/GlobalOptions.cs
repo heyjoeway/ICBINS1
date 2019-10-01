@@ -4,7 +4,7 @@ using UnityEngine;
 using UnityEngine.UI;
 
 public class GlobalOptions : MonoBehaviour {
-    static Dictionary<string, string> options = new Dictionary<string, string> {
+    static Dictionary<string, string> defaults = new Dictionary<string, string> {
         ["dropDash"] = "ON",
         ["spindash"] = "ON",
         ["levelTransitions"] = "ON",
@@ -12,14 +12,18 @@ public class GlobalOptions : MonoBehaviour {
         ["afterImages"] = "ON",
         ["linearInterpolation"] = "ON",
         ["timerType"] = "NORMAL",
+        ["peelOut"] = "ON",
+        ["homingAttack"] = "OFF",
+        ["lightDash"] = "OFF",
+        ["airCurling"] = "OFF"
     };
 
     public static string Get(string key) {
-        return options[key];
+        return PlayerPrefs.GetString(key, defaults[key]);
     }
 
     public static T Get<T>(string key) {
-        string data = options[key];
+        string data = Get(key);
         if (typeof(T) == typeof(bool)) {
             switch (data.ToLower()) {
                 case "true":
@@ -45,14 +49,15 @@ public class GlobalOptions : MonoBehaviour {
     }
 
     static void Set(string key, string value) {
-        options[key] = value;
+        PlayerPrefs.SetString(key, value);
+        PlayerPrefs.Save();
     }
 
     // Start is called before the first frame update
     void Start() {
         if (dropdown != null) {
             for (int i = 0; i < dropdown.options.Count; i++) {
-                if (dropdown.options[i].text == options[key]) {
+                if (dropdown.options[i].text == Get(key)) {
                     dropdown.value = i;
                     break;
                 }
@@ -64,7 +69,7 @@ public class GlobalOptions : MonoBehaviour {
     public Dropdown dropdown;
     public void Set() {
         if (dropdown != null) {
-            options[key] = dropdown.options[dropdown.value].text;
+            Set(key, dropdown.options[dropdown.value].text);
             return;
         }
     }

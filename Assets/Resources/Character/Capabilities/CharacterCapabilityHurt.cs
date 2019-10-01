@@ -29,8 +29,6 @@ public class CharacterCapabilityHurt : CharacterCapability {
     }
 
     public override void Update(float deltaTime) {
-
-
         if (character.stateCurrent != name) {
             character.opacity = 1;
 

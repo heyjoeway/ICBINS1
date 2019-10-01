@@ -46,6 +46,7 @@ GameObject:
   - component: {fileID: 6393338869824485155}
   - component: {fileID: 6393338869824485154}
   - component: {fileID: 5689968090279964367}
+  - component: {fileID: 5528496410454653175}
   m_Layer: 0
   m_Name: Crabmeat
   m_TagString: Untagged
@@ -206,6 +207,18 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 977baad7bda34014487aa36da8dde36d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &5528496410454653175
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6393338869824485157}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 109ff7604eab20b4dbd48303c9aa7e36, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!1 &8454409792532280353

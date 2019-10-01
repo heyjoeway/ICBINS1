@@ -61,10 +61,9 @@ public class CharacterCapabilitySpindash : CharacterCapability {
             // - Pressing spindash key combo
             // - Standing still
             if (character.controlLock) return;
-            if (!Input.GetKey(KeyCode.DownArrow)) return;
-            if (!InputCustom.GetKeyDownPreventRepeat(KeyCode.D)) return;
+            if (!InputCustom.GetAxesNegative("Vertical")) return;
+            if (!InputCustom.GetButtonsDownPreventRepeat("Secondary", "Tertiary")) return;
             if (character.groundSpeed != 0) return;
-            Debug.Log("huh");
             character.stateCurrent = name;
             return;
         } else if (character.stateCurrent != name) return;
@@ -85,12 +84,12 @@ public class CharacterCapabilitySpindash : CharacterCapability {
 
     // 3D-Ready: YES
     void UpdateSpindashInput() {
-        if (!Input.GetKey(KeyCode.DownArrow) || character.controlLock) {
+        if (!InputCustom.GetAxesNegative("Vertical") || character.controlLock) {
             SpindashRelease();
             return;
         }
 
-        if (InputCustom.GetKeyDownPreventRepeat(KeyCode.D) && !character.controlLock)
+        if (InputCustom.GetButtonsDownPreventRepeat("Secondary", "Tertiary") && !character.controlLock)
             SpindashCharge();
     }
 
@@ -116,6 +115,7 @@ public class CharacterCapabilitySpindash : CharacterCapability {
             (8F + (Mathf.Floor(spindashPower) / 2F)) *
             character.physicsScale
         );
+        character.groundSpeedPrev = character.groundSpeed; // Hack for breakable walls
         character.characterCamera.lagTimer = 0.26667F;
         SFX.Play(character.audioSource, "SFX/Sonic 1/S1_BC");
         character.stateCurrent = "rolling";

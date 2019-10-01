@@ -77,8 +77,8 @@ public class CharacterCapabilityGround : CharacterCapability {
         int inputDir = 0;
         if ((character.horizontalInputLockTimer <= 0) && !character.controlLock) {
             // ORDER MATTERS!
-            if (Input.GetKey(KeyCode.RightArrow)) inputDir = 1;
-            if (Input.GetKey(KeyCode.LeftArrow)) inputDir = -1;
+            if (InputCustom.GetAxesPositive("Horizontal")) inputDir = 1;
+            if (InputCustom.GetAxesNegative("Horizontal")) inputDir = -1;
         } else character.horizontalInputLockTimer -= deltaTime;
 
         if (inputDir == 1) {
@@ -155,9 +155,9 @@ public class CharacterCapabilityGround : CharacterCapability {
             // Standing still, looking up/down, idle animation
             // ======================
             if (character.groundSpeed == 0) {
-                if (Input.GetKey(KeyCode.DownArrow) && !character.controlLock)
+                if (InputCustom.GetAxesNegative("Vertical") && !character.controlLock)
                     character.spriteAnimator.Play("Look Down");
-                else if (Input.GetKey(KeyCode.UpArrow) && !character.controlLock)
+                else if (InputCustom.GetAxesPositive("Vertical") && !character.controlLock)
                     character.spriteAnimator.Play("Look Up");
                 else if (character.balanceState != Character.BalanceState.None) {
                     ignoreFlipX = true;
@@ -186,13 +186,20 @@ public class CharacterCapabilityGround : CharacterCapability {
             } else if (Mathf.Abs(character.groundSpeed) < character.topSpeedNormal) {
                 character.spriteAnimator.Play("Walk");
                 character.spriteAnimator.speed = 1 + (Mathf.Abs(character.groundSpeed) / character.topSpeedNormal);
+            // Running Fast
+            // ======================
+            } else if (
+                (Mathf.Abs(character.groundSpeed) >= 10F * character.physicsScale) &&
+                GlobalOptions.Get<bool>("peelOut")
+             ) {
+                character.spriteAnimator.Play("Fast");
+                character.spriteAnimator.speed = Mathf.Abs(character.groundSpeed) / character.topSpeedNormal;
             } else {
             // Running
             // ======================
                 character.spriteAnimator.Play("Run");
                 character.spriteAnimator.speed = Mathf.Abs(character.groundSpeed) / character.topSpeedNormal;
             }
-            // (Peel out anim goes here)
         }
 
         // Final value application
@@ -200,6 +207,8 @@ public class CharacterCapabilityGround : CharacterCapability {
         character.spriteContainer.transform.position = character.position;
         character.spriteContainer.transform.eulerAngles = character.GetSpriteRotation(deltaTime);
         if (!ignoreFlipX) character.flipX = !character.facingRight;
+
+        pushing = false;
     }
 
 

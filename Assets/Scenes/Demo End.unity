@@ -740,13 +740,17 @@ MonoBehaviour:
   m_GameObject: {fileID: 873887816}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 4f231c4fb786f3946a6b90b886c48677, type: 3}
+  m_Script: {fileID: 11500000, guid: d30662436d664324db930bf8bb51fc47, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   m_HorizontalAxis: Horizontal
   m_VerticalAxis: Vertical
-  m_SubmitButton: Submit
-  m_CancelButton: Back
+  m_SubmitButtons:
+  - Primary
+  - Tertiary
+  - Pause
+  m_CancelButtons:
+  - Secondary
   m_InputActionsPerSecond: 10
   m_RepeatDelay: 0.5
   m_ForceModuleActive: 0
@@ -1052,16 +1056,6 @@ PrefabInstance:
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_StringArgument
       value: Scenes/Title Screen
       objectReference: {fileID: 0}
-    - target: {fileID: 8935786749363693775, guid: 15ac93245685e7048b43a4f95d4404b0,
-        type: 3}
-      propertyPath: m_Text
-      value: BACK TO TITLE SCREEN
-      objectReference: {fileID: 0}
-    - target: {fileID: 8935786749363693775, guid: 15ac93245685e7048b43a4f95d4404b0,
-        type: 3}
-      propertyPath: m_FontData.m_Alignment
-      value: 3
-      objectReference: {fileID: 0}
     - target: {fileID: 8935786749363693772, guid: 15ac93245685e7048b43a4f95d4404b0,
         type: 3}
       propertyPath: m_AnchoredPosition.x
@@ -1086,6 +1080,16 @@ PrefabInstance:
         type: 3}
       propertyPath: m_SizeDelta.y
       value: -6.89
+      objectReference: {fileID: 0}
+    - target: {fileID: 8935786749363693775, guid: 15ac93245685e7048b43a4f95d4404b0,
+        type: 3}
+      propertyPath: m_Text
+      value: BACK TO TITLE SCREEN
+      objectReference: {fileID: 0}
+    - target: {fileID: 8935786749363693775, guid: 15ac93245685e7048b43a4f95d4404b0,
+        type: 3}
+      propertyPath: m_FontData.m_Alignment
+      value: 3
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 15ac93245685e7048b43a4f95d4404b0, type: 3}

@@ -51,7 +51,7 @@ public class CharacterCapabilityHomingAttack : CharacterCapability {
 
     public override void Update(float deltaTime) {
         if (character.stateCurrent == "jump") {
-            if (InputCustom.GetKeyDownPreventRepeat(KeyCode.D))
+            if (InputCustom.GetButtonsDownPreventRepeat("Secondary", "Tertiary"))
                 character.stateCurrent = "homingAttack";
         }
 
@@ -103,6 +103,7 @@ public class CharacterCapabilityHomingAttack : CharacterCapability {
                 (potentialTarget.position.x >= character.position.x) &&
                 !character.facingRight
             ) continue;
+            if (!target.enabled) continue;
 
             Vector3 directionToTarget = potentialTarget.position - character.position;
             float dSqrToTarget = directionToTarget.sqrMagnitude;
@@ -111,7 +112,6 @@ public class CharacterCapabilityHomingAttack : CharacterCapability {
                 bestTarget = potentialTarget;
             }
         }
-        Debug.Log(closestDistanceSqr);
 
         if (closestDistanceSqr > distanceLimit) return null;
         return bestTarget;

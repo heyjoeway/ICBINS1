@@ -14,7 +14,7 @@ public class ObjSpring : MonoBehaviour {
     }}
 
     float topAngle { get {
-        return transform.rotation.eulerAngles.z;
+        return transform.eulerAngles.z;
     }}
 
     // ========================================================================

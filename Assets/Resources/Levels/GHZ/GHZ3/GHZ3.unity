@@ -24331,9 +24331,8 @@ MonoBehaviour:
   positionType: 0
   axisType: 0
   distanceType: 2
-  triggerDistance: 16
+  triggerDistance: 24
   runEveryOtherFrame: 0
-  enableWait: 0
 --- !u!4 &1624907798
 Transform:
   m_ObjectHideFlags: 0
@@ -24535,7 +24534,6 @@ MonoBehaviour:
   distanceType: 2
   triggerDistance: 16
   runEveryOtherFrame: 0
-  enableWait: 0
 --- !u!4 &1631879296
 Transform:
   m_ObjectHideFlags: 0
@@ -25626,9 +25624,8 @@ MonoBehaviour:
   positionType: 0
   axisType: 0
   distanceType: 2
-  triggerDistance: 16
+  triggerDistance: 24
   runEveryOtherFrame: 0
-  enableWait: 0
 --- !u!4 &1720574457
 Transform:
   m_ObjectHideFlags: 0
@@ -31063,6 +31060,16 @@ PrefabInstance:
         type: 3}
       propertyPath: type
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8291597473166667692, guid: fdde7484f7cbb7140bb8a8a88396c9a5,
+        type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0.031250004
+      objectReference: {fileID: 0}
+    - target: {fileID: 8291597473166667692, guid: fdde7484f7cbb7140bb8a8a88396c9a5,
+        type: 3}
+      propertyPath: m_LocalPosition.y
+      value: -0.0000000037252903
       objectReference: {fileID: 0}
     - target: {fileID: 7766281585833646916, guid: fdde7484f7cbb7140bb8a8a88396c9a5,
         type: 3}

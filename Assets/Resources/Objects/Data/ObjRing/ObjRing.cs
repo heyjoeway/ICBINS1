@@ -122,9 +122,9 @@ public class ObjRing : MonoBehaviour {
     public bool falling = false;
     float fallingTimerMax = 4.27F;
     float fallingTimer = 4.27F;
-    bool collected = false;
+    public bool collected = false;
 
-    void OnTriggerEnter(Collider other) {
+    void OnTriggerStay(Collider other) {
         if (collected) return;
         Character[] characters = other.gameObject.GetComponentsInParent<Character>();
         if (characters.Length == 0) {

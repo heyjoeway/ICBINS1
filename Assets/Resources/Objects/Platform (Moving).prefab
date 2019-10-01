@@ -147,7 +147,7 @@ MonoBehaviour:
   positionType: 0
   axisType: 0
   distanceType: 2
-  triggerDistance: 8
+  triggerDistance: 16
   runEveryOtherFrame: 0
 --- !u!1 &4603760284657397168
 GameObject:

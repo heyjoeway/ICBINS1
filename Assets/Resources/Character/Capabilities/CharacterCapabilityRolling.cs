@@ -59,7 +59,7 @@ public class CharacterCapabilityRolling : CharacterCapability {
         if (character.stateCurrent == "ground") {
             if (character.pressingLeft || character.pressingRight) return;
             if (character.controlLock) return;
-            if (!Input.GetKey(KeyCode.DownArrow)) return;
+            if (!InputCustom.GetAxesNegative("Vertical")) return;
             if (Mathf.Abs(character.groundSpeed) < rollThreshold) return;
             character.stateCurrent = "rolling";
             SFX.PlayOneShot(character.audioSource, "SFX/Sonic 1/S1_BE");
@@ -89,10 +89,10 @@ public class CharacterCapabilityRolling : CharacterCapability {
     void UpdateRollingMove(float deltaTime) {
         float accelerationMagnitude = 0F;
 
-        if (Input.GetKey(KeyCode.LeftArrow) && !character.controlLock) {
+        if (InputCustom.GetAxesNegative("Horizontal") && !character.controlLock) {
             if (character.groundSpeed > 0)
                 accelerationMagnitude = -decelerationRoll;
-        } else if (Input.GetKey(KeyCode.RightArrow) && !character.controlLock) {
+        } else if (InputCustom.GetAxesPositive("Horizontal") && !character.controlLock) {
             if (character.groundSpeed < 0)
                 accelerationMagnitude = decelerationRoll;
         }

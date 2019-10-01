@@ -179,6 +179,24 @@ TextureImporter:
   - first:
       213: -5688961864793063451
     second: Victory2
+  - first:
+      213: 6076045283706875241
+    second: Fast1
+  - first:
+      213: 6076045283706875241
+    second: Fast2
+  - first:
+      213: -8878924802812445402
+    second: Fast3
+  - first:
+      213: -7954658308581492485
+    second: Fast4
+  - first:
+      213: -6690336852913336975
+    second: LightDash1
+  - first:
+      213: 867860618482567137
+    second: LightDash2
   externalObjects: {}
   serializedVersion: 10
   mipmaps:
@@ -1266,6 +1284,132 @@ TextureImporter:
       bones: []
       spriteID: ee542b2e91337424d9faea98c5af1b5d
       internalID: -5688961864793063451
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Fast1
+      rect:
+        serializedVersion: 2
+        x: 198
+        y: 587
+        width: 48
+        height: 48
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 4095bc3b0e6305744a3eb7e2f16efab4
+      internalID: 6076045283706875241
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Fast2
+      rect:
+        serializedVersion: 2
+        x: 243
+        y: 587
+        width: 48
+        height: 48
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: a2c5a8140a33c60459ff1714fc9c7c50
+      internalID: 6076045283706875241
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Fast3
+      rect:
+        serializedVersion: 2
+        x: 288
+        y: 587
+        width: 48
+        height: 48
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 2ca4e53b42ba2d34d90897a3838c93b5
+      internalID: -8878924802812445402
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Fast4
+      rect:
+        serializedVersion: 2
+        x: 333
+        y: 587
+        width: 48
+        height: 48
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 0e251cf8abb833546bdf97f71dc4aa9a
+      internalID: -7954658308581492485
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: LightDash1
+      rect:
+        serializedVersion: 2
+        x: 1
+        y: 248
+        width: 48
+        height: 48
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 323be4bb1a2577a47bcd834f3e66f238
+      internalID: -6690336852913336975
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: LightDash2
+      rect:
+        serializedVersion: 2
+        x: 50
+        y: 248
+        width: 48
+        height: 48
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: f653476e93886914a800e44282f1c775
+      internalID: 867860618482567137
       vertices: []
       indices: 
       edges: []

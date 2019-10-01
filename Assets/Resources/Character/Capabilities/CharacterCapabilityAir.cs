@@ -65,11 +65,11 @@ public class CharacterCapabilityAir : CharacterCapability {
         float accelerationMagnitude = 0;
 
         // Acceleration
-        if (Input.GetKey(KeyCode.LeftArrow) && !character.controlLock) {
+        if (InputCustom.GetAxesNegative("Horizontal") && !character.controlLock) {
             if (velocityTemp.x > -character.topSpeed) {
                 accelerationMagnitude = -accelerationAir;
             }
-        } else if (Input.GetKey(KeyCode.RightArrow) && !character.controlLock) {
+        } else if (InputCustom.GetAxesPositive("Horizontal") && !character.controlLock) {
             if (velocityTemp.x < character.topSpeed) {
                 accelerationMagnitude = accelerationAir;
             }
@@ -190,13 +190,14 @@ public class CharacterCapabilityAir : CharacterCapability {
         // Set state
         // -------------------------
         character.stateCurrent = "ground";
+        character.spriteContainer.transform.eulerAngles = transform.eulerAngles;
     }
 
 
     void UpdateAirAnimDirection() {
-        if (Input.GetKey(KeyCode.LeftArrow) && !character.controlLock)
+        if (InputCustom.GetAxesNegative("Horizontal") && !character.controlLock)
             character.facingRight = false;
-        else if (Input.GetKey(KeyCode.RightArrow) && !character.controlLock)
+        else if (InputCustom.GetAxesPositive("Horizontal") && !character.controlLock)
             character.facingRight = true;
     }
 

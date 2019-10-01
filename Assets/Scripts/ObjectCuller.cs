@@ -34,10 +34,11 @@ public class ObjectCuller : MonoBehaviour
 
     Dictionary<Behaviour, bool> behaviourEnabledInitial = new Dictionary<Behaviour, bool>(); // Stores whether each component should be reenabled on visible
 
-    void DisableBehaviours() {
+    void DisableBehaviours(bool force = false) {
         foreach(var behaviour in GetComponents<Behaviour>()) {
             if (behaviour == this) continue;
             if (behaviourEnabledInitial.ContainsKey(behaviour)) continue;
+            if (behaviour is Animator && !force) continue;
             behaviourEnabledInitial.Add(behaviour, behaviour.enabled);
             behaviour.enabled = false;
         }
@@ -55,9 +56,10 @@ public class ObjectCuller : MonoBehaviour
 
     Dictionary<GameObject, bool> childrenActiveInitial = new Dictionary<GameObject, bool>(); // Stores whether each component should be reenabled on visible
 
-    void DisableChildren() {
+    void DisableChildren(bool force = false) {
         foreach(Transform child in transform) {
             GameObject childObj = child.gameObject;
+            if ((childObj.GetComponent<IgnoreObjectCuller>() != null) && !force) continue;
             if (childrenActiveInitial.ContainsKey(childObj)) continue;
             childrenActiveInitial.Add(childObj, childObj.activeSelf);
             childObj.SetActive(false);
@@ -154,13 +156,13 @@ public class ObjectCuller : MonoBehaviour
     // Prevent iterating through all children multiple times by just keeping track of whether everything's disabled
     bool _selfEnabled = true;
 
-    void DisableSelf() {
+    void DisableSelf(bool force = false) {
         if (!_selfEnabled) return;
         DisableRigidbodies();
-        DisableBehaviours();
-        DisableRenderers();
+        DisableBehaviours(force);
         DisableColliders();
-        DisableChildren();
+        DisableChildren(force);
+         if (force) DisableRenderers();
         _selfEnabled = false;
     }
 
@@ -192,7 +194,6 @@ public class ObjectCuller : MonoBehaviour
 
         if (enableType == EnableType.Reset) {
             clone = Instantiate(gameObject);
-            clone.GetComponent<ObjectCuller>().enableWait = true;
             clone.SetActive(false);
             clone.transform.parent = transform.parent;
         }
@@ -226,7 +227,7 @@ public class ObjectCuller : MonoBehaviour
 
     // Update is called once per frame
     bool inRangePrev;
-    public bool enableWait = false;
+    bool readyForDestroy = false;
 
     void Update() {
         if (runEveryOtherFrame) {
@@ -250,10 +251,21 @@ public class ObjectCuller : MonoBehaviour
                 else DestroySelf();
                 break;
             case EnableType.Reset:
-                if (inRange && (!inRangePrev || !enableWait)) EnableSelf(); // Coming into range
-                else if (!inRange && inRangePrev) { // Going out of range
+                if (readyForDestroy) {
+                    bool inRangeInitial = Utils.CheckIfCharacterInRange(
+                        initialPosition,
+                        triggerDistance,
+                        axisType,
+                        distanceType,
+                        levelManager.characterPackages
+                    ) != null;
+                    if (inRangeInitial) break;
                     clone.SetActive(true);
                     DestroySelf();
+                } else if (inRange && (!inRangePrev)) EnableSelf(); // Coming into range
+                else if (!inRange && inRangePrev) { // Going out of range
+                    readyForDestroy = true;
+                    DisableSelf(true);
                 } else if (!inRange) DisableSelf();
                 break;
             default:

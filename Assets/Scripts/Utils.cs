@@ -170,4 +170,18 @@ public static class Utils {
             Time.maximumDeltaTime
         );
     }}
+
+    public static Tuple<int, int> CalculateFauxTransparencyFrameCount(float alpha) {
+        // Tuple format is (off frames, on frames)
+        if (alpha == 0) return Tuple.Create(Int32.MaxValue, 0);
+        if (alpha == 1) return Tuple.Create(0, Int32.MaxValue);
+
+        float onFramesDivisor = alpha * 2;
+        float offFramesDivisor = 1 - onFramesDivisor;
+
+        return Tuple.Create(
+           (int)(1 / onFramesDivisor),
+           (int)(1 / offFramesDivisor)
+        );
+    }
 }

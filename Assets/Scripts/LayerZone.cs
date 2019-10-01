@@ -7,10 +7,19 @@ public class LayerZone : MonoBehaviour {
     public float zRight = 0;
     public bool groundedOnly = false;
 
-    void OnTriggerStay(Collider other) {
-        Character[] characters = other.gameObject.GetComponentsInParent<Character>();
+    new Renderer renderer;
+    LevelManager levelManager;
 
-        foreach (Character character in characters) {
+    void Start() {
+        renderer = GetComponent<Renderer>();
+        levelManager = Utils.GetLevelManager();
+    }
+
+    void Update() {
+        foreach (CharacterPackage characterPackage in levelManager.characterPackages) {
+            Character character = characterPackage.character;
+            if (!renderer.bounds.Contains(character.position)) continue;
+            
             Vector3 characterPos = character.position;
 
             if (groundedOnly && !character.InStateGroup("ground"))
@@ -19,7 +28,7 @@ public class LayerZone : MonoBehaviour {
             if (characterPos.x > transform.position.x) characterPos.z = zRight;
             else characterPos.z = zLeft;
 
-            character.position = characterPos;
+            character.position = characterPos;;
         }
     }
 }

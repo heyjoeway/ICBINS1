@@ -8,12 +8,20 @@ public class ScreenFade : MonoBehaviour {
     new Image renderer;
     Material material;
 
-    // Start is called before the first frame update
-    void Start() {
+    bool _initDone = false;
+    public void InitReferences() {
+        if (_initDone) return;
+
         renderer = transform.Find("Image").GetComponent<Image>();
         material = Instantiate(renderer.material);
         renderer.material = material;
-        Update();
+
+        _initDone = true;
+    }
+
+    // Start is called before the first frame update
+    void Start() {
+        InitReferences();
     }
 
     public float fadeDelay = 5F;
@@ -44,7 +52,7 @@ public class ScreenFade : MonoBehaviour {
         if (stopTime) Time.timeScale = 0;
     }
 
-    void Update() {
+    public void Update() {
         if (stopTime) Time.timeScale = 0;
 
         if (isComplete && destroyWhenDone && (destroyDelay > 0)) {

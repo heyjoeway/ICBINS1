@@ -266,7 +266,7 @@ MonoBehaviour:
   positionType: 0
   axisType: 2
   distanceType: 2
-  triggerDistance: 12
+  triggerDistance: 24
   runEveryOtherFrame: 0
 --- !u!1001 &7393171110713112770
 PrefabInstance:

@@ -34,17 +34,16 @@ public class CharacterCapabilityJump : CharacterCapability {
     void UpdateGroundJump() {
         if (character.InStateGroup("noJump")) return;
         if (character.controlLock) return;
-        if (!InputCustom.GetKeyDownPreventRepeat(KeyCode.D)) return;
+        if (!InputCustom.GetButtonsDownPreventRepeat("Secondary", "Tertiary")) return;
 
         character.velocity += transform.up * jumpSpeed;
         SFX.PlayOneShot(character.audioSource, "SFX/Sonic 1/S1_A0");
         character.stateCurrent = "jump";
-        character.spriteAnimator.Play("Roll");
     }
 
     // 3D-Ready: YES
     void UpdateJumpHeight() {
-        if (!Input.GetKey(KeyCode.D) || character.controlLock) {
+        if (!InputCustom.GetButtons("Secondary", "Tertiary") || character.controlLock) {
             if (character.velocity.y > 4 * character.physicsScale)
                 character.velocity = new Vector3(
                     character.velocity.x,

@@ -5,10 +5,19 @@ using UnityEngine;
 public class RollZone : MonoBehaviour {
     public bool lockLeft = false;
 
-    void OnTriggerStay(Collider other) {
-        Character[] characters = other.gameObject.GetComponentsInParent<Character>();
+    new Renderer renderer;
+    LevelManager levelManager;
 
-        foreach (Character character in characters) {
+    void Start() {
+        renderer = GetComponent<Renderer>();
+        levelManager = Utils.GetLevelManager();
+    }
+
+    void Update() {
+        foreach (CharacterPackage characterPackage in levelManager.characterPackages) {
+            Character character = characterPackage.character;
+            if (!renderer.bounds.Contains(character.position)) continue;
+            
             bool rollLock = false;
             if (character.velocity.x < 0.05) rollLock = lockLeft;
             if (character.velocity.x > 0.05) rollLock = !lockLeft;

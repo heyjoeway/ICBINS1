@@ -26,6 +26,11 @@ public class ObjTitleCard : MonoBehaviour {
         zoneTextComponent.text = character.currentLevel.zone.ToUpper();
 
         MusicManager musicManager = Utils.GetMusicManager();
+
+        if (musicManager.musicStackEntryCurrent != null)
+            if (character.currentLevel.musicLoop == musicManager.musicStackEntryCurrent.loopClip)
+                return;
+
         musicManager.Play(new MusicManager.MusicStackEntry{
             introClip = character.currentLevel.musicIntro,
             loopClip = character.currentLevel.musicLoop

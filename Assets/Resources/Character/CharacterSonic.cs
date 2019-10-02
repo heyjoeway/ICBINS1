@@ -8,6 +8,9 @@ public class CharacterSonic : Character {
     
         if (GlobalOptions.Get<bool>("spindash"))
             capabilities.Add(new CharacterCapabilitySpindash(this));
+
+        if (GlobalOptions.Get<bool>("peelOut"))
+            capabilities.Add(new CharacterCapabilityPeelOut(this));
     
         if (GlobalOptions.Get<bool>("dropDash"))
             capabilities.Add(new CharacterCapabilityDropdash(this));

@@ -8,6 +8,7 @@ public class GlobalOptions : MonoBehaviour {
         ["dropDash"] = "ON",
         ["spindash"] = "ON",
         ["levelTransitions"] = "ON",
+        ["timeLimit"] = "OFF",
         ["smoothRotation"] = "ON",
         ["afterImages"] = "ON",
         ["linearInterpolation"] = "ON",
@@ -62,6 +63,7 @@ public class GlobalOptions : MonoBehaviour {
                     break;
                 }
             }
+            dropdown.GetComponent<AudioSource>().Stop();
         }
     }
 

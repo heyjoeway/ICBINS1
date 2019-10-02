@@ -47,8 +47,10 @@ public class HUD : MonoBehaviour {
 
         bool shouldFlash = (((int)(Time.unscaledTime * 60)) % 16) > 8;
         if (shouldFlash) {
-            if (character.timer >= 9 * 60) timeTitleText.color = Color.red;
             if (character.rings <= 0) ringsTitleText.color = Color.red;
+    
+            if (GlobalOptions.Get<bool>("timeLimit"))
+                if (character.timer >= 9 * 60) timeTitleText.color = Color.red;
         } else {
             timeTitleText.color = Color.white;
             ringsTitleText.color = Color.white;

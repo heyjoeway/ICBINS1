@@ -43,7 +43,7 @@ public class CharacterCapabilityJump : CharacterCapability {
 
     // 3D-Ready: YES
     void UpdateJumpHeight() {
-        if (!InputCustom.GetButtons("Secondary", "Tertiary") || character.controlLock) {
+        if (!InputCustom.GetButtons("Primary", "Secondary", "Tertiary") || character.controlLock) {
             if (character.velocity.y > 4 * character.physicsScale)
                 character.velocity = new Vector3(
                     character.velocity.x,

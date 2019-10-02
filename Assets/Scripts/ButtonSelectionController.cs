@@ -18,18 +18,23 @@ public class ButtonSelectionController : MonoBehaviour {
     float? targetHeight;
 
     public void Update() {
+        if ((scrollRect.verticalNormalizedPosition == 0) && (targetHeight < 0))
+            targetHeight = null;
+            
         if (targetHeight != null) {
+
+            float heightPrev = scrollRect.verticalNormalizedPosition;
             scrollRect.verticalNormalizedPosition = Mathf.MoveTowards(
                 scrollRect.verticalNormalizedPosition,
                 (float)targetHeight,
                 Time.deltaTime * 2F
             );
+
             if (Mathf.Abs(scrollRect.verticalNormalizedPosition - (float)targetHeight) < 0.01)
                 targetHeight = null;
         }
 
         GameObject selection = EventSystem.current.currentSelectedGameObject;
-        if (selection == null) return;
         if (prevSelection == selection) return;
 
         bool controlsPressed = (

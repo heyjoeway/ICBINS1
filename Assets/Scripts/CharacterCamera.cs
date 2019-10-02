@@ -21,26 +21,46 @@ public class CharacterCamera : MonoBehaviour {
     public Vector2 minPosition  {
         get { return _minPositionTarget; }
         set {
+            if (_minPositionTarget == value) return;
+            Vector3 minPositionTargetPrev = _minPositionTarget;
+            if (renderTexture == null) return;
+
             _minPositionTarget = value;
 
             if (Mathf.Abs(_minPositionReal.magnitude) == Mathf.Infinity)
                 _minPositionReal = _minPositionTarget;
 
-            // if (renderTexture == null) return;
+            if (_minPositionTarget.x != minPositionTargetPrev.x) {
+                // Locking left
+                if (minPositionTargetPrev.x < _minPositionTarget.x) {
+                    _minPositionReal.x = Mathf.Min(
+                        transform.position.x,
+                        _minPositionTarget.x
+                    );
+                // Unlocking left
+                } else {
+                    _minPositionReal.x = Mathf.Max(
+                        transform.position.x,
+                        _minPositionTarget.x
+                    );
+                }
+            }
 
-            // _minPositionReal.x = Mathf.Max(
-            //     _minPositionTarget.x - ((renderTexture.width / 2) / 32),
-            //     _minPositionReal.x,
-            //     _minPositionTarget.x
-            // );
+            if (_minPositionTarget.y != minPositionTargetPrev.y) {
+                // Locking bottom
+                if (minPositionTargetPrev.y < _minPositionTarget.y) {
+                    _minPositionReal.y = Mathf.Min(
+                        transform.position.y,
+                        _minPositionTarget.y
+                    );
+                } else {
+                    _minPositionReal.y = Mathf.Max(
+                        transform.position.y,
+                        _minPositionTarget.y
+                    );
+                }
+            }
 
-            // _minPositionReal.y = Mathf.Max(
-            //     _minPositionTarget.y - ((renderTexture.height / 2) / 32),
-            //     _minPositionReal.y,
-            //     _minPositionTarget.y
-            // );
-
-            // Debug.Log("uwu");
         }
     }
 
@@ -49,9 +69,45 @@ public class CharacterCamera : MonoBehaviour {
     public Vector2 maxPosition  {
         get { return _maxPositionTarget; }
         set {
+            if (_maxPositionTarget == value) return;
+            Vector3 maxPositionTargetPrev = _maxPositionTarget;
+            if (renderTexture == null) return;
             _maxPositionTarget = value;
+
+
             if (Mathf.Abs(_maxPositionReal.magnitude) == Mathf.Infinity)
                 _maxPositionReal = _maxPositionTarget;
+
+            if (_maxPositionTarget.x != maxPositionTargetPrev.x) {
+                // Unlocking right
+                if (maxPositionTargetPrev.x < _maxPositionTarget.x) {
+                    _maxPositionReal.x = Mathf.Max(
+                        transform.position.x,
+                        _maxPositionTarget.x
+                    );
+                // Locking right
+                } else {
+                    _maxPositionReal.x = Mathf.Min(
+                        transform.position.x,
+                        _maxPositionTarget.x
+                    );
+                }
+            }
+
+            if (_maxPositionTarget.y != maxPositionTargetPrev.y) {
+                // Locking bottom
+                if (maxPositionTargetPrev.y < _maxPositionTarget.y) {
+                    _maxPositionReal.y = Mathf.Max(
+                        transform.position.y,
+                        _maxPositionTarget.y
+                    );
+                } else {
+                    _maxPositionReal.y = Mathf.Min(
+                        transform.position.y,
+                        _maxPositionTarget.y
+                    );
+                }
+            }
         }
     }
 
@@ -116,18 +172,8 @@ public class CharacterCamera : MonoBehaviour {
 
     public void LockHorizontal() { LockHorizontal(transform.position.x); }
     public void LockHorizontal(float xPos) {
-        _minPositionTarget.x = xPos;
-        _maxPositionTarget.x = xPos;
-        _minPositionReal.x = Mathf.Max(
-            xPos - ((renderTexture.width / 2) / 32),
-            _minPositionReal.x,
-            xPos
-        );
-        _maxPositionReal.x = Mathf.Min(
-            xPos + ((renderTexture.width / 2) / 32),
-            _maxPositionReal.x,
-            xPos
-        );
+        minPosition = new Vector2(xPos, minPosition.y);
+        maxPosition = new Vector2(xPos, maxPosition.y);
     }
 
     public void LockVertical() { LockVertical(transform.position.y); }
@@ -151,7 +197,8 @@ public class CharacterCamera : MonoBehaviour {
         );
     }
 
-    const float minMaxMoveAmtMax = (3F / 32F) * 60F;
+    // const float minMaxMoveAmtMax = (3F / 32F) * 60F;
+    float minMaxMoveAmtMax = 0;
 
     void MoveMinMaxTowardsTarget() {
         float minXDist = _minPositionTarget.x - _minPositionReal.x;
@@ -185,7 +232,10 @@ public class CharacterCamera : MonoBehaviour {
         if (character == null) return;
         if (character.InStateGroup("death")) return;
 
+        minMaxMoveAmtMax += (0.1F / 32F) * 60F;
         MoveMinMaxTowardsTarget();
+        if ((_minPositionReal == _minPositionTarget) && (_maxPositionReal == _maxPositionTarget))
+            minMaxMoveAmtMax = 0;
 
         if (lagTimer > 0) {
             lagTimer -= deltaTime;
@@ -234,37 +284,6 @@ public class CharacterCamera : MonoBehaviour {
             )
         );
         position.z = characterPosition.z + zDistance;
-
-        bool canSnapX = (
-            (
-                Mathf.Abs(position.x - character.position.x) <
-                (hBorderDistance * valScale)
-            ) && (
-                position.x > _minPositionTarget.x
-            ) && (
-                position.x < _maxPositionTarget.x
-            )
-        );
-        if (canSnapX) {
-            _minPositionReal.x = _minPositionTarget.x;
-            _maxPositionReal.x = _maxPositionTarget.x;
-        }
-
-        bool canSnapY = (
-            (
-                Mathf.Abs(position.y - character.position.y) <
-                (vBorderDistanceAir * valScale)
-            ) && (
-                position.y > _minPositionTarget.y
-            ) && (
-                position.y < _maxPositionTarget.y
-            )
-        );
-        if (canSnapY) {
-            _minPositionReal.y = _minPositionTarget.y;
-            _maxPositionReal.y = _maxPositionTarget.y;
-        }
-
         transform.position = position;
     }
 

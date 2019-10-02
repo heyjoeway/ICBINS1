@@ -58,7 +58,7 @@ public class ObjLevelClear : MonoBehaviour {
         character.respawnData.position = character.currentLevel.spawnPosition;
         character.checkpointId = 0;
 
-        if (GlobalOptions.Get<bool>("levelTransitions")) {
+        if (GlobalOptions.Get("levelTransitions") != "OFF") {
             character.timerPause = false;
             character.TryGetCapability("victory", (CharacterCapability capability) => {
                 ((CharacterCapabilityVictory)capability).victoryLock = false;
@@ -86,6 +86,19 @@ public class ObjLevelClear : MonoBehaviour {
 
     // Update is called once per frame
     void Update() {
+        if (endTimer <= 0) return;
+
+        if (GlobalOptions.Get("levelTransitions") == "INSTANT") {
+            if (sceneReference.ScenePath != "") {
+                character.score += GetTimeBonus(character.timer);
+                character.score += character.rings * 100;
+                character.effects.Clear();
+                LoadNextLevel();
+                endTimer = 0;
+                return;
+            }
+        }
+
         scoreTextComponent.text = character.score.ToString();
         ringTextComponent.text = ringBonus.ToString();
         timeTextComponent.text = timeBonus.ToString();
@@ -115,7 +128,6 @@ public class ObjLevelClear : MonoBehaviour {
             tallyTimer -= Utils.cappedDeltaTime;
             return;
         }
-
 
         if ((timeBonus > 0) || (ringBonus > 0)) {
             if (tallyFrameTimer > 0) {

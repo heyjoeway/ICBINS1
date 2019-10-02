@@ -79,8 +79,10 @@ public static class Utils {
         return null;
     }
 
+    static LevelManager _levelManager;
     public static LevelManager GetLevelManager() {
-        return GameObject.FindObjectOfType<LevelManager>();
+        if (_levelManager == null) _levelManager = GameObject.FindObjectOfType<LevelManager>();
+        return _levelManager;
     }
 
     public static MusicManager GetMusicManager() {

@@ -15,20 +15,23 @@ public class LayerZone : MonoBehaviour {
         levelManager = Utils.GetLevelManager();
     }
 
-    void Update() {
-        foreach (CharacterPackage characterPackage in levelManager.characterPackages) {
-            Character character = characterPackage.character;
-            if (!renderer.bounds.Intersects(character.colliderCurrent.bounds)) continue;
-            
-            Vector3 characterPos = character.position;
+    void OnTriggerStay(Collider other) {
+        OnTriggerEnter(other);
+    }
 
-            if (groundedOnly && !character.InStateGroup("ground"))
-                return;
+    void OnTriggerEnter(Collider other) {
+        Character[] characters = other.gameObject.GetComponentsInParent<Character>();
+        if (characters.Length == 0) return;
+        Character character = characters[0];
 
-            if (characterPos.x > transform.position.x) characterPos.z = zRight;
-            else characterPos.z = zLeft;
+        Vector3 characterPos = character.position;
 
-            character.position = characterPos;
-        }
+        if (groundedOnly && !character.InStateGroup("ground"))
+            return;
+
+        if (characterPos.x > transform.position.x) characterPos.z = zRight;
+        else characterPos.z = zLeft;
+
+        character.position = characterPos;
     }
 }

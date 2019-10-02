@@ -11,6 +11,7 @@ public class MusicManager : MonoBehaviour {
         public bool disableSfx = false;
         public bool resumeAfter = false;
         public bool fadeInAfter = false;
+        public bool ignoreClear = false;
         // public string mixerGroup = "Music";
 
         // public float timeCurrent;
@@ -33,7 +34,7 @@ public class MusicManager : MonoBehaviour {
     List<MusicStackEntry> musicStack = new List<MusicStackEntry>();
 
     MusicStackEntry musicStackEntryPrev;
-    MusicStackEntry musicStackEntryCurrent { get {
+    public MusicStackEntry musicStackEntryCurrent { get {
         MusicStackEntry musicStackEntryMax = null;
         int priorityMax = int.MinValue;
         foreach(MusicStackEntry entry in musicStack) {
@@ -83,7 +84,7 @@ public class MusicManager : MonoBehaviour {
     }
 
     public void Play(MusicStackEntry musicStackEntry) {
-        musicStack.Clear();
+        Clear();
         musicStack.Add(musicStackEntry);
         fadeSpeed = 0;
         fadeVolume = 0;
@@ -156,6 +157,9 @@ public class MusicManager : MonoBehaviour {
     }
 
     public void Clear() {
-        musicStack.Clear();
+        for (int i = musicStack.Count - 1; i >= 0; i--) {
+            if (musicStack[i].ignoreClear) continue;
+            musicStack.RemoveAt(i);
+        }
     }
 }

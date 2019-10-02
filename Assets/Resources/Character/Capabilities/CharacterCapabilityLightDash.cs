@@ -58,11 +58,13 @@ public class CharacterCapabilityLightDash : CharacterCapability {
             positionPrev = character.position;
             character.forwardAngle = character.position.AngleTowards(target.transform.position);
             if (character.flipX) character.forwardAngle += 180F;
-            character.position = Vector3.MoveTowards(
+            Vector3 newPos = Vector3.MoveTowards(
                 character.position,
                 target.transform.position,
                 lightDashSpeed * deltaTime * 2
             );
+            newPos.z = character.position.z;
+            character.position = newPos;
 
             character.spriteContainer.transform.position = character.position;
             character.spriteContainer.transform.eulerAngles = character.GetSpriteRotation(deltaTime);

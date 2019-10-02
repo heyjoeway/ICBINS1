@@ -33,6 +33,7 @@ public class ObjSignpost : MonoBehaviour {
         levelClearObj.character = character;
         levelClearObj.sceneReference = nextLevelRef;
         levelClearObj.onNextLevel = onNextLevel;
+
         character.timerPause = true;
         
         character.characterCamera.LockHorizontal(transform.position.x);

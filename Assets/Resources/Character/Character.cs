@@ -425,7 +425,8 @@ public class Character : MonoBehaviour {
                     introPath = "Music/1-Up",
                     disableSfx = true,
                     fadeInAfter = true,
-                    priority = 10
+                    priority = 10,
+                    ignoreClear = true
                 });
             }
             _lives = value;

@@ -727,6 +727,8 @@ GameObject:
   - component: {fileID: 1998856326}
   - component: {fileID: 1998856325}
   - component: {fileID: 1998856324}
+  - component: {fileID: 1998856332}
+  - component: {fileID: 1998856331}
   - component: {fileID: 1998856330}
   m_Layer: 5
   m_Name: Sega Logo
@@ -943,6 +945,30 @@ MonoBehaviour:
   m_GameObject: {fileID: 1998856323}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 7cf0093e56ce0bc478c2ad1a4b349918, type: 3}
+  m_Script: {fileID: 11500000, guid: ab20002c452d4b543835aee7eca2afef, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &1998856331
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1998856323}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b2784d9e361570843a1bcc90c03be607, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &1998856332
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1998856323}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9f8dfa68832038a4883fcecc63016316, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 

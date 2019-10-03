@@ -70,14 +70,10 @@ public class CharacterCapabilityDropdash : CharacterCapability {
                     (character.groundSpeed / 4F) - dashSpeed
                 );
                 character.groundSpeedPrev = character.groundSpeed; // Hack for breakable walls
-                return;
-            }
-            if (Mathf.Floor(transform.rotation.z) > 0) {
+            } else if (Mathf.Floor(transform.rotation.z) > 0) {
                 character.groundSpeed = (character.groundSpeed / 2F) - dashSpeed;
                 character.groundSpeedPrev = character.groundSpeed; // Hack for breakable walls
-                return;
-            }
-            dashSpeed = -dashSpeed;
+            } else character.groundSpeed = -dashSpeed;
         } else {
             if (character.velocity.x >= 0) {
                 character.groundSpeed = Mathf.Min(
@@ -85,15 +81,12 @@ public class CharacterCapabilityDropdash : CharacterCapability {
                     maxSpeed
                 );
                 character.groundSpeedPrev = character.groundSpeed; // Hack for breakable walls
-                return;
-            }
-            if (Mathf.Floor(transform.rotation.z) > 0) {
+            } else if (Mathf.Floor(transform.rotation.z) > 0) {
                 character.groundSpeed = dashSpeed + (character.groundSpeed / 2F);
                 character.groundSpeedPrev = character.groundSpeed; // Hack for breakable walls
-                return;
-            }
+            } else character.groundSpeed = dashSpeed;
         }
-        character.groundSpeed = dashSpeed;
+ 
         character.groundSpeedPrev = character.groundSpeed; // Hack for breakable walls
     }
 }

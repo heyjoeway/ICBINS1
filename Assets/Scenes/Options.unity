@@ -210,6 +210,7 @@ GameObject:
   - component: {fileID: 61928790}
   - component: {fileID: 61928789}
   - component: {fileID: 61928793}
+  - component: {fileID: 61928795}
   - component: {fileID: 61928794}
   m_Layer: 5
   m_Name: Canvas
@@ -405,7 +406,19 @@ MonoBehaviour:
   m_GameObject: {fileID: 61928788}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 3e93f4f6cc4e50041912c6087986aaa2, type: 3}
+  m_Script: {fileID: 11500000, guid: b2784d9e361570843a1bcc90c03be607, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &61928795
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 61928788}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ab20002c452d4b543835aee7eca2afef, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!1 &98258698
@@ -6118,11 +6131,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
       value: 
-      objectReference: {fileID: 61928794}
+      objectReference: {fileID: 61928795}
     - target: {fileID: 8935786749102902174, guid: 15ac93245685e7048b43a4f95d4404b0,
         type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Mode
-      value: 1
+      value: 5
       objectReference: {fileID: 0}
     - target: {fileID: 8935786749102902174, guid: 15ac93245685e7048b43a4f95d4404b0,
         type: 3}
@@ -6142,7 +6155,7 @@ PrefabInstance:
     - target: {fileID: 8935786749102902174, guid: 15ac93245685e7048b43a4f95d4404b0,
         type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
-      value: Exit
+      value: StartScene
       objectReference: {fileID: 0}
     - target: {fileID: 8935786749102902174, guid: 15ac93245685e7048b43a4f95d4404b0,
         type: 3}
@@ -6154,6 +6167,11 @@ PrefabInstance:
       propertyPath: m_Navigation.m_SelectOnDown
       value: 
       objectReference: {fileID: 1897057661}
+    - target: {fileID: 8935786749102902174, guid: 15ac93245685e7048b43a4f95d4404b0,
+        type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_StringArgument
+      value: Scenes/Title Screen
+      objectReference: {fileID: 0}
     - target: {fileID: 8935786749363693772, guid: 15ac93245685e7048b43a4f95d4404b0,
         type: 3}
       propertyPath: m_AnchoredPosition.x

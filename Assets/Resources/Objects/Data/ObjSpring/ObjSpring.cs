@@ -17,8 +17,6 @@ public class ObjSpring : MonoBehaviour {
     // ========================================================================
 
     public void TryAction(Character character, float collisionAngle) {
-        Debug.Log(collisionAngle);
-        Debug.Log(topAngle);
         if (Mathf.Abs(collisionAngle - topAngle) > 0.1) return;
         DoAction(character);
     }

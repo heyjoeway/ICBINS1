@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine.SceneManagement;
 
-public class LevelManager : MonoBehaviour {
+public class LevelManager : GameMode {
     public SceneReference sceneDefault;
     public HashSet<CharacterPackage> characterPackages = new HashSet<CharacterPackage>();
 
@@ -43,7 +43,8 @@ public class LevelManager : MonoBehaviour {
         ReloadDisposablesScene();
     }
 
-    void Start() {
+    public override void Start() {
+        base.Start();
         Level levelDefault = FindObjectOfType<Level>();
         if (levelDefault == null) {
             StartCoroutine(Utils.LoadLevelAsync(

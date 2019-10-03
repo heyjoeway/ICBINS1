@@ -2,6 +2,7 @@
 {
     Properties
     {
+        _MainTex ("Main Texture", 2D) = "white" {}
         [Slider]
         _Brightness ("Brightness", Float) = 1.125
         _RedOffset ("Red Offset", Float) = -0.125
@@ -33,7 +34,9 @@
                 float4 pos : SV_POSITION;
             };
 
-            v2f vert(appdata_base v) {
+            float4 _MainTex_TexelSize;
+
+            v2f vert(appdata_base v) {          
                 v2f o;
                 // use UnityObjectToClipPos from UnityCG.cginc to calculate 
                 // the clip-space of the vertex
@@ -41,6 +44,10 @@
                 // use ComputeGrabScreenPos function from UnityCG.cginc
                 // to get the correct texture coordinate
                 o.grabPos = ComputeGrabScreenPos(o.pos);
+                #if UNITY_UV_STARTS_AT_TOP
+                if (_MainTex_TexelSize.y < 0)
+                        o.grabPos.y = 1-o.grabPos.y;
+                #endif
                 return o;
             }
 

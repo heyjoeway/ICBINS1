@@ -18,6 +18,9 @@ public class ObjShield : MonoBehaviour {
 
     void Update() {
         if (character == null) return;
+
+        transform.localScale = character.transform.localScale;
+
         bool shouldDestroy = (
             (!isInvincibility && (character.shield != this)) ||
             (isInvincibility && !character.HasEffect("invincible"))

@@ -24,6 +24,9 @@ EditorBuildSettings:
     path: Assets/Scenes/Level.unity
     guid: 9629eca07f28f3c45a44ba70302ddffd
   - enabled: 1
+    path: Assets/Scenes/Disposables.unity
+    guid: 74298d07975629249a6c788eb136ea11
+  - enabled: 1
     path: Assets/Resources/Levels/GHZ/GHZ1/GHZ1.unity
     guid: 180fe1d02810e074992d21634844ab4b
   - enabled: 1

@@ -138,11 +138,10 @@ public class CharacterCapabilityAir : CharacterCapability {
         // Wait a minute, why are we doing a raycast to get a normal/position that we already know??
         // BECAUSE, the normal/position from the collision is glitchy as fuck.
         // This helps smooth things out.
-        RaycastHit potentialHit = character.GetSolidRaycast(
+        Utils.RaycastHitHybrid hit = character.GetSolidRaycast(
             collision.GetContact(0).point - transform.position
         );
-        if (potentialHit.collider == null) return;
-        RaycastHit hit = (RaycastHit)potentialHit;
+        if (!hit.isValid) return;
 
         Vector3 hitEuler = Quaternion.FromToRotation(Vector3.up, hit.normal).eulerAngles;
         // Round this or any tiiiny deviation in angle can allow the character

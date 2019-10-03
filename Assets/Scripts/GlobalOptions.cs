@@ -16,7 +16,9 @@ public class GlobalOptions : MonoBehaviour {
         ["peelOut"] = "ON",
         ["homingAttack"] = "OFF",
         ["lightDash"] = "OFF",
-        ["airCurling"] = "OFF"
+        ["airCurling"] = "OFF",
+        ["gbaMode"] = "OFF",
+        ["tinyMode"] = "OFF"
     };
 
     public static string Get(string key) {

@@ -34,7 +34,7 @@ public class CharacterCapabilityDeath : CharacterCapability {
                 Time.timeScale = 0;
 
             character.shield = null;
-            character.opacity = 1;
+            character.ClearEffects();
             dyingTimer = 3F;
 
             if (character.stateCurrent == "drowning") {

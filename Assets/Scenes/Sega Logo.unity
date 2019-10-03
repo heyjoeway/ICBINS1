@@ -322,6 +322,11 @@ PrefabInstance:
       propertyPath: m_Pivot.y
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 6622680318891453871, guid: 924c1edfd94302442abe046c4c32add9,
+        type: 3}
+      propertyPath: m_RenderMode
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 6622680318891453869, guid: 924c1edfd94302442abe046c4c32add9,
         type: 3}
       propertyPath: fadeDelay
@@ -330,6 +335,11 @@ PrefabInstance:
     - target: {fileID: 6622680318891453869, guid: 924c1edfd94302442abe046c4c32add9,
         type: 3}
       propertyPath: stopTime
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 6622680319115293365, guid: 924c1edfd94302442abe046c4c32add9,
+        type: 3}
+      propertyPath: m_RaycastTarget
       value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
@@ -430,7 +440,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &644749842
 Transform:
   m_ObjectHideFlags: 0

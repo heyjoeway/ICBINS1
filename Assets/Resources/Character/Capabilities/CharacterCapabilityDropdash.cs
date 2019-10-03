@@ -61,36 +61,39 @@ public class CharacterCapabilityDropdash : CharacterCapability {
         );
         dust.transform.localScale = character.spriteContainer.transform.localScale;
 
-        float dashSpeed = 8F;
-        float maxSpeed = 12F;
+        float dashSpeed = 8F * character.physicsScale;
+        float maxSpeed = 12F * character.physicsScale;
         if (!character.facingRight) {
             if (character.velocity.x <= 0) {
-                character.groundSpeed = Mathf.Min(
+                character.groundSpeed = Mathf.Max(
                     -maxSpeed,
                     (character.groundSpeed / 4F) - dashSpeed
                 );
+                character.groundSpeedPrev = character.groundSpeed; // Hack for breakable walls
                 return;
             }
             if (Mathf.Floor(transform.rotation.z) > 0) {
                 character.groundSpeed = (character.groundSpeed / 2F) - dashSpeed;
+                character.groundSpeedPrev = character.groundSpeed; // Hack for breakable walls
                 return;
             }
             dashSpeed = -dashSpeed;
         } else {
             if (character.velocity.x >= 0) {
-                float v5 = 
-                character.groundSpeed = Mathf.Max(
+                character.groundSpeed = Mathf.Min(
                     dashSpeed + (character.groundSpeed / 4F),
                     maxSpeed
                 );
+                character.groundSpeedPrev = character.groundSpeed; // Hack for breakable walls
                 return;
             }
             if (Mathf.Floor(transform.rotation.z) > 0) {
                 character.groundSpeed = dashSpeed + (character.groundSpeed / 2F);
+                character.groundSpeedPrev = character.groundSpeed; // Hack for breakable walls
                 return;
             }
         }
-        character.groundSpeed = dashSpeed * character.physicsScale;
+        character.groundSpeed = dashSpeed;
         character.groundSpeedPrev = character.groundSpeed; // Hack for breakable walls
     }
 }

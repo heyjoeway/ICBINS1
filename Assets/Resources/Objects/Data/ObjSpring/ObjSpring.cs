@@ -3,10 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class ObjSpring : MonoBehaviour {
-    CharacterGroundedDetector characterGroundedDetector { get {
-        return transform.Find("Object").GetComponent<CharacterGroundedDetector>();
-    }}
-
+    CharacterGroundedDetector characterGroundedDetector;
     // ========================================================================
 
     GameObject topPositionObj { get {
@@ -20,6 +17,8 @@ public class ObjSpring : MonoBehaviour {
     // ========================================================================
 
     public void TryAction(Character character, float collisionAngle) {
+        Debug.Log(collisionAngle);
+        Debug.Log(topAngle);
         if (Mathf.Abs(collisionAngle - topAngle) > 0.1) return;
         DoAction(character);
     }
@@ -76,6 +75,8 @@ public class ObjSpring : MonoBehaviour {
 
     // Start is called before the first frame update
     void Start() {
+        characterGroundedDetector = transform.Find("Object").GetComponent<CharacterGroundedDetector>();
+
         switch(type) {
             case SpringType.Yellow:
                 animator.Play("Yellow Normal");

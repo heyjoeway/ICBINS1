@@ -23,9 +23,9 @@ public class LevelManager : MonoBehaviour {
         character.characterCamera.Init();
 
         ObjTitleCard titleCard = character.currentLevel.MakeTitleCard(character);
-        // titleCard.GetComponent<RectTransform>().ForceUpdateRectTransforms(); // Hack to prevent flicker while loading
-        // titleCard.screenFade.InitReferences(); // Hack to prevent flicker while loading
-        // titleCard.screenFade.Update(); // Hack to prevent flicker while loading
+
+        if (GlobalOptions.Get<bool>("tinyMode"))
+            character.sizeScale = 0.5F;
     }
 
     void InitCharacters() {
@@ -39,6 +39,8 @@ public class LevelManager : MonoBehaviour {
         }
 
         Time.timeScale = 0;
+
+        ReloadDisposablesScene();
     }
 
     void Start() {
@@ -52,11 +54,21 @@ public class LevelManager : MonoBehaviour {
     }
 
     void Update() {
+        if (SceneManager.GetActiveScene().name != "Disposables") {
+            Scene disposablesCurrent = SceneManager.GetSceneByName("Disposables");
+
+            if (disposablesCurrent.isLoaded)
+                SceneManager.SetActiveScene(disposablesCurrent);
+        }
+
         float deltaTime = Utils.cappedUnscaledDeltaTime;
 
         InputCustom.preventRepeatLock = false;
         while (deltaTime > 0) {
             float modDeltaTime = deltaTime > 1F / 60F ? 1F / 60F : deltaTime;
+            if (GlobalOptions.Get<bool>("gbaMode"))
+                modDeltaTime += (Random.value * 0.032F) - 0.016F;
+
             if (modDeltaTime < 1F / (Application.targetFrameRate * 2)) break;
             Physics.Simulate(modDeltaTime * Time.timeScale);
             foreach (CharacterPackage characterPackage in characterPackages) {
@@ -66,6 +78,18 @@ public class LevelManager : MonoBehaviour {
             InputCustom.preventRepeatLock = true;    
             deltaTime -= modDeltaTime;
         }
+    }
+
+    public void ReloadDisposablesScene() {
+        Scene disposablesCurrent = SceneManager.GetSceneByName("Disposables");
+        if (disposablesCurrent.isLoaded) {
+            foreach(GameObject obj in disposablesCurrent.GetRootGameObjects())
+                Destroy(obj);
+        } else {
+
+            SceneManager.LoadScene("Scenes/Disposables", LoadSceneMode.Additive);
+        }
+
     }
 
     public void UnloadUnpopulatedLevels() {

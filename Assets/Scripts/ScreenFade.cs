@@ -15,6 +15,7 @@ public class ScreenFade : MonoBehaviour {
         renderer = transform.Find("Image").GetComponent<Image>();
         material = Instantiate(renderer.material);
         renderer.material = material;
+        Update();
 
         _initDone = true;
     }

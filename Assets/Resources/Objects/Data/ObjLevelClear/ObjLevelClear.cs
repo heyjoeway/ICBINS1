@@ -65,8 +65,10 @@ public class ObjLevelClear : MonoBehaviour {
             });
             character.positionMax = Mathf.Infinity * Vector2.one;
             character.characterCamera.maxPosition = Mathf.Infinity * Vector2.one;
-            ObjTitleCard titleCard = nextLevel.MakeTitleCard(character);
+            ObjTitleCard titleCard = nextLevel.MakeTitleCard();
             titleCard.screenFade.brightness = titleCard.screenFade.brightnessMax;
+            titleCard.character = character;
+            titleCard.Init();
         } else {
             if (Utils.GetLevelManager().characterPackages.Count == 1) {
                 character.currentLevel.ReloadFadeOut();
@@ -154,7 +156,7 @@ public class ObjLevelClear : MonoBehaviour {
 
             if ((timeBonus <= 0) && (ringBonus <= 0)) {
                 SFX.Play(audioSource, "SFX/Sonic 1/S1_C5");
-                if (GlobalOptions.Get<bool>("levelTransitions"))
+                if (GlobalOptions.Get("levelTransitions") != "OFF")
                     animator.Play("Items Exit");
             }
             return;

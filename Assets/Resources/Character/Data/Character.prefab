@@ -243,6 +243,7 @@ MonoBehaviour:
   balanceState: 0
   audioSource: {fileID: 1905976648882377142}
   spriteAnimator: {fileID: 0}
+  sizeScale: 1
   facingRight: 1
   sprite: {fileID: 0}
   spriteContainer: {fileID: 0}

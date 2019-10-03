@@ -46,6 +46,7 @@ public class Level : MonoBehaviour {
             Quaternion.identity
         ).GetComponent<ScreenFade>();
         Utils.GetMusicManager().FadeOut();
+        screenFade.destroyWhenDone = false;
         screenFade.onComplete = () => Reload();
     }
 
@@ -53,6 +54,8 @@ public class Level : MonoBehaviour {
         StartCoroutine(Utils.LoadLevelAsync(
             gameObject.scene.path,
             (Level nextLevel) => {
+                Utils.GetMusicManager().Clear();
+                Utils.GetLevelManager().ReloadDisposablesScene();
                 foreach(CharacterPackage characterPackage in levelManager.characterPackages) {
                     if (characterPackage.character.currentLevel != this) continue;
                     Character character = characterPackage.character;

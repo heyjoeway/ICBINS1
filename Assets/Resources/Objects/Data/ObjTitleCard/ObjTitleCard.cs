@@ -35,5 +35,7 @@ public class ObjTitleCard : MonoBehaviour {
             introClip = character.currentLevel.musicIntro,
             loopClip = character.currentLevel.musicLoop
         });
+
+        GetComponent<ScreenFade>().InitReferences();
     }
 }

@@ -127,6 +127,7 @@ public class MusicManager : MonoBehaviour {
         }
 
         if (entry == entryPrev) return;
+        if (entry == null) return;
         musicStackEntryPrev = entry;
 
         entry.Init();

@@ -128,7 +128,9 @@ public class CharacterCamera : MonoBehaviour {
     const float vMoveMaxGroundFast = 16F;
     const float vMoveMaxAir = 16F;
     const float vBorderDistanceAir = 32F;
-    const float valScale = 1F/32F;
+    float valScale { get {
+        return character.sizeScale / 32F;
+    }}
 
     // ========================================================================
 
@@ -275,11 +277,17 @@ public class CharacterCamera : MonoBehaviour {
             }
         }
 
+        camera.orthographicSize = (
+            ((renderTexture.height / 32) * 0.5F) *
+            character.sizeScale
+        );
+
         position += (Vector3)moveAmt * deltaTime * 60F;
+        Vector2 minMaxLeniency = Vector2.one * ((3.5F - camera.orthographicSize) / 3.5F) * 6F;
         position = Vector2.Min(
-            _maxPositionReal,
+            _maxPositionReal + minMaxLeniency,
             Vector2.Max(
-                _minPositionReal,
+                _minPositionReal - minMaxLeniency,
                 position
             )
         );
@@ -303,7 +311,6 @@ public class CharacterCamera : MonoBehaviour {
                 ((float)Screen.height)
             )
         );
-        camera.orthographicSize = (renderTexture.height / 32) * 0.5F;
     }
 
     void OnPreRender() {

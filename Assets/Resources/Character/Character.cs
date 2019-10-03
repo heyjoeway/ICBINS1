@@ -192,35 +192,28 @@ public class Character : MonoBehaviour {
 
     // ========================================================================
     
-    public RaycastHit GetGroundRaycast() {
+    public Utils.RaycastHitHybrid GetGroundRaycast() {
         return GetSolidRaycast(-transform.up);
     }
 
     // 3D-Ready: YES
-    public RaycastHit GetSolidRaycast(Vector3 direction, float maxDistance = 0.8F) {
-        RaycastHit hit;
-        Physics.Raycast(
+    public Utils.RaycastHitHybrid GetSolidRaycast(Vector3 direction, float maxDistance = 0.8F) {
+        return Utils.RaycastHybrid(
             position, // origin
             direction.normalized, // direction,
-            out hit,
             maxDistance * sizeScale, // max distance
             ~solidRaycastMask // layer mask
         );
-        return hit;
     }
 
     bool GetIsGrounded() {
-        RaycastHit hit = GetGroundRaycast();
+        Utils.RaycastHitHybrid hit = GetGroundRaycast();
         return GetIsGrounded(hit);
     }
 
-    bool IsValidRaycastHit(RaycastHit hit) {
-        return hit.collider != null;
-    }
-
     // 3D-Ready: NO
-    bool GetIsGrounded(RaycastHit hit) { // Potentially avoid recomputing raycast
-        if (!IsValidRaycastHit(hit)) return false;
+    bool GetIsGrounded(Utils.RaycastHitHybrid hit) { // Potentially avoid recomputing raycast
+        if (!hit.isValid) return false;
 
         float angleDiff = Mathf.DeltaAngle(
             Quaternion.FromToRotation(Vector3.up, hit.normal).eulerAngles.z,
@@ -253,41 +246,38 @@ public class Character : MonoBehaviour {
     // Keeps character locked to ground while in ground state
     // 3D-Ready: No, but pretty close, actually.
     public bool GroundSnap() {
-        RaycastHit potentialHit = GetGroundRaycast();
+        Utils.RaycastHitHybrid hit = GetGroundRaycast();
         balanceState = BalanceState.None;
 
-        if (GetIsGrounded(potentialHit)) {
-            RaycastHit hit = (RaycastHit)potentialHit;
+        if (GetIsGrounded(hit)) {
             transform.eulerAngles = new Vector3(
                 0,
                 0,
                 Quaternion.FromToRotation(Vector3.up, hit.normal).eulerAngles.z
             );
 
-            Vector3 newPos = hit.point + (transform.up * 0.5F);
+            Vector3 newPos = hit.point + (transform.up * 0.5F * sizeScale);
             newPos.z = position.z; // Comment this for 3D movement
             position = newPos;
-            groundedDetectorCurrent = hit.collider.GetComponent<CharacterGroundedDetector>();
+            groundedDetectorCurrent = hit.transform.GetComponentInChildren<CharacterGroundedDetector>();
             return true;
         } else {
             // Didn't find the ground from the player center?
             // We might be on a ledge. Better check to the left and right of
             // the character to be sure.
             for (int dir = -1; dir <= 1; dir += 2) {
-                RaycastHit potentialHitLedge;
-                Physics.Raycast(
-                    position + (dir * transform.right * 0.375F * sizeScale), // origin
+                Utils.RaycastHitHybrid hitLedge = Utils.RaycastHybrid(
+                    position + (dir * transform.right * 0.375F * sizeScale * sizeScale), // origin
                     -transform.up, // direction,
-                    out potentialHitLedge,
                     0.8F * sizeScale, // max distance
                     ~solidRaycastMask // layer mask
                 );
-                if (IsValidRaycastHit(potentialHitLedge)) {
+                if (hitLedge.isValid) {
                     balanceState = dir < 0 ? BalanceState.Left : BalanceState.Right;
-                    groundedDetectorCurrent = potentialHitLedge.collider.GetComponent<CharacterGroundedDetector>();
+                    groundedDetectorCurrent = hitLedge.transform.GetComponentInChildren<CharacterGroundedDetector>();
 
                     Vector3 newPos = (
-                        potentialHitLedge.point -
+                        hitLedge.point -
                         (dir * transform.right * 0.375F * sizeScale) +
                         (transform.up * 0.5F)
                     );
@@ -311,10 +301,7 @@ public class Character : MonoBehaviour {
 
     // ========================================================================
 
-    float sizeScale {
-        get { return transform.localScale.x; }
-        set { transform.localScale.Set(value, value, value); }
-    }
+    public float sizeScale = 1F;
 
     public float physicsScale {
         get { return sizeScale * Utils.physicsScale; }
@@ -611,6 +598,13 @@ public class Character : MonoBehaviour {
             capability.Update(deltaTime);
 
         velocityPrev = velocity;
+
+        transform.localScale = new Vector3(sizeScale, sizeScale, sizeScale);
+        spriteContainer.localScale = new Vector3( // Hacky
+            sizeScale * Mathf.Sign(spriteContainer.localScale.x),
+            sizeScale * Mathf.Sign(spriteContainer.localScale.y),
+            sizeScale * Mathf.Sign(spriteContainer.localScale.z)
+        );
 
         LimitPosition();
     }

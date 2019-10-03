@@ -186,4 +186,90 @@ public static class Utils {
            (int)(1 / offFramesDivisor)
         );
     }
+
+    public class RaycastHitHybrid {
+        public Vector3 normal;
+        public Vector3 point;
+        public Transform transform;
+        public float distance;
+
+        public bool is2D;
+        public bool isValid;
+
+        // 3D
+        public Rigidbody rigidbody3D;
+        public Vector3 barycentricCoordinate;
+        public Collider collider3D;
+        public Vector2 lightmapCoord;
+        public Vector2 textureCoord;
+        public Vector2 textureCoord2;
+        public int triangleIndex;
+
+        // 2D
+        public Rigidbody2D rigidbody2D;
+        public Vector2 centroid;
+        public Collider2D collider2D;
+        public float fraction;
+
+        public RaycastHitHybrid(RaycastHit raycastHit3D) {
+            normal = raycastHit3D.normal;
+            point = raycastHit3D.point;
+            transform = raycastHit3D.transform;
+            distance = raycastHit3D.distance;
+            rigidbody3D = raycastHit3D.rigidbody;
+            barycentricCoordinate = raycastHit3D.barycentricCoordinate;
+            collider3D = raycastHit3D.collider;
+            lightmapCoord = raycastHit3D.lightmapCoord;
+            textureCoord = raycastHit3D.textureCoord;
+            textureCoord2 = raycastHit3D.textureCoord2;
+            triangleIndex = raycastHit3D.triangleIndex;
+
+            is2D = false;
+            isValid = collider3D != null;
+        }
+
+        public RaycastHitHybrid(RaycastHit2D raycastHit2D) {
+            normal = raycastHit2D.normal;
+            point = raycastHit2D.point;
+            transform = raycastHit2D.transform;
+            distance = raycastHit2D.distance;
+            rigidbody2D = raycastHit2D.rigidbody;
+            centroid = raycastHit2D.centroid;
+            collider2D = raycastHit2D.collider;
+            fraction = raycastHit2D.fraction;
+
+            is2D = true;
+            isValid = collider2D != null;
+        }
+
+        public RaycastHitHybrid() {
+            isValid = false;
+        }
+    }
+
+    public static RaycastHitHybrid RaycastHybrid(
+        Vector3 origin, Vector3 direction, float maxDistance, int layerMask = 0,
+        QueryTriggerInteraction queryTriggerInteraction = QueryTriggerInteraction.UseGlobal
+    ) {
+        RaycastHit hit3D; 
+        Physics.Raycast(
+            origin,
+            direction,
+            out hit3D,
+            maxDistance,
+            layerMask,
+            queryTriggerInteraction
+        );
+        if (hit3D.collider != null) return new RaycastHitHybrid(hit3D);
+
+        RaycastHit2D hit2D = Physics2D.Raycast(
+            origin,
+            direction,
+            maxDistance,
+            layerMask
+        );
+        if (hit2D.collider != null) return new RaycastHitHybrid(hit2D);
+
+        return new RaycastHitHybrid();
+    }
 }

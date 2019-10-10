@@ -29,6 +29,7 @@ public class CameraZone : MonoBehaviour {
 
     public void Set(Character character) {
         if (character.currentLevel != level) return;
+        if (character.characterCamera == null) return;
         CharacterCamera characterCamera = character.characterCamera;
         characterCamera.minPosition = cameraMin;
         characterCamera.maxPosition = cameraMax;
@@ -37,8 +38,7 @@ public class CameraZone : MonoBehaviour {
     }
 
     void Update() {
-        foreach (CharacterPackage characterPackage in levelManager.characterPackages) {
-            Character character = characterPackage.character;
+        foreach (Character character in levelManager.characters) {
             if (!renderer.bounds.Contains(character.position)) return;
             Set(character);
         }

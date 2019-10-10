@@ -54,12 +54,12 @@ public class ObjNewtronGreen : MonoBehaviour {
     void Update() {
         if (firing) return;
 
-        CharacterPackage characterInRange = Utils.CheckIfCharacterInRange(
+        Character characterInRange = Utils.CheckIfCharacterInRange(
             transform.position,
             triggerDistance,
             Utils.AxisType.X,
             Utils.DistanceType.Camera,
-            levelManager.characterPackages
+            levelManager.characters
         );
 
         if (characterInRange == null) return;
@@ -67,7 +67,7 @@ public class ObjNewtronGreen : MonoBehaviour {
         collider.enabled = true;
         animator.Play("Newtron");
         transform.localScale = new Vector3(
-            characterInRange.character.position.x < transform.position.x ? 1 : -1,
+            characterInRange.position.x < transform.position.x ? 1 : -1,
             1, 1
         );
 

@@ -25,14 +25,14 @@ public class ObjNewtronBlue : MonoBehaviour {
 
     void Update() {
         if (!activated || !hitGround) {
-            CharacterPackage characterPackage = Utils.CheckIfCharacterInRange(
+            Character character = Utils.CheckIfCharacterInRange(
                 transform.position,
                 triggerDistance,
                 Utils.AxisType.X,
                 Utils.DistanceType.Character,
-                Utils.GetLevelManager().characterPackages
+                Utils.GetLevelManager().characters
             );
-            if (characterPackage != null) {
+            if (character != null) {
                 if (!activated) {
                     animator.Play("Normal");
                     activated = true;
@@ -40,7 +40,7 @@ public class ObjNewtronBlue : MonoBehaviour {
                 
                 if (!hitGround) {
                     transform.localScale = new Vector3(
-                        characterPackage.character.position.x < transform.position.x ? 1 : -1,
+                        character.position.x < transform.position.x ? 1 : -1,
                         1, 1
                     );
                 }

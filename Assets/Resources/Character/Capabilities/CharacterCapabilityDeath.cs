@@ -30,7 +30,7 @@ public class CharacterCapabilityDeath : CharacterCapability {
         character.modeGroupCurrent = null;
 
         if (character.InStateGroup("dying")) {
-            if (Utils.GetLevelManager().characterPackages.Count == 1)
+            if (Utils.GetLevelManager().characters.Count == 1)
                 Time.timeScale = 0;
 
             character.shield = null;
@@ -40,17 +40,17 @@ public class CharacterCapabilityDeath : CharacterCapability {
             if (character.stateCurrent == "drowning") {
                 character.velocity = Vector3.zero;
                 SFX.Play(character.audioSource, "SFX/Sonic 1/S1_B2");
-                character.spriteAnimator.Play("Drowning");
+                character.AnimatorPlay("Drowning");
             } else if (character.stateCurrent == "dying") {
                 character.velocity = new Vector3(
                     0, 7 * character.physicsScale, 0
                 );
                 SFX.Play(character.audioSource, "SFX/Sonic 1/S1_A3");
-                character.spriteAnimator.Play("Dying");
+                character.AnimatorPlay("Dying");
             }
         } else if (character.stateCurrent == "dead") {
             character.lives--;
-            if (Utils.GetLevelManager().characterPackages.Count == 1) {
+            if (Utils.GetLevelManager().characters.Count == 1) {
                 character.currentLevel.ReloadFadeOut();
             } else character.SoftRespawn();
         }

@@ -19,8 +19,8 @@ public class CharacterCapabilityVictory : CharacterCapability {
 
             character.facingRight = true;
             character.stateCurrent = "victory";
-            character.spriteAnimator.Play("Victory");
-            character.spriteAnimator.speed = 1;
+            character.AnimatorPlay("Victory");
+            character.spriteAnimatorSpeed = 1;
             character.velocity = Vector3.zero;
             character.groundSpeed = 0;
         }

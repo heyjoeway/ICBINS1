@@ -146,7 +146,7 @@ public class CharacterCamera : MonoBehaviour {
             backgroundCamera.renderTexture = renderTexture;
             backgroundCamera.GetComponent<Camera>().targetDisplay = camera.targetDisplay;
             if (character == null) return;
-            background.characterPackage = character.characterPackage;
+            background.character = character;
         }
     }
 

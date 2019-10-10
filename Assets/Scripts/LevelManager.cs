@@ -5,22 +5,17 @@ using UnityEngine.SceneManagement;
 
 public class LevelManager : GameMode {
     public SceneReference sceneDefault;
-    public HashSet<CharacterPackage> characterPackages = new HashSet<CharacterPackage>();
+    public HashSet<Character> characters = new HashSet<Character>();
 
-    void InitCharacterPackage(CharacterPackage characterPackage) {
-        // characterPackage.gameObject.SetActive(false);
+    void InitCharacter(Character character) {
         Level levelDefault = FindObjectOfType<Level>();
-        characterPackages.Add(characterPackage);
-
-        Character character = characterPackage.character;
+        characters.Add(character);
 
         if (character.currentLevel == null) {
             character.currentLevel = levelDefault;
             character.respawnData.position = levelDefault.spawnPosition;
             character.Respawn();
         }
-
-        character.characterCamera.Init();
 
         ObjTitleCard titleCard = character.currentLevel.MakeTitleCard(character);
 
@@ -29,13 +24,15 @@ public class LevelManager : GameMode {
     }
 
     void InitCharacters() {
-        foreach (CharacterPackage characterPackage in FindObjectsOfType<CharacterPackage>())
-            InitCharacterPackage(characterPackage);
+        foreach (Character character in FindObjectsOfType<Character>())
+            InitCharacter(character);
 
-        if (characterPackages.Count == 0) {
-            InitCharacterPackage(Instantiate(
-                Resources.Load<GameObject>("Character/Character Package")
-            ).GetComponent<CharacterPackage>());
+        if (characters.Count == 0) {
+            InitCharacter(
+                Instantiate(
+                    Resources.Load<GameObject>("Character/Character")
+                ).GetComponent<Character>()
+            );
         }
 
         Time.timeScale = 0;
@@ -71,11 +68,19 @@ public class LevelManager : GameMode {
                 modDeltaTime += (Random.value * 0.032F) - 0.016F;
 
             if (modDeltaTime < 1F / (Application.targetFrameRate * 2)) break;
+            
+            foreach (Character character in characters)
+                character.UpdateDelta(modDeltaTime);
+            
             Physics.Simulate(modDeltaTime * Time.timeScale);
-            foreach (CharacterPackage characterPackage in characterPackages) {
-                characterPackage.character.UpdateDelta(modDeltaTime);
-                characterPackage.camera.UpdateDelta(modDeltaTime);
+
+            foreach (Character character in characters) {
+                character.UpdateSpritePosition();
+
+                if (character.characterCamera != null)
+                    character.characterCamera.UpdateDelta(modDeltaTime);
             }
+
             InputCustom.preventRepeatLock = true;    
             deltaTime -= modDeltaTime;
         }
@@ -87,7 +92,6 @@ public class LevelManager : GameMode {
             foreach(GameObject obj in disposablesCurrent.GetRootGameObjects())
                 Destroy(obj);
         } else {
-
             SceneManager.LoadScene("Scenes/Disposables", LoadSceneMode.Additive);
         }
 

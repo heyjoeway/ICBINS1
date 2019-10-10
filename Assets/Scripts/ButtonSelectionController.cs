@@ -7,7 +7,7 @@ using UnityEngine.EventSystems;
 public class ButtonSelectionController : MonoBehaviour {
     public string verticalAxis = "Vertical";
 
-    private ScrollRect          scrollRect;
+    private ScrollRect scrollRect;
     GameObject prevSelection;
 
     public void Start() {
@@ -39,7 +39,7 @@ public class ButtonSelectionController : MonoBehaviour {
 
         bool controlsPressed = (
             (Input.GetAxis("Vertical") != 0) ||
-            InputCustom.GetButtons("Primary", "Secondary", "Tertiary")
+            InputCustom.GetButtons(1, "Primary", "Secondary", "Tertiary")
         );
 
         if (controlsPressed && (prevSelection != null)) {

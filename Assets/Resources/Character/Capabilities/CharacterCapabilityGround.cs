@@ -75,10 +75,10 @@ public class CharacterCapabilityGround : CharacterCapability {
         float accelerationMagnitude = 0F;
 
         int inputDir = 0;
-        if ((character.horizontalInputLockTimer <= 0) && !character.controlLock) {
+        if (character.horizontalInputLockTimer <= 0) {
             // ORDER MATTERS!
-            if (InputCustom.GetAxesPositive("Horizontal")) inputDir = 1;
-            if (InputCustom.GetAxesNegative("Horizontal")) inputDir = -1;
+            if (character.input.GetAxesPositive("Horizontal")) inputDir = 1;
+            if (character.input.GetAxesNegative("Horizontal")) inputDir = -1;
         } else character.horizontalInputLockTimer -= deltaTime;
 
         if (inputDir == 1) {
@@ -113,11 +113,11 @@ public class CharacterCapabilityGround : CharacterCapability {
     // 3D-Ready: NO
     void UpdateGroundAnim(float deltaTime) {
         bool ignoreFlipX = false;
-        character.spriteAnimator.speed = 1;
+        character.spriteAnimatorSpeed = 1;
 
         // Check if we are transitioning to a rolling air state. If so, set the speed of it
         if (character.InStateGroup("rolling") && character.InStateGroup("air")) {
-            character.spriteAnimator.speed = 1 + (
+            character.spriteAnimatorSpeed = 1 + (
                 (
                     Mathf.Abs(character.groundSpeed) /
                     character.topSpeedNormal
@@ -155,56 +155,55 @@ public class CharacterCapabilityGround : CharacterCapability {
             // Standing still, looking up/down, idle animation
             // ======================
             if (character.groundSpeed == 0) {
-                if (InputCustom.GetAxesNegative("Vertical") && !character.controlLock)
-                    character.spriteAnimator.Play("Look Down");
-                else if (InputCustom.GetAxesPositive("Vertical") && !character.controlLock)
-                    character.spriteAnimator.Play("Look Up");
+                if (character.input.GetAxesNegative("Vertical"))
+                    character.AnimatorPlay("Look Down");
+                else if (character.input.GetAxesPositive("Vertical"))
+                    character.AnimatorPlay("Look Up");
                 else if (character.balanceState != Character.BalanceState.None) {
                     ignoreFlipX = true;
                     character.flipX = character.balanceState == Character.BalanceState.Right;
-                    character.spriteAnimator.Play("Balancing");
+                    character.AnimatorPlay("Balancing");
                 } else {
                     if (
                         !character.spriteAnimator.GetCurrentAnimatorStateInfo(0).IsName("Tap") &&
                         !character.spriteAnimator.GetCurrentAnimatorStateInfo(0).IsName("Idle")
-                    ) character.spriteAnimator.Play("Idle");
+                    ) character.AnimatorPlay("Idle");
                 }
             // Pushing anim
             // ======================
             } else if (pushing) {
-                character.spriteAnimator.Play("Push");
-                character.spriteAnimator.speed = 1 + (Mathf.Abs(character.groundSpeed) / character.topSpeedNormal);
+                character.AnimatorPlay("Push");
+                character.spriteAnimatorSpeed = 1 + (Mathf.Abs(character.groundSpeed) / character.topSpeedNormal);
             // Skidding, again
             // ======================
             } else if (skidding && canSkid) {
                 if (!character.spriteAnimator.GetCurrentAnimatorStateInfo(0).IsName("Skid"))
                     SFX.Play(character.audioSource, "SFX/Sonic 1/S1_A4");
 
-                character.spriteAnimator.Play("Skid");
+                character.AnimatorPlay("Skid");
             // Walking
             // ======================
             } else if (Mathf.Abs(character.groundSpeed) < character.topSpeedNormal) {
-                character.spriteAnimator.Play("Walk");
-                character.spriteAnimator.speed = 1 + (Mathf.Abs(character.groundSpeed) / character.topSpeedNormal);
+                character.AnimatorPlay("Walk");
+                character.spriteAnimatorSpeed = 1 + (Mathf.Abs(character.groundSpeed) / character.topSpeedNormal);
             // Running Fast
             // ======================
             } else if (
                 (Mathf.Abs(character.groundSpeed) >= 10F * character.physicsScale) &&
                 GlobalOptions.Get<bool>("peelOut")
              ) {
-                character.spriteAnimator.Play("Fast");
-                character.spriteAnimator.speed = Mathf.Abs(character.groundSpeed) / character.topSpeedNormal;
+                character.AnimatorPlay("Fast");
+                character.spriteAnimatorSpeed = Mathf.Abs(character.groundSpeed) / character.topSpeedNormal;
             } else {
             // Running
             // ======================
-                character.spriteAnimator.Play("Run");
-                character.spriteAnimator.speed = Mathf.Abs(character.groundSpeed) / character.topSpeedNormal;
+                character.AnimatorPlay("Run");
+                character.spriteAnimatorSpeed = Mathf.Abs(character.groundSpeed) / character.topSpeedNormal;
             }
         }
 
         // Final value application
         // ======================
-        character.spriteContainer.transform.position = character.position;
         character.spriteContainer.transform.eulerAngles = character.GetSpriteRotation(deltaTime);
         if (!ignoreFlipX) character.flipX = !character.facingRight;
 
@@ -277,7 +276,7 @@ public class CharacterCapabilityGround : CharacterCapability {
 
         pushing = pushLeft || pushRight;
 
-        character.GroundSpeedSync();
+        character.groundSpeed = 0;
     }
 
 }

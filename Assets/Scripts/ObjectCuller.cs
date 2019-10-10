@@ -222,7 +222,7 @@ public class ObjectCuller : MonoBehaviour
             triggerDistance,
             axisType,
             distanceType,
-            levelManager.characterPackages
+            levelManager.characters
         ) != null;
     }
 
@@ -259,7 +259,7 @@ public class ObjectCuller : MonoBehaviour
                         triggerDistance,
                         axisType,
                         distanceType,
-                        levelManager.characterPackages
+                        levelManager.characters
                     ) != null;
                     if (inRangeInitial) break;
                     clone.SetActive(true);

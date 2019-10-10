@@ -23,7 +23,7 @@ public class CharacterCapabilityLightDash : CharacterCapability {
         character.modeGroupCurrent = character.airModeGroup;
         afterImageEffect = new CharacterEffect(character, "afterImage");
         character.effects.Add(afterImageEffect);
-        character.spriteAnimator.Play("Light Dash");
+        character.AnimatorPlay("Light Dash");
     }
 
     public override void StateDeinit(string stateName, string nextStateName) {
@@ -36,8 +36,7 @@ public class CharacterCapabilityLightDash : CharacterCapability {
 
     public override void Update(float deltaTime) {
         if (character.stateCurrent != "lightDash") {
-            if (character.controlLock) return;
-            if (!InputCustom.GetButtonsDownPreventRepeat("Primary")) return;
+            if (!character.input.GetButtonsDownPreventRepeat("Primary")) return;
             target = FindClosestTarget(true);
             if (target != null) character.stateCurrent = "lightDash";
             return;
@@ -52,7 +51,7 @@ public class CharacterCapabilityLightDash : CharacterCapability {
                     character.velocity = character.terminalSpeed * character.velocity.normalized;
                     
                 character.stateCurrent = "air";
-                character.spriteAnimator.Play("Fast");
+                character.AnimatorPlay("Fast");
             }
         } else {
             positionPrev = character.position;
@@ -66,7 +65,6 @@ public class CharacterCapabilityLightDash : CharacterCapability {
             newPos.z = character.position.z;
             character.position = newPos;
 
-            character.spriteContainer.transform.position = character.position;
             character.spriteContainer.transform.eulerAngles = character.GetSpriteRotation(deltaTime);
         }
     }

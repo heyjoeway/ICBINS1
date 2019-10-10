@@ -98,8 +98,8 @@ public class ObjSpring : MonoBehaviour {
 
         if (!keepGrounded) {
             character.stateCurrent = "air";
-            character.spriteAnimator.Play("Spring");
-            character.spriteAnimator.speed = 1;
+            character.AnimatorPlay("Spring");
+            character.spriteAnimatorSpeed = 1;
         }
 
         Vector3 velocityRaw = (topPositionObj.transform.position - transform.position).normalized * springPower;

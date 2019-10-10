@@ -36,8 +36,10 @@ public class ObjSignpost : MonoBehaviour {
 
         character.timerPause = true;
         
-        character.characterCamera.LockHorizontal(transform.position.x);
-        character.characterCamera.SetCharacterBoundsFromCamera();
+        if (character.characterCamera != null) {
+            character.characterCamera.LockHorizontal(transform.position.x);
+            character.characterCamera.SetCharacterBoundsFromCamera();
+        }
     }
 
     void OnTriggerEnter(Collider other) {

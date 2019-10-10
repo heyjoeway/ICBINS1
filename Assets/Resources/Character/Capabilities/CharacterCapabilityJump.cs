@@ -33,8 +33,7 @@ public class CharacterCapabilityJump : CharacterCapability {
     // 3D-Ready: YES
     void UpdateGroundJump() {
         if (character.InStateGroup("noJump")) return;
-        if (character.controlLock) return;
-        if (!InputCustom.GetButtonsDownPreventRepeat("Secondary", "Tertiary")) return;
+        if (!character.input.GetButtonsDownPreventRepeat("Secondary", "Tertiary")) return;
 
         character.velocity += transform.up * jumpSpeed;
         SFX.PlayOneShot(character.audioSource, "SFX/Sonic 1/S1_A0");
@@ -43,7 +42,7 @@ public class CharacterCapabilityJump : CharacterCapability {
 
     // 3D-Ready: YES
     void UpdateJumpHeight() {
-        if (!InputCustom.GetButtons("Primary", "Secondary", "Tertiary") || character.controlLock) {
+        if (!character.input.GetButtons("Primary", "Secondary", "Tertiary")) {
             if (character.velocity.y > 4 * character.physicsScale)
                 character.velocity = new Vector3(
                     character.velocity.x,

@@ -150,6 +150,8 @@ MonoBehaviour:
   colorFarthest: {r: 1, g: 1, b: 1, a: 0.23921569}
   enableOnAwake: 0
   singleColorShader: 0
+  shareSprite: 1
+  fauxTransparency: 1
   updateInterval: 0.016
   ghosts: 4
   _spriteRenderer: {fileID: 8830505278744459020}

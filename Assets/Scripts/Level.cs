@@ -23,17 +23,19 @@ public class Level : MonoBehaviour {
     }
 
     void Update() {
-        foreach(CharacterPackage characterPackage in levelManager.characterPackages) {
-            if (characterPackage.character.currentLevel != this) continue;
+        foreach(Character character in levelManager.characters) {
+            if (character.currentLevel != this) continue;
             
-            DLEUpdateCharacter(characterPackage);
-            characterPackage.camera.backgroundObj = background;
+            DLEUpdateCharacter(character);
+            
+            if (character.characterCamera != null)
+                character.characterCamera.backgroundObj = background;
         }
     }
 
     public void Unload() {
-        foreach(CharacterPackage characterPackage in levelManager.characterPackages) {
-            if (characterPackage.character.currentLevel == this) return;
+        foreach(Character character in levelManager.characters) {
+            if (character.currentLevel == this) return;
         }
         SceneManager.UnloadSceneAsync(gameObject.scene);
     }
@@ -56,9 +58,8 @@ public class Level : MonoBehaviour {
             (Level nextLevel) => {
                 Utils.GetMusicManager().Clear();
                 Utils.GetLevelManager().ReloadDisposablesScene();
-                foreach(CharacterPackage characterPackage in levelManager.characterPackages) {
-                    if (characterPackage.character.currentLevel != this) continue;
-                    Character character = characterPackage.character;
+                foreach(Character character in levelManager.characters) {
+                    if (character.currentLevel != this) continue;
                     character.currentLevel = nextLevel;
                     MakeTitleCard(character);
                     character.Respawn();
@@ -82,5 +83,5 @@ public class Level : MonoBehaviour {
         return titleCard;
     }
 
-    public virtual void DLEUpdateCharacter(CharacterPackage characterPackage) { }
+    public virtual void DLEUpdateCharacter(Character character) { }
 }

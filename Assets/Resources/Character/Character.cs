@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.Networking;
 using System.Collections.Generic;
 using System;
 
@@ -35,7 +36,10 @@ public class Character : MonoBehaviour {
 
     // ========================================================================
 
+    // [HideInInspector, SyncVar]
+    [HideInInspector]
     public string statePrev = "ground";
+    // [SyncVar]
     string _stateCurrent = "ground";
     public string stateCurrent {
         get { return _stateCurrent; }
@@ -134,17 +138,23 @@ public class Character : MonoBehaviour {
 
     // ========================================================================
 
+    [HideInInspector]
     public new Rigidbody rigidbody;
     public Vector3 velocity {
         get { return rigidbody.velocity; }
         set { rigidbody.velocity = value; }
     }
+    // [HideInInspector, SyncVar]
+    [HideInInspector]
     public Vector3 velocityPrev;
 
     // ========================================================================
 
+    // [HideInInspector, SyncVar]
+    [HideInInspector]
     public float groundSpeedPrev = 0;
-    public float _groundSpeed = 0;
+    // [SyncVar]
+    float _groundSpeed = 0;
     public float groundSpeed {
         get { return _groundSpeed; }
         set {
@@ -241,6 +251,8 @@ public class Character : MonoBehaviour {
         Right // platform is to the right
     }
 
+    // [HideInInspector, SyncVar]
+    [HideInInspector]
     public BalanceState balanceState = BalanceState.None;
 
     // Keeps character locked to ground while in ground state
@@ -296,34 +308,48 @@ public class Character : MonoBehaviour {
 
     // ========================================================================
     
+    [HideInInspector]
     public AudioSource audioSource;
+    [HideInInspector]
     public Animator spriteAnimator;
+
+    [HideInInspector]
+    string spriteAnimatorStatePrev;
+    // [HideInInspector, SyncVar]
+    [HideInInspector]
+    public string spriteAnimatorState;
+    // [HideInInspector, SyncVar]
+    [HideInInspector]
+    public float spriteAnimatorSpeed;
+
+    public void AnimatorPlay(string stateName, float normalizedTime = float.NegativeInfinity) {
+        spriteAnimatorStatePrev = spriteAnimatorState;
+        spriteAnimator.Play(stateName, -1, normalizedTime);
+        spriteAnimatorState = stateName;
+    }
 
     // ========================================================================
 
+    // [SyncVar]
     public float sizeScale = 1F;
 
     public float physicsScale {
         get { return sizeScale * Utils.physicsScale; }
     }
 
-    public bool flipX {
-        get { return spriteContainer.localScale.x < 0; }
-        set {
-            if (flipX == value) return;
-            Vector3 newScale = spriteContainer.localScale;
-            newScale.x *= -1;
-            spriteContainer.localScale = newScale;
-        }
-    }
+    // [SyncVar]
+    public bool flipX = false;
 
     // ========================================================================
 
+    // [SyncVar]
     public bool facingRight = true;
 
     // ========================================================================
     
+    [HideInInspector]
     public SpriteRenderer sprite;
+    [HideInInspector]
     public Transform spriteContainer;
 
     // Gets rotation for sprite
@@ -353,14 +379,7 @@ public class Character : MonoBehaviour {
         );
     }
 
-    public float opacity {
-        get { return sprite.color.a; }
-        set {
-            Color colorTemp = sprite.color;
-            colorTemp.a = value;
-            sprite.color = colorTemp;
-        }
-    }
+    public float opacity = 1;
 
     // ========================================================================
 
@@ -422,6 +441,7 @@ public class Character : MonoBehaviour {
 
     // ========================================================================
 
+    [HideInInspector]
     public CharacterCamera characterCamera;
 
     public class RespawnData {
@@ -437,8 +457,10 @@ public class Character : MonoBehaviour {
         if (checkpointId == 0)
             currentLevel.cameraZoneStart.Set(this);
 
-        characterCamera.MinMaxPositionSnap();
-        characterCamera.position = transform.position;
+        if (characterCamera != null) {
+            characterCamera.MinMaxPositionSnap();
+            characterCamera.position = transform.position;
+        }
     }
 
     public void SoftRespawn() { // Should only be used in multiplayer; for full respawns reload scene
@@ -481,15 +503,20 @@ public class Character : MonoBehaviour {
 
     // ========================================================================
 
+    [HideInInspector]
     public float horizontalInputLockTimer = 0;
     public bool controlLockManual = false;
-    public bool controlLock { get { 
-        return controlLockManual || Time.timeScale == 0 || InStateGroup("noControl");
-    }}
+    public bool controlLock { get { return (
+        controlLockManual ||
+        Time.timeScale == 0 ||
+        InStateGroup("noControl") ||
+        !isLocalPlayer
+    ); }}
 
     // ========================================================================
 
     Transform _modeGroupCurrent;
+    [HideInInspector]
     public Collider colliderCurrent;
     public Transform modeGroupCurrent {
         get { return _modeGroupCurrent; }
@@ -555,13 +582,18 @@ public class Character : MonoBehaviour {
 
     // ========================================================================
 
+    [HideInInspector]
     public Transform groundModeGroup;
+    [HideInInspector]
     public Transform rollingModeGroup;
+    [HideInInspector]
     public Transform airModeGroup;
+    [HideInInspector]
     public Transform rollingAirModeGroup;
+    [HideInInspector]
     public Collider rollingAirModeCollider;
+    [HideInInspector]
     public Collider airModeCollider;
-    public CharacterPackage characterPackage;
 
     // ========================================================================
     public virtual void Start() {
@@ -575,38 +607,68 @@ public class Character : MonoBehaviour {
 
         respawnData.position = position;
         Respawn();
+
+        if (isLocalPlayer || Utils.GetLevelManager().characters.Count == 1) {
+            characterCamera = Instantiate(cameraPrefab).GetComponent<CharacterCamera>();
+            characterCamera.character = this;
+            characterCamera.Init();
+
+            HUD hud = Instantiate(hudPrefab).GetComponent<HUD>();
+            hud.character = this;
+        }
     }
 
     // ========================================================================
     public bool pressingLeft { get {
-        return InputCustom.GetAxesNegative("Horizontal") && !controlLock;
+        return input.GetAxesNegative("Horizontal");
     }}
     public bool pressingRight { get {
-        return InputCustom.GetAxesPositive("Horizontal") && !pressingLeft && !controlLock;
+        return input.GetAxesPositive("Horizontal") && !pressingLeft;
     }}
 
     // ========================================================================
 
+    public bool isGhost = false;
+    public bool isLocalPlayer = true;
+
     public void UpdateDelta(float deltaTime) {
-        groundSpeedPrev = groundSpeed;
-        if (!timerPause) timer += deltaTime * Time.timeScale;
-        if (!isHarmful) destroyEnemyChain = 0;
-        
         UpdateEffects(deltaTime);
 
-        foreach (CharacterCapability capability in capabilities)
-            capability.Update(deltaTime);
+        if (!isLocalPlayer) {
+            isGhost = true;
+            if (spriteAnimatorState != spriteAnimatorStatePrev) {
+                spriteAnimator.Play(spriteAnimatorState);
+                spriteAnimatorStatePrev = spriteAnimatorState;
+            }
+        } else {
+            groundSpeedPrev = groundSpeed;
+            if (!timerPause) timer += deltaTime * Time.timeScale;
+            if (!isHarmful) destroyEnemyChain = 0;
 
-        velocityPrev = velocity;
+            foreach (CharacterCapability capability in capabilities) {
+                capability.Update(deltaTime);
+                input.enabled = !controlLock;
+            }
 
+            velocityPrev = velocity;
+        }
+
+        spriteAnimator.speed = spriteAnimatorSpeed;
         transform.localScale = new Vector3(sizeScale, sizeScale, sizeScale);
         spriteContainer.localScale = new Vector3( // Hacky
-            sizeScale * Mathf.Sign(spriteContainer.localScale.x),
+            sizeScale * (flipX ? -1 : 1),
             sizeScale * Mathf.Sign(spriteContainer.localScale.y),
             sizeScale * Mathf.Sign(spriteContainer.localScale.z)
         );
+        Color colorTemp = sprite.color;
+        colorTemp.a = opacity * (isGhost ? 0.5F : 1);
+        sprite.color = colorTemp;
 
         LimitPosition();
+    }
+
+    public void UpdateSpritePosition() {
+        spriteContainer.transform.position = position;
     }
 
     // ========================================================================
@@ -639,5 +701,55 @@ public class Character : MonoBehaviour {
     public void OnTriggerExit(Collider other) {
         foreach (CharacterCapability capability in capabilities)
             capability.OnTriggerExit(other);
+    }
+
+    // ========================================================================
+
+    void OnDestroy() {
+        Utils.GetLevelManager().characters.Remove(this);        
+    }
+
+    public GameObject cameraPrefab;
+    public GameObject spriteContainerPrefab;
+    public GameObject hudPrefab;
+
+    void InitReferences() {
+        rigidbody = GetComponent<Rigidbody>();
+        audioSource = GetComponent<AudioSource>();
+
+        spriteContainer = Instantiate(spriteContainerPrefab).transform;
+        sprite = spriteContainer.Find("Sprite").GetComponent<SpriteRenderer>();
+        spriteAnimator = sprite.GetComponent<Animator>();
+
+        groundModeGroup = transform.Find("Ground Mode");
+        rollingModeGroup = transform.Find("Rolling Mode");
+        airModeGroup = transform.Find("Air Mode");
+        rollingAirModeGroup = transform.Find("Rolling Air Mode");
+
+        rollingAirModeCollider = rollingAirModeGroup.Find("Collider").GetComponent<Collider>();
+        airModeCollider = airModeGroup.Find("Collider").GetComponent<Collider>();
+    }
+
+    public InputCustom input;
+
+    void Awake() {
+        LevelManager levelManager = Utils.GetLevelManager();
+        levelManager.characters.Add(this);
+        input = new InputCustom(levelManager.characters.Count);
+
+        InitReferences();
+
+        Level levelDefault = FindObjectOfType<Level>();
+
+        if (currentLevel == null) {
+            currentLevel = levelDefault;
+            respawnData.position = levelDefault.spawnPosition;
+            Respawn();
+        }
+
+        ObjTitleCard titleCard = currentLevel.MakeTitleCard(this);
+
+        if (GlobalOptions.Get<bool>("tinyMode"))
+            sizeScale = 0.5F;
     }
 }

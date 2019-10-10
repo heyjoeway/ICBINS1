@@ -20,8 +20,7 @@ public class CharacterCapabilityDropdash : CharacterCapability {
         if (nextStateName != "ground") return;
         if (
             (dropDashTimer <= 0) &&
-            InputCustom.GetButtons("Secondary", "Tertiary") &&
-            !character.controlLock
+            character.input.GetButtons("Secondary", "Tertiary")
         ) DropDashRelease();
     }
 
@@ -30,20 +29,20 @@ public class CharacterCapabilityDropdash : CharacterCapability {
     public override void Update(float deltaTime) {
         if (character.stateCurrent != "jump") return;
 
-        if (!InputCustom.GetButtons("Secondary", "Tertiary") || character.controlLock) {
-            character.spriteAnimator.Play("Roll");
+        if (!character.input.GetButtons("Secondary", "Tertiary")) {
+            character.AnimatorPlay("Roll");
             dropDashTimer = Mathf.Infinity;
         }
 
-        if (InputCustom.GetButtonsDownPreventRepeat("Secondary", "Tertiary") && !character.controlLock)
+        if (character.input.GetButtonsDownPreventRepeat("Secondary", "Tertiary"))
             dropDashTimer = 0.33333F;
 
-        if (InputCustom.GetButtons("Secondary", "Tertiary") && dropDashTimer > 0 && !character.controlLock) {
+        if (character.input.GetButtons("Secondary", "Tertiary") && dropDashTimer > 0) {
             dropDashTimer -= deltaTime;
 
             if (dropDashTimer <= 0) {
                 SFX.Play(character.audioSource, "SFX/Sonic 2/S2_60");
-                character.spriteAnimator.Play("Drop Dash");
+                character.AnimatorPlay("Drop Dash");
             }
         }
     }
@@ -52,7 +51,8 @@ public class CharacterCapabilityDropdash : CharacterCapability {
     void DropDashRelease() {
         SFX.Play(character.audioSource, "SFX/Sonic 1/S1_BC");
         character.stateCurrent = "rolling";
-        character.characterCamera.lagTimer = 0.26667F;
+        if (character.characterCamera != null)
+            character.characterCamera.lagTimer = 0.26667F;
 
         GameObject dust = GameObject.Instantiate(
             (GameObject)Resources.Load("Objects/Dash Dust (Drop Dash)"),

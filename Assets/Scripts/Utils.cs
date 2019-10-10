@@ -30,16 +30,21 @@ public static class Utils {
     }
 
     // ========================================================================
-    public static CharacterPackage CheckIfCharacterInRange(
+    public static Character CheckIfCharacterInRange(
         Vector2 thisPos,
         float triggerDistance,
         AxisType axisType,
         DistanceType distanceType,
-        HashSet<CharacterPackage> characterPackages
+        HashSet<Character> characters
     ) {
-        foreach(CharacterPackage characterPackage in characterPackages) {            
-            Vector2 cameraPos = characterPackage.camera.position;
-            Vector2 charPos = characterPackage.character.position;
+        foreach(Character character in characters) {
+            Vector2 cameraPos;
+            if (character.characterCamera != null)
+                cameraPos = character.characterCamera.position;
+            else
+                cameraPos = character.position;
+            
+            Vector2 charPos = character.position;
 
             float cameraDist = Mathf.Infinity;
             float charDist = Mathf.Infinity;
@@ -73,7 +78,7 @@ public static class Utils {
                     break;
             }
 
-            if (otherDist <= triggerDistance) return characterPackage;
+            if (otherDist <= triggerDistance) return character;
         }
 
         return null;

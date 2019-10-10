@@ -22,8 +22,7 @@ public class ObjCheckpoint : MonoBehaviour {
 
     void RefreshAll() {
         int maxId = 0;
-        foreach (CharacterPackage characterPackage in Utils.GetLevelManager().characterPackages) {
-            Character character = characterPackage.character;
+        foreach (Character character in Utils.GetLevelManager().characters) {
             if (character.currentLevel == null) return;
             if (character.currentLevel.gameObject.scene != gameObject.scene) return;
             maxId = Mathf.Max(character.checkpointId, maxId);

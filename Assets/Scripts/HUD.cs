@@ -25,6 +25,7 @@ public class HUD : MonoBehaviour {
     // Start is called before the first frame update
     void Start() {
         InitReferences();
+        GetComponent<Canvas>().worldCamera = character.characterCamera.camera;
     }
 
     // Update is called once per frame

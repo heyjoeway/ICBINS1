@@ -37,9 +37,8 @@ public class CharacterCapabilityPeelOut : CharacterCapability {
             // Switches the character to spindash state if connditions are met:
             // - Pressing spindash key combo
             // - Standing still
-            if (character.controlLock) return;
-            if (!InputCustom.GetAxesPositive("Vertical")) return;
-            if (!InputCustom.GetButtonsDownPreventRepeat("Secondary", "Tertiary")) return;
+            if (!character.input.GetAxesPositive("Vertical")) return;
+            if (!character.input.GetButtonsDownPreventRepeat("Secondary", "Tertiary")) return;
             if (character.groundSpeed != 0) return;
             character.stateCurrent = name;
             return;
@@ -54,7 +53,7 @@ public class CharacterCapabilityPeelOut : CharacterCapability {
 
     // 3D-Ready: YES
     void UpdateSpindashInput() {
-        if (!InputCustom.GetAxesPositive("Vertical") || character.controlLock)
+        if (!character.input.GetAxesPositive("Vertical"))
             SpindashRelease();
     }
 
@@ -63,7 +62,8 @@ public class CharacterCapabilityPeelOut : CharacterCapability {
         if (peelOutTimer <= 0) {
             character.groundSpeed = 12F * character.physicsScale * (character.flipX ? -1 : 1);
             character.groundSpeedPrev = character.groundSpeed; // Hack for breakable walls
-            character.characterCamera.lagTimer = 0.26667F;
+            if (character.characterCamera != null)
+                character.characterCamera.lagTimer = 0.26667F;
             SFX.Play(character.audioSource, "SFX/Sonic CD/SCD_FM_01");
         }
         character.stateCurrent = "ground";
@@ -71,18 +71,17 @@ public class CharacterCapabilityPeelOut : CharacterCapability {
 
     // 3D-Ready: YES
     void UpdateSpindashAnim(float deltaTime) {
-        character.spriteContainer.transform.position = character.position;
         character.spriteContainer.transform.eulerAngles = character.GetSpriteRotation(deltaTime);
         character.flipX = !character.facingRight;
 
         float runSpeed = (1F - (peelOutTimer / 0.5F)) * 12F;
-        character.spriteAnimator.speed = runSpeed / character.topSpeedNormal;
+        character.spriteAnimatorSpeed = runSpeed / character.topSpeedNormal;
 
         if (runSpeed < 6F) {
-            character.spriteAnimator.Play("Walk");
-            character.spriteAnimator.speed = 1 + (runSpeed / character.topSpeedNormal);
+            character.AnimatorPlay("Walk");
+            character.spriteAnimatorSpeed = 1 + (runSpeed / character.topSpeedNormal);
         } else if (runSpeed >= 12F)
-            character.spriteAnimator.Play("Fast");
-        else character.spriteAnimator.Play("Run");
+            character.AnimatorPlay("Fast");
+        else character.AnimatorPlay("Run");
     }
 }

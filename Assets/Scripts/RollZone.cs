@@ -14,8 +14,7 @@ public class RollZone : MonoBehaviour {
     }
 
     void Update() {
-        foreach (CharacterPackage characterPackage in levelManager.characterPackages) {
-            Character character = characterPackage.character;
+        foreach (Character character in levelManager.characters) {
             if (!renderer.bounds.Contains(character.position)) continue;
             
             bool rollLock = false;

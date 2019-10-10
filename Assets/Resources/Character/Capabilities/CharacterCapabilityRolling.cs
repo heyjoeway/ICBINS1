@@ -58,8 +58,7 @@ public class CharacterCapabilityRolling : CharacterCapability {
     public override void Update(float deltaTime) {
         if (character.stateCurrent == "ground") {
             if (character.pressingLeft || character.pressingRight) return;
-            if (character.controlLock) return;
-            if (!InputCustom.GetAxesNegative("Vertical")) return;
+            if (!character.input.GetAxesNegative("Vertical")) return;
             if (Mathf.Abs(character.groundSpeed) < rollThreshold) return;
             character.stateCurrent = "rolling";
             SFX.PlayOneShot(character.audioSource, "SFX/Sonic 1/S1_BE");
@@ -89,10 +88,10 @@ public class CharacterCapabilityRolling : CharacterCapability {
     void UpdateRollingMove(float deltaTime) {
         float accelerationMagnitude = 0F;
 
-        if (InputCustom.GetAxesNegative("Horizontal") && !character.controlLock) {
+        if (character.input.GetAxesNegative("Horizontal")) {
             if (character.groundSpeed > 0)
                 accelerationMagnitude = -decelerationRoll;
-        } else if (InputCustom.GetAxesPositive("Horizontal") && !character.controlLock) {
+        } else if (character.input.GetAxesPositive("Horizontal")) {
             if (character.groundSpeed < 0)
                 accelerationMagnitude = decelerationRoll;
         }
@@ -122,9 +121,8 @@ public class CharacterCapabilityRolling : CharacterCapability {
 
     // 3D-Ready: YES
     void UpdateRollingAnim() {
-        character.spriteAnimator.Play("Roll");
-        character.spriteAnimator.speed = 1 + ((Mathf.Abs(character.groundSpeed) / character.topSpeedNormal) * 2F);
-        character.spriteContainer.transform.position = character.position;
+        character.AnimatorPlay("Roll");
+        character.spriteAnimatorSpeed = 1 + ((Mathf.Abs(character.groundSpeed) / character.topSpeedNormal) * 2F);
         character.spriteContainer.eulerAngles = Vector3.zero;
         character.flipX = !character.facingRight;
     }

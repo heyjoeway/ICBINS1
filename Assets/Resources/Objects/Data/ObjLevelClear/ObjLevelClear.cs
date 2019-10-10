@@ -64,13 +64,16 @@ public class ObjLevelClear : MonoBehaviour {
                 ((CharacterCapabilityVictory)capability).victoryLock = false;
             });
             character.positionMax = Mathf.Infinity * Vector2.one;
-            character.characterCamera.maxPosition = Mathf.Infinity * Vector2.one;
+
+            if (character.characterCamera != null)
+                character.characterCamera.maxPosition = Mathf.Infinity * Vector2.one;
+
             ObjTitleCard titleCard = nextLevel.MakeTitleCard();
             titleCard.screenFade.brightness = titleCard.screenFade.brightnessMax;
             titleCard.character = character;
             titleCard.Init();
         } else {
-            if (Utils.GetLevelManager().characterPackages.Count == 1) {
+            if (Utils.GetLevelManager().characters.Count == 1) {
                 character.currentLevel.ReloadFadeOut();
             } else character.SoftRespawn();
         }
@@ -111,7 +114,10 @@ public class ObjLevelClear : MonoBehaviour {
                 // animator.Play("Items Enter");
                 timeBonus = GetTimeBonus(character.timer);
                 ringBonus = character.rings * 100;
-                canvas.worldCamera = character.characterCamera.camera; // i hate this name too, trust me
+
+                if (character.characterCamera != null)
+                    canvas.worldCamera = character.characterCamera.camera; // i hate this name too, trust me
+                    
                 actTextComponent.text = character.currentLevel.act.ToString();
 
                 character.TryGetCapability("victory", (CharacterCapability capability) => {

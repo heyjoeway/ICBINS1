@@ -58,13 +58,13 @@ public class ObjBuzzBomber : MonoBehaviour {
 
             if (!hasFired) {
                 // Check if character is near
-                CharacterPackage characterInRange;
+                Character characterInRange;
                 characterInRange = Utils.CheckIfCharacterInRange(
                     transform.position,
                     3,
                     Utils.AxisType.X,
                     Utils.DistanceType.Character,
-                    levelManager.characterPackages
+                    levelManager.characters
                 );
 
                 if (characterInRange != null) {

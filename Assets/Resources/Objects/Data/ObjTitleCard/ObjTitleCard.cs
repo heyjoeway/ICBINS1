@@ -20,7 +20,9 @@ public class ObjTitleCard : MonoBehaviour {
         actTextComponent = transform.Find("Act Value").GetComponent<Text>();
         zoneTextComponent = transform.Find("Zone Name").GetComponent<Text>();
         canvas = GetComponent<Canvas>();
-        canvas.worldCamera = character.characterCamera.camera;
+
+        if (character.characterCamera != null)
+            canvas.worldCamera = character.characterCamera.camera;
 
         actTextComponent.text = character.currentLevel.act.ToString();
         zoneTextComponent.text = character.currentLevel.zone.ToUpper();

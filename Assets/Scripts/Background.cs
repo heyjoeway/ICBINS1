@@ -7,7 +7,7 @@ public class Background : MonoBehaviour {
     public BackgroundCamera backgroundCamera {
         get { return transform.Find("Camera").GetComponent<BackgroundCamera>(); }
     }
-    public CharacterPackage characterPackage;
+    public Character character;
 
     public virtual void Start() {
         transform.position = new Vector3(
@@ -23,7 +23,7 @@ public class Background : MonoBehaviour {
     public virtual void Update() {
         targetPosition += autoMoveSpeed * Utils.cappedDeltaTime;
 
-        if (characterPackage != null)
-            targetPosition = characterPackage.camera.transform.position;
+        if (character != null && character.characterCamera != null)
+            targetPosition = character.characterCamera.position;
     }
 }

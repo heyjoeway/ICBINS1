@@ -51,7 +51,7 @@ public class CharacterCapabilityHomingAttack : CharacterCapability {
 
     public override void Update(float deltaTime) {
         if (character.stateCurrent == "jump") {
-            if (InputCustom.GetButtonsDownPreventRepeat("Secondary", "Tertiary"))
+            if (character.input.GetButtonsDownPreventRepeat("Secondary", "Tertiary"))
                 character.stateCurrent = "homingAttack";
         }
 
@@ -66,7 +66,6 @@ public class CharacterCapabilityHomingAttack : CharacterCapability {
                 homingAttackSpeed * deltaTime * 2
             );
 
-            character.spriteContainer.transform.position = character.position;
         }
     }
 

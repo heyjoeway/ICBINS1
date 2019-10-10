@@ -60,9 +60,8 @@ public class CharacterCapabilitySpindash : CharacterCapability {
             // Switches the character to spindash state if connditions are met:
             // - Pressing spindash key combo
             // - Standing still
-            if (character.controlLock) return;
-            if (!InputCustom.GetAxesNegative("Vertical")) return;
-            if (!InputCustom.GetButtonsDownPreventRepeat("Secondary", "Tertiary")) return;
+            if (!character.input.GetAxesNegative("Vertical")) return;
+            if (!character.input.GetButtonsDownPreventRepeat("Secondary", "Tertiary")) return;
             if (character.groundSpeed != 0) return;
             character.stateCurrent = name;
             return;
@@ -84,12 +83,12 @@ public class CharacterCapabilitySpindash : CharacterCapability {
 
     // 3D-Ready: YES
     void UpdateSpindashInput() {
-        if (!InputCustom.GetAxesNegative("Vertical") || character.controlLock) {
+        if (!character.input.GetAxesNegative("Vertical")) {
             SpindashRelease();
             return;
         }
 
-        if (InputCustom.GetButtonsDownPreventRepeat("Secondary", "Tertiary") && !character.controlLock)
+        if (character.input.GetButtonsDownPreventRepeat("Secondary", "Tertiary"))
             SpindashCharge();
     }
 
@@ -101,7 +100,7 @@ public class CharacterCapabilitySpindash : CharacterCapability {
 
     // 3D-Ready: YES
     void SpindashCharge() {
-        character.spriteAnimator.Play("Spindash", 0, 0);
+        character.AnimatorPlay("Spindash", 0);
         spindashPower += 2;
         SFX.Play(character.audioSource, "SFX/Sonic 2/S2_60",
             1 + ((spindashPower / (spindashPowerMax + 2)) * 0.5F)
@@ -116,14 +115,14 @@ public class CharacterCapabilitySpindash : CharacterCapability {
             character.physicsScale
         );
         character.groundSpeedPrev = character.groundSpeed; // Hack for breakable walls
-        character.characterCamera.lagTimer = 0.26667F;
+        if (character.characterCamera != null)
+            character.characterCamera.lagTimer = 0.26667F;
         SFX.Play(character.audioSource, "SFX/Sonic 1/S1_BC");
         character.stateCurrent = "rolling";
     }
 
     // 3D-Ready: YES
     void UpdateSpindashAnim(float deltaTime) {
-        character.spriteContainer.transform.position = character.position;
         character.spriteContainer.transform.eulerAngles = character.GetSpriteRotation(deltaTime);
         character.flipX = !character.facingRight;
     }

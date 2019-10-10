@@ -47,8 +47,7 @@ public class CharacterCapabilityHurt : CharacterCapability {
             0
         ) * deltaTime * 60F;
 
-        character.spriteAnimator.Play("Hurt");
-        character.spriteContainer.transform.position = character.position;
+        character.AnimatorPlay("Hurt");
         character.spriteContainer.eulerAngles = Vector3.zero;
         character.flipX = !character.facingRight;
 

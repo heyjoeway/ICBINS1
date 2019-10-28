@@ -4,11 +4,30 @@ using UnityEngine;
 using UnityEngine.UI;
 
 public class ObjTitleCard : MonoBehaviour {
+    public static ObjTitleCard Make(Character character = null, bool fadeIn = true) {
+        ObjTitleCard titleCard = Instantiate(
+            Constants.Get<GameObject>("prefabTitleCard"),
+            Vector3.zero,
+            Quaternion.identity
+        ).GetComponent<ObjTitleCard>();
+        
+        if (character != null)
+            titleCard.character = character;
+        
+        if (!fadeIn)
+            titleCard.screenFade.brightness = titleCard.screenFade.brightnessMax;
+            
+        titleCard.Init();
+        return titleCard;
+    }
+
     [HideInInspector]
     public Character character;
     [HideInInspector]
     public ScreenFade screenFade { get { return GetComponent<ScreenFade>(); }}
-    Canvas canvas;
+    [HideInInspector]
+    public Canvas canvas;
+    Animator animator;
     Text zoneTextComponent;
     Text actTextComponent;
 
@@ -16,28 +35,35 @@ public class ObjTitleCard : MonoBehaviour {
         Time.timeScale = 1;
     }
 
-    public void Init() {
+    void Awake() {
         actTextComponent = transform.Find("Act Value").GetComponent<Text>();
         zoneTextComponent = transform.Find("Zone Name").GetComponent<Text>();
         canvas = GetComponent<Canvas>();
+        animator = GetComponent<Animator>();
+    }
 
+    public void Init() {
         if (character.characterCamera != null)
             canvas.worldCamera = character.characterCamera.camera;
 
         actTextComponent.text = character.currentLevel.act.ToString();
         zoneTextComponent.text = character.currentLevel.zone.ToUpper();
 
-        MusicManager musicManager = Utils.GetMusicManager();
+        screenFade.Update();
+    }
 
-        if (musicManager.musicStackEntryCurrent != null)
-            if (character.currentLevel.musicLoop == musicManager.musicStackEntryCurrent.loopClip)
+    void Start() {
+        if (MusicManager.current.musicStackEntryCurrent != null)
+            if (character.currentLevel.musicLoop == MusicManager.current.musicStackEntryCurrent.loopClip)
                 return;
 
-        musicManager.Play(new MusicManager.MusicStackEntry{
+        MusicManager.current.Play(new MusicManager.MusicStackEntry{
             introClip = character.currentLevel.musicIntro,
             loopClip = character.currentLevel.musicLoop
         });
+    }
 
-        GetComponent<ScreenFade>().InitReferences();
+    void Update() {
+        animator.Update(Utils.cappedUnscaledDeltaTime);
     }
 }

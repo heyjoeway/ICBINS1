@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 2700184021261266012}
   - component: {fileID: 2398247845118163299}
   - component: {fileID: 711313227544878775}
-  m_Layer: 0
+  m_Layer: 22
   m_Name: Camera Zone
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -105,3 +105,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 94b0f75cb2eb4564ca0a3a7bde33fddd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  cameraMin: {x: 0, y: 0}
+  cameraMax: {x: 0, y: 0}
+  positionMin: {x: 0, y: 0}
+  positionMax: {x: 0, y: 0}
+  unloadUnpopulatedLevels: 0

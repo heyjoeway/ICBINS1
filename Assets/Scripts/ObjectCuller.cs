@@ -179,7 +179,6 @@ public class ObjectCuller : MonoBehaviour
     // ========================================================================
 
     GameObject clone = null;
-    LevelManager levelManager;
     bool everyOtherFrameCheck;
     Vector3 initialPosition;
 
@@ -188,9 +187,6 @@ public class ObjectCuller : MonoBehaviour
 
         if (runEveryOtherFrame)
             everyOtherFrameCheck = Random.value > 0.5;
-
-        // Level manager keeps track of all characters
-        levelManager = Utils.GetLevelManager();
 
         if (enableType == EnableType.Reset) {
             clone = Instantiate(gameObject);
@@ -222,7 +218,7 @@ public class ObjectCuller : MonoBehaviour
             triggerDistance,
             axisType,
             distanceType,
-            levelManager.characters
+            LevelManager.current.characters
         ) != null;
     }
 
@@ -259,7 +255,7 @@ public class ObjectCuller : MonoBehaviour
                         triggerDistance,
                         axisType,
                         distanceType,
-                        levelManager.characters
+                        LevelManager.current.characters
                     ) != null;
                     if (inRangeInitial) break;
                     clone.SetActive(true);

@@ -26,9 +26,9 @@ TagManager:
   - Object - Monitor Trigger
   - Object - Ignore Other Objects
   - Object - Top Solid Only and Ignore Other Objects
-  - 
-  - 
-  - 
+  - Object - Player Only
+  - Object - Player Only and Ignore Raycast
+  - Object - Ring
   - 
   - 
   - 
@@ -40,4 +40,7 @@ TagManager:
   m_SortingLayers:
   - name: Default
     uniqueID: 0
+    locked: 0
+  - name: New Layer
+    uniqueID: 2793484635
     locked: 0

@@ -10,7 +10,6 @@ public class ObjCrabmeat : MonoBehaviour {
 
     SpriteRenderer spriteRenderer;
     Animator animator;
-    LevelManager levelManager;
 
     void InitReferences() {
         spriteRenderer = GetComponent<SpriteRenderer>();
@@ -18,11 +17,9 @@ public class ObjCrabmeat : MonoBehaviour {
 
         bulletPositionL = transform.Find("Bullet Position L");
         bulletPositionR = transform.Find("Bullet Position R");
-
-        levelManager = Utils.GetLevelManager();
     }
 
-void Start() { InitReferences(); }
+    void Awake() { InitReferences(); }
 
     // ========================================================================
 

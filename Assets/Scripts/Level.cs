@@ -9,9 +9,10 @@ public class Level : MonoBehaviour {
     public AudioClip musicLoop;
     public CameraZone cameraZoneStart;
 
-    LevelManager levelManager;
     public Vector3 spawnPosition { get {
-        return transform.Find("Spawn Position").position;
+        Transform spawnLocation = transform.Find("Spawn Position");
+        if (spawnLocation == null) return Vector3.zero;
+        return spawnLocation.position;
     }}
 
     public int act = 0;
@@ -19,11 +20,10 @@ public class Level : MonoBehaviour {
 
     void Start() {
         Utils.SetFramerate();
-        levelManager = Utils.GetLevelManager();
     }
 
     void Update() {
-        foreach(Character character in levelManager.characters) {
+        foreach(Character character in LevelManager.current.characters) {
             if (character.currentLevel != this) continue;
             
             DLEUpdateCharacter(character);
@@ -34,53 +34,51 @@ public class Level : MonoBehaviour {
     }
 
     public void Unload() {
-        foreach(Character character in levelManager.characters) {
+        foreach(Character character in LevelManager.current.characters) {
             if (character.currentLevel == this) return;
         }
         SceneManager.UnloadSceneAsync(gameObject.scene);
     }
 
-    public void ReloadFadeOut() {
-        Time.timeScale = 0;
+    public void ReloadFadeOut(Character character = null) {
+        if (LevelManager.current.characters.Count == 1) Time.timeScale = 0;
+
         ScreenFade screenFade = Instantiate(
-            Resources.Load<GameObject>("Objects/Screen Fade Out"),
+            Constants.Get<GameObject>("prefabScreenFadeOut"),
             Vector3.zero,
             Quaternion.identity
         ).GetComponent<ScreenFade>();
-        Utils.GetMusicManager().FadeOut();
-        screenFade.destroyWhenDone = false;
-        screenFade.onComplete = () => Reload();
+    
+        if (character != null)
+            screenFade.canvas.worldCamera = character.characterCamera.camera;
+
+        MusicManager.current.FadeOut();
+        screenFade.onComplete = () => {
+            if (LevelManager.current.characters.Count == 1) Reload();
+            else {
+                if (character == null) return;
+                ObjTitleCard.Make(character);
+                character.Respawn();
+            }
+        };
     }
 
     public void Reload() {
         StartCoroutine(Utils.LoadLevelAsync(
             gameObject.scene.path,
             (Level nextLevel) => {
-                Utils.GetMusicManager().Clear();
-                Utils.GetLevelManager().ReloadDisposablesScene();
-                foreach(Character character in levelManager.characters) {
+                MusicManager.current.Clear();
+                LevelManager.current.ReloadDisposablesScene();
+                foreach(Character character in LevelManager.current.characters) {
                     if (character.currentLevel != this) continue;
                     character.currentLevel = nextLevel;
-                    MakeTitleCard(character);
+                    ObjTitleCard.Make(character);
                     character.Respawn();
                 }
                 SceneManager.UnloadSceneAsync(gameObject.scene);
             },
             true
         ));
-    }
-
-    public ObjTitleCard MakeTitleCard(Character character = null) {
-        ObjTitleCard titleCard = Instantiate(
-            Resources.Load<GameObject>("Objects/Title Card"),
-            Vector3.zero,
-            Quaternion.identity
-        ).GetComponent<ObjTitleCard>();
-        if (character != null) {
-            titleCard.character = character;
-            titleCard.Init();
-        }
-        return titleCard;
     }
 
     public virtual void DLEUpdateCharacter(Character character) { }

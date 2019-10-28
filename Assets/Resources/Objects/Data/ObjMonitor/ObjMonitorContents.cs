@@ -14,7 +14,10 @@ public class ObjMonitorContents : MonoBehaviour {
         Life,
         Super,
         Goggles,
-        Hurt
+        Hurt,
+        ShieldElectricity,
+        ShieldBubble,
+        ShieldFire
     }
 
     string[] ContentsAnimations = new string[] {
@@ -36,19 +39,31 @@ public class ObjMonitorContents : MonoBehaviour {
 
     Animator animator { get { return GetComponent<Animator>(); }}
 
-    void Start() { animator.Play(ContentsAnimations[(int)type]); }
+    void Start() {
+        if (!GlobalOptions.Get<bool>("elementalShields")) {
+            switch(type) {
+                case ContentsType.ShieldElectricity:
+                case ContentsType.ShieldBubble:
+                case ContentsType.ShieldFire:
+                    type = ContentsType.Shield;
+                    break;
+            }
+        }
+
+        animator.Play(ContentsAnimations[(int)type]);
+    }
 
     public void Award() {
         switch(type) {
             case ContentsType.Ring:
                 recipient.rings += 10;
-                SFX.Play(audioSource, "SFX/Sonic 1/S1_B5");
+                SFX.Play(audioSource, "sfxRingMonitor");
                 break;
             case ContentsType.Shield:
-                SFX.Play(audioSource, "SFX/Sonic 1/S1_AF");
-                recipient.shield = Instantiate(Resources.Load<GameObject>(
-                    "Objects/Shield (Normal)"
-                )).GetComponent<ObjShield>();
+                SFX.Play(audioSource, "sfxShieldNormal");
+                recipient.shield = Instantiate(
+                    Constants.Get<GameObject>("prefabShieldNormal")
+                ).GetComponent<ObjShield>();
                 recipient.shield.character = recipient;
                 break;
             case ContentsType.Life:

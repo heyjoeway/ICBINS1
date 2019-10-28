@@ -6,7 +6,6 @@ public class ObjNewtronGreen : MonoBehaviour {
     Transform bulletPosition;
     new Collider collider;
     Animator animator;
-    LevelManager levelManager;
     SpriteRenderer spriteRenderer;
 
     bool _initReferencesDone = false;
@@ -16,7 +15,6 @@ public class ObjNewtronGreen : MonoBehaviour {
         collider = GetComponent<Collider>();
         animator = GetComponent<Animator>();
         spriteRenderer = GetComponent<SpriteRenderer>();
-        levelManager = Utils.GetLevelManager();
         _initReferencesDone = true;
     }
 
@@ -59,7 +57,7 @@ public class ObjNewtronGreen : MonoBehaviour {
             triggerDistance,
             Utils.AxisType.X,
             Utils.DistanceType.Camera,
-            levelManager.characters
+            LevelManager.current.characters
         );
 
         if (characterInRange == null) return;

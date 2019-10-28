@@ -61,7 +61,7 @@ public class CharacterCapabilityRolling : CharacterCapability {
             if (!character.input.GetAxesNegative("Vertical")) return;
             if (Mathf.Abs(character.groundSpeed) < rollThreshold) return;
             character.stateCurrent = "rolling";
-            SFX.PlayOneShot(character.audioSource, "SFX/Sonic 1/S1_BE");
+            SFX.PlayOneShot(character.audioSource, "sfxRoll");
         }
 
         if (!(

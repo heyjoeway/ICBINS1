@@ -41,7 +41,7 @@ public class CharacterCapabilityDropdash : CharacterCapability {
             dropDashTimer -= deltaTime;
 
             if (dropDashTimer <= 0) {
-                SFX.Play(character.audioSource, "SFX/Sonic 2/S2_60");
+                SFX.Play(character.audioSource, "sfxDropDashCharge");
                 character.AnimatorPlay("Drop Dash");
             }
         }
@@ -49,13 +49,13 @@ public class CharacterCapabilityDropdash : CharacterCapability {
 
     // 3D-Ready: YES
     void DropDashRelease() {
-        SFX.Play(character.audioSource, "SFX/Sonic 1/S1_BC");
+        SFX.Play(character.audioSource, "sfxDropDashRelease");
         character.stateCurrent = "rolling";
         if (character.characterCamera != null)
             character.characterCamera.lagTimer = 0.26667F;
 
         GameObject dust = GameObject.Instantiate(
-            (GameObject)Resources.Load("Objects/Dash Dust (Drop Dash)"),
+            Constants.Get<GameObject>("prefabDropDashDust"),
             dustLocation.position,
             Quaternion.identity
         );

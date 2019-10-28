@@ -15,7 +15,7 @@ public class ObjCirno : MonoBehaviour {
     }
 
     public void PlayMusic() {
-        Utils.GetMusicManager().Add(new MusicManager.MusicStackEntry {
+        MusicManager.current.Add(new MusicManager.MusicStackEntry {
             loopPath = "Music/Cirno Easter Egg",
             priority = 999999999
         });

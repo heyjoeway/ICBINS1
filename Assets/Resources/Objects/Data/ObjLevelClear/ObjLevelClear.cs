@@ -68,14 +68,9 @@ public class ObjLevelClear : MonoBehaviour {
             if (character.characterCamera != null)
                 character.characterCamera.maxPosition = Mathf.Infinity * Vector2.one;
 
-            ObjTitleCard titleCard = nextLevel.MakeTitleCard();
-            titleCard.screenFade.brightness = titleCard.screenFade.brightnessMax;
-            titleCard.character = character;
-            titleCard.Init();
+            ObjTitleCard titleCard = ObjTitleCard.Make(character, false);
         } else {
-            if (Utils.GetLevelManager().characters.Count == 1) {
-                character.currentLevel.ReloadFadeOut();
-            } else character.SoftRespawn();
+            character.currentLevel.ReloadFadeOut(character);
         }
         Destroy(gameObject);
     }
@@ -125,7 +120,7 @@ public class ObjLevelClear : MonoBehaviour {
                 });
                 character.effects.Clear();
 
-                Utils.GetMusicManager().Play(new MusicManager.MusicStackEntry{
+                MusicManager.current.Play(new MusicManager.MusicStackEntry{
                     introPath = "Music/Level Clear"
                 });
             }
@@ -158,10 +153,10 @@ public class ObjLevelClear : MonoBehaviour {
 
             character.score += transferAmtTime;
             character.score += transferAmtRing;
-            SFX.Play(audioSource, "SFX/Sonic 1/S1_CD");
+            SFX.Play(audioSource, "sfxTallyBeep");
 
             if ((timeBonus <= 0) && (ringBonus <= 0)) {
-                SFX.Play(audioSource, "SFX/Sonic 1/S1_C5");
+                SFX.Play(audioSource, "sfxTallyChaChing");
                 if (GlobalOptions.Get("levelTransitions") != "OFF")
                     animator.Play("Items Exit");
             }

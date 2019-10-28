@@ -3,12 +3,11 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class ObjFloatingPlatform : MonoBehaviour {
-
     Transform moveDestinationLocation;
     Transform platformTransform;
     CharacterGroundedDetector groundedDetector;
 
-    void InitReferences() {
+    void Awake() {
         groundedDetector = platformColliderObj.GetComponent<CharacterGroundedDetector>();
         moveDestinationLocation = transform.Find("Move Destination");
         platformTransform = transform.Find("Platform");
@@ -40,7 +39,7 @@ public class ObjFloatingPlatform : MonoBehaviour {
     Vector3 offsetOriginal;
     Vector3 offsetMove;
 
-    Vector3 positionPrev;
+    // Vector3 positionPrev;
     Vector3 position {
         get { return offsetNudge + offsetOriginal + offsetMove; }
     }
@@ -50,11 +49,9 @@ public class ObjFloatingPlatform : MonoBehaviour {
     float nudgeTimeMax = 0.5F;
 
     void Start() {
-        InitReferences();
         offsetOriginal = platformTransform.position;
         offsetNudge = Vector3.zero;
         offsetMove = Vector3.zero;
-        positionPrev = position;
     }
 
     void UpdateNudge() {
@@ -120,11 +117,6 @@ public class ObjFloatingPlatform : MonoBehaviour {
     void Update() {
         UpdateType();
         UpdateNudge();
-
-        foreach (var character in groundedDetector.characters)
-            character.position = character.position + (position - positionPrev);
-
         platformTransform.position = position;
-        positionPrev = position;
     }
 }

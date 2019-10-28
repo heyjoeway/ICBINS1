@@ -2,17 +2,15 @@ using UnityEngine;
 using System;
 
 public class CharacterEffectInvincible : CharacterEffect {
-    MusicManager musicManager;
     MusicManager.MusicStackEntry musicStackEntry;
 
     public CharacterEffectInvincible(Character character, float duration = 20F)
         : base(character, "invincible", duration) {
-        musicManager = Utils.GetMusicManager();
 
         if (!character.HasEffect("invincible")) {
-            ObjShield stars = GameObject.Instantiate(Resources.Load<GameObject>(
-                "Objects/Invincibility Stars"
-            )).GetComponent<ObjShield>();
+            ObjShield stars = GameObject.Instantiate(
+                Constants.Get<GameObject>("prefabInvincibilityStars")
+            ).GetComponent<ObjShield>();
             stars.character = character;
         }
 
@@ -21,10 +19,10 @@ public class CharacterEffectInvincible : CharacterEffect {
             loopPath = "Music/Invincibility Loop",
             priority = 1
         };
-        musicManager.Add(musicStackEntry);
+        MusicManager.current.Add(musicStackEntry);
     }
 
     public override void Destroy() {
-        musicManager.Remove(musicStackEntry);
+        MusicManager.current.Remove(musicStackEntry);
     }
 }

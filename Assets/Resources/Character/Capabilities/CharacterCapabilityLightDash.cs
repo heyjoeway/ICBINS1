@@ -5,6 +5,8 @@ public class CharacterCapabilityLightDash : CharacterCapability {
         return 9F * character.physicsScale;
     }}
 
+    float failsafeTimer;
+
     public CharacterCapabilityLightDash(Character character) : base(character) { }
 
     ObjRing target;
@@ -18,7 +20,7 @@ public class CharacterCapabilityLightDash : CharacterCapability {
     public override void StateInit(string stateName, string prevStateName) {
         if (character.stateCurrent != "lightDash") return;
         
-        SFX.Play(character.audioSource, "SFX/Sonic 1/S1_BC");
+        SFX.Play(character.audioSource, "sfxLightDash");
         character.velocity = Vector3.zero;
         character.modeGroupCurrent = character.airModeGroup;
         afterImageEffect = new CharacterEffect(character, "afterImage");
@@ -28,6 +30,7 @@ public class CharacterCapabilityLightDash : CharacterCapability {
 
     public override void StateDeinit(string stateName, string nextStateName) {
         if (character.stateCurrent != "lightDash") return;
+        failsafeTimer = 5F;
         if (afterImageEffect != null)
             afterImageEffect.DestroyBase();
     }
@@ -66,6 +69,10 @@ public class CharacterCapabilityLightDash : CharacterCapability {
             character.position = newPos;
 
             character.spriteContainer.transform.eulerAngles = character.GetSpriteRotation(deltaTime);
+
+            failsafeTimer -= deltaTime;
+            if (failsafeTimer <= 0)
+                character.stateCurrent = "rollingAir";
         }
     }
 

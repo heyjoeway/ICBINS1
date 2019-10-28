@@ -7,7 +7,7 @@ public class SnapToPixel : MonoBehaviour {
     }
 
     public void Update() {
-        transform.position = (transform.position * 32).Round(0) / 32F;
-        if (rigidbody != null) rigidbody.position = transform.position;
+        // transform.position = (transform.position * 32).Round(0) / 32F;
+        // if (rigidbody != null) rigidbody.position = transform.position;
     }
 }

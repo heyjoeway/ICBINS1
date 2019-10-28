@@ -178,7 +178,7 @@ public class CharacterCapabilityGround : CharacterCapability {
             // ======================
             } else if (skidding && canSkid) {
                 if (!character.spriteAnimator.GetCurrentAnimatorStateInfo(0).IsName("Skid"))
-                    SFX.Play(character.audioSource, "SFX/Sonic 1/S1_A4");
+                    SFX.Play(character.audioSource, "sfxSkid");
 
                 character.AnimatorPlay("Skid");
             // Walking
@@ -276,7 +276,7 @@ public class CharacterCapabilityGround : CharacterCapability {
 
         pushing = pushLeft || pushRight;
 
-        character.groundSpeed = 0;
+        character.GroundSpeedSync();
     }
 
 }

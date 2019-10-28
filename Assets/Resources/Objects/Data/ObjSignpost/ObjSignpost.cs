@@ -26,7 +26,7 @@ public class ObjSignpost : MonoBehaviour {
         animator.Play("Spin");
         audioSource.Play();
         ObjLevelClear levelClearObj = Instantiate(
-            Resources.Load<GameObject>("Objects/Level Clear"),
+            Constants.Get<GameObject>("prefabLevelClear"),
             Vector3.zero,
             Quaternion.identity
         ).GetComponent<ObjLevelClear>();

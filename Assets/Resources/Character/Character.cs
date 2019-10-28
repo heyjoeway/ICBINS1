@@ -3,7 +3,7 @@ using UnityEngine.Networking;
 using System.Collections.Generic;
 using System;
 
-public class Character : MonoBehaviour {
+public class Character : GameBehaviour {
     public float topSpeedNormal { get {
         return 6F * physicsScale;
     }}
@@ -194,7 +194,9 @@ public class Character : MonoBehaviour {
                 "Player - Ignore Top Solid",
                 "Player - Rolling",
                 "Player - Rolling and Ignore Top Solid",
-                "Player - Rolling and Ignore Top Solid"
+                "Player - Rolling and Ignore Top Solid",
+                "Object - Player Only and Ignore Raycast",
+                "Object - Ring"
             );
             return (LayerMask)_solidRaycastMask;
         }
@@ -291,7 +293,7 @@ public class Character : MonoBehaviour {
                     Vector3 newPos = (
                         hitLedge.point -
                         (dir * transform.right * 0.375F * sizeScale) +
-                        (transform.up * 0.5F)
+                        (transform.up * 0.5F * sizeScale)
                     );
                     newPos.x = position.x;
                     newPos.z = position.z;
@@ -427,7 +429,7 @@ public class Character : MonoBehaviour {
         get { return _lives; }
         set {
             if (value > _lives) {
-                Utils.GetMusicManager().Add(new MusicManager.MusicStackEntry{
+                MusicManager.current.Add(new MusicManager.MusicStackEntry{
                     introPath = "Music/1-Up",
                     disableSfx = true,
                     fadeInAfter = true,
@@ -446,16 +448,18 @@ public class Character : MonoBehaviour {
 
     public class RespawnData {
         public Vector3 position = Vector3.zero;
+        public float timer = 0;
     }
     public RespawnData respawnData = new RespawnData();
 
     public int checkpointId = 0;
 
     public void Respawn() {
-        timer = 0;
         SoftRespawn();
-        if (checkpointId == 0)
-            currentLevel.cameraZoneStart.Set(this);
+        if (checkpointId == 0) {
+            if (currentLevel.cameraZoneStart != null)
+                currentLevel.cameraZoneStart.Set(this);
+        }
 
         if (characterCamera != null) {
             characterCamera.MinMaxPositionSnap();
@@ -468,11 +472,17 @@ public class Character : MonoBehaviour {
         _ringLivesMax = 0;
         effects.Clear();
         position = respawnData.position;
+        timer = respawnData.timer;
         stateCurrent = "ground";
         velocity = Vector3.zero;
         _groundSpeed = 0;
         transform.eulerAngles = Vector3.zero;
         facingRight = true;
+
+        timerPause = false;
+        TryGetCapability("victory", (CharacterCapability capability) => {
+            ((CharacterCapabilityVictory)capability).victoryLock = false;
+        });
     }
 
     // ========================================================================
@@ -558,17 +568,17 @@ public class Character : MonoBehaviour {
         if (isInvulnerable) return;
         
         if (shield != null) {
-            SFX.Play(audioSource, "SFX/Sonic 1/S1_A3");
+            SFX.Play(audioSource, "sfxHurt");
             RemoveShield();
         } else if (rings == 0) {
-            if (spikes) SFX.Play(audioSource, "SFX/Sonic 1/S1_A6");
-            else SFX.Play(audioSource, "SFX/Sonic 1/S1_A3");
+            if (spikes) SFX.Play(audioSource, "sfxDieSpikes");
+            else SFX.Play(audioSource, "sfxDie");
             stateCurrent = "dying";
             return;
         } else {
             ObjRing.ExplodeRings(transform.position, Mathf.Min(rings, 32));
             rings = 0;
-            SFX.Play(audioSource, "SFX/Sonic 1/S1_C6");
+            SFX.Play(audioSource, "sfxHurtRings");
         }
 
         stateCurrent = "hurt";
@@ -595,6 +605,9 @@ public class Character : MonoBehaviour {
     [HideInInspector]
     public Collider airModeCollider;
 
+    [HideInInspector]
+    HUD hud;
+
     // ========================================================================
     public virtual void Start() {
         rollingModeGroup.gameObject.SetActive(false);
@@ -605,17 +618,20 @@ public class Character : MonoBehaviour {
         foreach (CharacterCapability capability in capabilities)
             capability.StateInit(stateCurrent, "");
 
-        respawnData.position = position;
-        Respawn();
-
-        if (isLocalPlayer || Utils.GetLevelManager().characters.Count == 1) {
+        if (isLocalPlayer) {
             characterCamera = Instantiate(cameraPrefab).GetComponent<CharacterCamera>();
             characterCamera.character = this;
-            characterCamera.Init();
+            characterCamera.UpdateDelta(0);
 
-            HUD hud = Instantiate(hudPrefab).GetComponent<HUD>();
+            ObjTitleCard titleCard = ObjTitleCard.Make(this);
+
+            hud = Instantiate(hudPrefab).GetComponent<HUD>();
             hud.character = this;
+            hud.Update();
         }
+
+        respawnData.position = position;
+        Respawn();
     }
 
     // ========================================================================
@@ -631,7 +647,7 @@ public class Character : MonoBehaviour {
     public bool isGhost = false;
     public bool isLocalPlayer = true;
 
-    public void UpdateDelta(float deltaTime) {
+    public override void UpdateDelta(float deltaTime) {
         UpdateEffects(deltaTime);
 
         if (!isLocalPlayer) {
@@ -667,8 +683,11 @@ public class Character : MonoBehaviour {
         LimitPosition();
     }
 
-    public void UpdateSpritePosition() {
+    public override void LateUpdateDelta(float deltaTime) {
         spriteContainer.transform.position = position;
+
+        if (characterCamera != null)
+            characterCamera.UpdateDelta(deltaTime);
     }
 
     // ========================================================================
@@ -705,8 +724,18 @@ public class Character : MonoBehaviour {
 
     // ========================================================================
 
-    void OnDestroy() {
-        Utils.GetLevelManager().characters.Remove(this);        
+    public override void OnDestroy() {
+        base.OnDestroy();
+
+        LevelManager.current.characters.Remove(this);
+        Destroy(characterCamera.gameObject);
+        Destroy(spriteContainer.gameObject);
+        Destroy(hud.gameObject);
+        if (playerId < 0) return;
+        foreach (Character character in LevelManager.current.characters) {
+            if (character.playerId > playerId)        
+                character.playerId--;
+        }
     }
 
     public GameObject cameraPrefab;
@@ -731,11 +760,14 @@ public class Character : MonoBehaviour {
     }
 
     public InputCustom input;
+    public int playerId = -1;
 
-    void Awake() {
-        LevelManager levelManager = Utils.GetLevelManager();
-        levelManager.characters.Add(this);
-        input = new InputCustom(levelManager.characters.Count);
+    public override void Awake() {
+        base.Awake();
+
+        LevelManager.current.characters.Add(this);
+        playerId = LevelManager.current.GetFreePlayerId();
+        input = new InputCustom(1);
 
         InitReferences();
 
@@ -747,9 +779,8 @@ public class Character : MonoBehaviour {
             Respawn();
         }
 
-        ObjTitleCard titleCard = currentLevel.MakeTitleCard(this);
-
         if (GlobalOptions.Get<bool>("tinyMode"))
             sizeScale = 0.5F;
     }
+
 }

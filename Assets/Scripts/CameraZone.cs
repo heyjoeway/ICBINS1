@@ -1,9 +1,8 @@
 using UnityEngine;
+using System.Collections.Generic;
 
 public class CameraZone : MonoBehaviour {
     Level level;
-    new Renderer renderer;
-    LevelManager levelManager;
     public Vector2 cameraMin;
     public Vector2 cameraMax;
     public Vector2 positionMin;
@@ -12,19 +11,22 @@ public class CameraZone : MonoBehaviour {
 
     void Start() {
         level = GetComponentInParent<Level>();
-        renderer = GetComponent<Renderer>();
-        levelManager = Utils.GetLevelManager();
 
         if (cameraMin == Vector2.zero) cameraMin = Vector2.one * -Mathf.Infinity;
         if (cameraMax == Vector2.zero) cameraMax = Vector2.one * Mathf.Infinity;
     }
 
+    HashSet<Character> charactersHit = new HashSet<Character>();
+
     void OnTriggerEnter(Collider other) {
         Character[] characters = other.gameObject.GetComponentsInParent<Character>();
         if (characters.Length == 0) return;
 
-        if (unloadUnpopulatedLevels)
-            Utils.GetLevelManager().UnloadUnpopulatedLevels();
+        Set(characters[0]);
+
+        if (charactersHit.Count < LevelManager.current.characters.Count) return;
+        if (!unloadUnpopulatedLevels) return;
+        LevelManager.current.UnloadUnpopulatedLevels();
     }
 
     public void Set(Character character) {
@@ -35,12 +37,6 @@ public class CameraZone : MonoBehaviour {
         characterCamera.maxPosition = cameraMax;
         if (positionMin != Vector2.zero) character.positionMin = positionMin;
         if (positionMax != Vector2.zero) character.positionMax = positionMax;
-    }
-
-    void Update() {
-        foreach (Character character in levelManager.characters) {
-            if (!renderer.bounds.Contains(character.position)) return;
-            Set(character);
-        }
+        charactersHit.Add(character);
     }
 }

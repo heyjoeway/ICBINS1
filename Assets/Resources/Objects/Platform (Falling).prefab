@@ -148,6 +148,7 @@ MonoBehaviour:
   distanceType: 2
   triggerDistance: 16
   runEveryOtherFrame: 0
+  enableWait: 0
 --- !u!1 &3545020284546873735
 GameObject:
   m_ObjectHideFlags: 0
@@ -193,6 +194,7 @@ GameObject:
   - component: {fileID: 2587325721628848518}
   - component: {fileID: 2025258983421440725}
   - component: {fileID: 2548005481674706350}
+  - component: {fileID: 5804211831484668382}
   m_Layer: 11
   m_Name: Plane
   m_TagString: Untagged
@@ -284,5 +286,17 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 4a6974022ba7e834a8045251736cf6af, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &5804211831484668382
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7733687345357466035}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7f2ff351678e0524a83a30345fd79a6f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 

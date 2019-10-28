@@ -3,22 +3,8 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class ObjRing : MonoBehaviour {
-    static GameObject ringGameObject;
-
-    static bool _initStaticDone = false;
-    static void _InitStatic() {
-        if (_initStaticDone) return;
-
-        ringGameObject = Resources.Load<GameObject>("Objects/Ring");
-
-        _initStaticDone = true;
-    }
-
-
     // Shamelessly taken line-for-line from https://info.sonicretro.org/SPG:Ring_Loss
     public static void ExplodeRings(Vector2 origin, int count) {
-        _InitStatic();
-
         count = Mathf.Min(count, 256);
         float angle = 101.25F + 90F; // assuming 0=right, 90=up, 180=left, 270=down
         bool flipHSpeed = false;
@@ -45,7 +31,7 @@ public class ObjRing : MonoBehaviour {
 
             // create a bouncing ring object
             ObjRing ring = Instantiate(
-                ringGameObject,
+                Constants.Get<GameObject>("prefabRing"),
                 origin,
                 Quaternion.identity
             ).GetComponent<ObjRing>();
@@ -73,9 +59,10 @@ public class ObjRing : MonoBehaviour {
     // ========================================================================
     // OBJECT AND COMPONENT REFERENCES
     // ========================================================================
-    Animator animator;
+    // Animator animator;
     new Rigidbody rigidbody;
     AudioSource audioSource;
+    Animator animator;
     SpriteRenderer spriteRenderer;
 
     bool _initReferencesDone = false;
@@ -92,10 +79,9 @@ public class ObjRing : MonoBehaviour {
 
     public Vector3 initialVelocity = Vector3.zero;
 
-    void Start() {
+    void Awake() {
         StaticInit();
         InitReferences();
-
     }
 
     // ========================================================================
@@ -146,20 +132,42 @@ public class ObjRing : MonoBehaviour {
 
             character.rings++;
             panStereo = -panStereo;
-            audioSource.panStereo = panStereo;
-            audioSource.Play();
-            animator.enabled = true;
-            animator.Play("Sparkle");
-            collected = true;
-            rigidbody.isKinematic = true;
+
+            GameObject ringSparkle = Instantiate(
+                Constants.Get<GameObject>("prefabRingSparkle"),
+                transform.position,
+                Quaternion.identity
+            );
+            // Temp
+            ringSparkle.GetComponent<AudioSource>().panStereo = panStereo;
+            ringSparkle.GetComponent<AudioSource>().Play();
+
+            Destroy(gameObject);
         }
     }
 
-    void OnAnimationDone() {
-        Destroy(gameObject);
+    static bool _staticUpdateDone;
+    void Update() {
+        _staticUpdateDone = false;
+    }
+    
+    static Sprite _staticSpinSprite;
+
+    void StaticUpdate() {
+        if (_staticUpdateDone) return;
+
+        float timeConstrained = Time.time % (spinFrameTime * spriteIdSpin.Length);
+        int frameIndex = (int)Mathf.Floor(timeConstrained / spinFrameTime);
+        int frame = spriteIdSpin[frameIndex];
+        Sprite sprite = sprites[frame];
+        _staticSpinSprite = sprite;
+
+        _staticUpdateDone = true;
     }
 
-    void Update() {
+    void LateUpdate() {
+        StaticUpdate();
+
         if (collected) return;
 
         if (initialVelocity != Vector3.zero) { // Hack
@@ -181,11 +189,7 @@ public class ObjRing : MonoBehaviour {
         } else {
             // Make all rings spin at the same speed/frame
             animator.enabled = false;
-            float timeConstrained = Time.time % (spinFrameTime * spriteIdSpin.Length);
-            int frameIndex = (int)Mathf.Floor(timeConstrained / spinFrameTime);
-            int frame = spriteIdSpin[frameIndex];
-            Sprite sprite = sprites[frame];
-            spriteRenderer.sprite = sprite;
+            spriteRenderer.sprite = _staticSpinSprite;
         }
     }
 }

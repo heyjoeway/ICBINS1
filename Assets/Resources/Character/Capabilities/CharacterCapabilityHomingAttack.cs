@@ -8,6 +8,8 @@ public class CharacterCapabilityHomingAttack : CharacterCapability {
     float homingAttackBounceSpeed { get {
         return 6.5F * character.physicsScale;
     }}
+    
+    float failsafeTimer;
 
     public CharacterCapabilityHomingAttack(Character character) : base(character) { }
 
@@ -23,8 +25,9 @@ public class CharacterCapabilityHomingAttack : CharacterCapability {
 
     public override void StateInit(string stateName, string prevStateName) {
         if (character.stateCurrent != "homingAttack") return;
-        
-        SFX.PlayOneShot(character.audioSource, "SFX/Megamix/Thok");
+
+        failsafeTimer = 5F;        
+        SFX.PlayOneShot(character.audioSource, "sfxHomingAttack");
         
         target = FindClosestTarget();
 
@@ -66,6 +69,9 @@ public class CharacterCapabilityHomingAttack : CharacterCapability {
                 homingAttackSpeed * deltaTime * 2
             );
 
+            failsafeTimer -= deltaTime;
+            if (failsafeTimer <= 0)
+                character.stateCurrent = "rollingAir";
         }
     }
 

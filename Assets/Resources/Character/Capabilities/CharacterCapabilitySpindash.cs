@@ -32,7 +32,7 @@ public class CharacterCapabilitySpindash : CharacterCapability {
         if (character.stateCurrent != name) return;
 
         dust = GameObject.Instantiate(
-            (GameObject)Resources.Load("Objects/Dash Dust (Spindash)"),
+            Constants.Get<GameObject>("prefabSpindashDust"),
             dustLocation.position,
             Quaternion.identity
         );
@@ -102,7 +102,7 @@ public class CharacterCapabilitySpindash : CharacterCapability {
     void SpindashCharge() {
         character.AnimatorPlay("Spindash", 0);
         spindashPower += 2;
-        SFX.Play(character.audioSource, "SFX/Sonic 2/S2_60",
+        SFX.Play(character.audioSource, "sfxSpindashCharge",
             1 + ((spindashPower / (spindashPowerMax + 2)) * 0.5F)
         );
     }
@@ -117,7 +117,7 @@ public class CharacterCapabilitySpindash : CharacterCapability {
         character.groundSpeedPrev = character.groundSpeed; // Hack for breakable walls
         if (character.characterCamera != null)
             character.characterCamera.lagTimer = 0.26667F;
-        SFX.Play(character.audioSource, "SFX/Sonic 1/S1_BC");
+        SFX.Play(character.audioSource, "sfxSpindashRelease");
         character.stateCurrent = "rolling";
     }
 

@@ -82,8 +82,8 @@ public class BackgroundGHZ : Background {
     };
 
     static float[] lineDeformationTime = new float[] { // in-game units / second
-        -1,
-        -0.5F,
+        -1.25F,
+        -0.75F,
         -0.25F,
         0,
         0,
@@ -194,8 +194,7 @@ public class BackgroundGHZ : Background {
         );
     }
 
-    public override void Start() {
-        base.Start();
+    void Start() {
         InitStatic();
 
         linesTransform = transform.Find("Lines");

@@ -22,7 +22,7 @@ public class CharacterCapabilityPeelOut : CharacterCapability {
         if (character.stateCurrent != name) return;
 
         peelOutTimer = 0.5F;
-        SFX.Play(character.audioSource, "SFX/Sonic CD/SCD_FM_11");
+        SFX.Play(character.audioSource, "sfxPeelOutCharge");
         character.modeGroupCurrent = character.groundModeGroup;
     }
 
@@ -64,7 +64,7 @@ public class CharacterCapabilityPeelOut : CharacterCapability {
             character.groundSpeedPrev = character.groundSpeed; // Hack for breakable walls
             if (character.characterCamera != null)
                 character.characterCamera.lagTimer = 0.26667F;
-            SFX.Play(character.audioSource, "SFX/Sonic CD/SCD_FM_01");
+            SFX.Play(character.audioSource, "sfxPeelOutRelease");
         }
         character.stateCurrent = "ground";
     }

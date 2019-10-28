@@ -84,16 +84,6 @@ public static class Utils {
         return null;
     }
 
-    static LevelManager _levelManager;
-    public static LevelManager GetLevelManager() {
-        if (_levelManager == null) _levelManager = GameObject.FindObjectOfType<LevelManager>();
-        return _levelManager;
-    }
-
-    public static MusicManager GetMusicManager() {
-        return GameObject.FindObjectOfType<MusicManager>();
-    }
-
     // Start hack because fuck unity; "SceneManager.sceneLoaded -=" DOESN'T. FUCKING. WORK.
     // I'm not even kidding. try it yourself. fuck this shitty engine.
     static bool _LoadLevelAsyncEverUsed = false;
@@ -158,24 +148,25 @@ public static class Utils {
 
     public static void SetFramerate() {
         // Application.targetFrameRate = Screen.currentResolution.refreshRate;
-        // Application.targetFrameRate = 120;
+        QualitySettings.vSyncCount = 0;
+        // Application.targetFrameRate = 180;
         Application.targetFrameRate = 60;
         Time.fixedDeltaTime = 1F / Application.targetFrameRate;
-        Time.maximumDeltaTime = 0.25F;
+        Time.maximumDeltaTime = 1F / 10F;
     }
 
     public static float cappedUnscaledDeltaTime { get {
-        return Mathf.Min(
-            Time.unscaledDeltaTime,
-            Time.maximumDeltaTime
-        );
+        float deltaTime = Time.unscaledDeltaTime;
+        if (deltaTime > Time.maximumDeltaTime)
+            return 1F / Application.targetFrameRate;
+        return deltaTime;
     }}
 
     public static float cappedDeltaTime { get {
-        return Mathf.Min(
-            Time.deltaTime,
-            Time.maximumDeltaTime
-        );
+        float deltaTime = Time.deltaTime;
+        if (deltaTime > Time.maximumDeltaTime)
+            return 1F / Application.targetFrameRate;
+        return deltaTime;
     }}
 
     public static Tuple<int, int> CalculateFauxTransparencyFrameCount(float alpha) {
@@ -276,5 +267,26 @@ public static class Utils {
         if (hit2D.collider != null) return new RaycastHitHybrid(hit2D);
 
         return new RaycastHitHybrid();
+    }
+
+    public static bool? StringBool(string str) {
+        switch (str.ToLower()) {
+            case "true":
+            case "on":
+            case "yes":
+            case "y":
+            case "t":
+            case "ok":
+                return true;
+            case "false":
+            case "off":
+            case "no":
+            case "n":
+            case "f":
+            case "cancel":
+                return false;
+            default:
+                return null;
+        }
     }
 }

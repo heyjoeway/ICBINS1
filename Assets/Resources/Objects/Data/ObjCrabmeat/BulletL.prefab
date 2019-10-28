@@ -7,15 +7,15 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: -1027520806935507108, guid: c0af2780dc22ecb45a2fa2a739f16bc6,
+        type: 3}
+      propertyPath: intialVelocity.x
+      value: -1.875
+      objectReference: {fileID: 0}
     - target: {fileID: 6023488152537961797, guid: c0af2780dc22ecb45a2fa2a739f16bc6,
         type: 3}
       propertyPath: m_Name
       value: BulletL
-      objectReference: {fileID: 0}
-    - target: {fileID: 6023488152537961796, guid: c0af2780dc22ecb45a2fa2a739f16bc6,
-        type: 3}
-      propertyPath: intialVelocity.x
-      value: -1.875
       objectReference: {fileID: 0}
     - target: {fileID: 6023488152537961661, guid: c0af2780dc22ecb45a2fa2a739f16bc6,
         type: 3}
@@ -71,6 +71,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6023488152537961796, guid: c0af2780dc22ecb45a2fa2a739f16bc6,
+        type: 3}
+      propertyPath: intialVelocity.x
+      value: -1.875
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: c0af2780dc22ecb45a2fa2a739f16bc6, type: 3}

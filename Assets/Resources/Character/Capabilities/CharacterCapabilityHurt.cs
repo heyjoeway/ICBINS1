@@ -19,6 +19,7 @@ public class CharacterCapabilityHurt : CharacterCapability {
         if (character.stateCurrent != name) return;
         character.opacity = 1;
         character.modeGroupCurrent = character.airModeGroup;
+        character.forwardAngle = 0;
         failsafeTimer = 5F;
     }
 

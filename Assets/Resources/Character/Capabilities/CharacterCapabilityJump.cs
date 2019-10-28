@@ -36,7 +36,7 @@ public class CharacterCapabilityJump : CharacterCapability {
         if (!character.input.GetButtonsDownPreventRepeat("Secondary", "Tertiary")) return;
 
         character.velocity += transform.up * jumpSpeed;
-        SFX.PlayOneShot(character.audioSource, "SFX/Sonic 1/S1_A0");
+        SFX.PlayOneShot(character.audioSource, "sfxJump");
         character.stateCurrent = "jump";
     }
 

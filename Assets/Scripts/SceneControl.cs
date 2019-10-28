@@ -4,7 +4,7 @@ using UnityEngine.SceneManagement;
 public class SceneControl : MonoBehaviour {
     public void StartScene(string scenePath) {
         ScreenFade screenFade = Instantiate(
-            Resources.Load<GameObject>("Objects/Screen Fade Out"),
+            Constants.Get<GameObject>("prefabScreenFadeOut"),
             Vector3.zero,
             Quaternion.identity
         ).GetComponent<ScreenFade>();

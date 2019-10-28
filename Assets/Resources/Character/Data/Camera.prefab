@@ -9,6 +9,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 5436403979425966187}
+  - component: {fileID: -2423795029069080290}
   - component: {fileID: 5436403979425966229}
   - component: {fileID: 495726082896974522}
   - component: {fileID: 333786544634498180}
@@ -33,6 +34,24 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &-2423795029069080290
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5436403979425966231}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f8733a32b06071246830cf3e6149e246, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  screenRectRelative:
+    serializedVersion: 2
+    x: 0
+    y: 0
+    width: 1
+    height: 1
 --- !u!114 &5436403979425966229
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -50,8 +69,6 @@ MonoBehaviour:
   zDistance: -13.5
   lagTimer: 0
   backgroundObjRaw: {fileID: 0}
-  position: {x: 0, y: 0, z: 0}
-  preventExit: 0
 --- !u!20 &495726082896974522
 Camera:
   m_ObjectHideFlags: 0

@@ -8,6 +8,7 @@ public class CharacterCamera : MonoBehaviour {
     // ========================================================================
 
     public new Camera camera;
+    RenderTextureCamera renderTextureCamera;
 
     // ========================================================================
     // PUBLIC VARIABLES
@@ -23,7 +24,6 @@ public class CharacterCamera : MonoBehaviour {
         set {
             if (_minPositionTarget == value) return;
             Vector3 minPositionTargetPrev = _minPositionTarget;
-            if (renderTexture == null) return;
 
             _minPositionTarget = value;
 
@@ -71,7 +71,6 @@ public class CharacterCamera : MonoBehaviour {
         set {
             if (_maxPositionTarget == value) return;
             Vector3 maxPositionTargetPrev = _maxPositionTarget;
-            if (renderTexture == null) return;
             _maxPositionTarget = value;
 
 
@@ -138,39 +137,24 @@ public class CharacterCamera : MonoBehaviour {
     public GameObject backgroundObj {
         get { return backgroundObjRaw; }
         set {
+            if (value == null) return;
             if (backgroundObjRaw != null) return;
             Destroy(backgroundObjRaw);
             backgroundObjRaw = Instantiate(value);
             Background background = backgroundObjRaw.GetComponent<Background>();
-            BackgroundCamera backgroundCamera = background.backgroundCamera;
-            backgroundCamera.renderTexture = renderTexture;
-            backgroundCamera.GetComponent<Camera>().targetDisplay = camera.targetDisplay;
+            background.camera.targetTexture = camera.targetTexture;
+            // background.camera.targetDisplay = camera.targetDisplay;
             if (character == null) return;
             background.character = character;
         }
     }
 
-    public Vector3 position;
-    Vector2 moveAmt;
-    RenderTexture renderTexture;
-    
-    bool _initDone = false;
-    public void Init() {
-        if (_initDone) return;
-
-        renderTexture = new RenderTexture(camera.targetTexture);
-        renderTexture.filterMode = FilterMode.Point;
-        position = transform.position;
-        ResizeRenderTexture();
-        UpdateDelta(0);
-
-        _initDone = true;
+    public Vector3 position {
+        get { return transform.position; }
+        set { transform.position = value; }
     }
 
-    void Start() { Init(); }
-
-    float hDist;
-    public bool preventExit = false;
+    Vector2 moveAmt;    
 
     public void LockHorizontal() { LockHorizontal(transform.position.x); }
     public void LockHorizontal(float xPos) {
@@ -199,7 +183,6 @@ public class CharacterCamera : MonoBehaviour {
         );
     }
 
-    // const float minMaxMoveAmtMax = (3F / 32F) * 60F;
     float minMaxMoveAmtMax = 0;
 
     void MoveMinMaxTowardsTarget() {
@@ -228,7 +211,12 @@ public class CharacterCamera : MonoBehaviour {
         ) * Mathf.Sign(maxYDist);
     }
 
-    void Update() { }
+    void Awake() {
+        camera.targetTexture = new RenderTexture(camera.targetTexture);
+        camera.targetTexture.filterMode = FilterMode.Point;
+        renderTextureCamera = GetComponent<RenderTextureCamera>();
+        renderTextureCamera.ResizeRenderTexture();
+    }
 
     public void UpdateDelta(float deltaTime) {
         if (character == null) return;
@@ -278,52 +266,116 @@ public class CharacterCamera : MonoBehaviour {
         }
 
         camera.orthographicSize = (
-            ((renderTexture.height / 32) * 0.5F) *
+            ((camera.targetTexture.height / 32) * 0.5F) *
             character.sizeScale
         );
 
-        position += (Vector3)moveAmt * deltaTime * 60F;
+        Vector3 newPos = transform.position;
+        newPos += (Vector3)moveAmt * deltaTime * 60F;
         Vector2 minMaxLeniency = Vector2.one * ((3.5F - camera.orthographicSize) / 3.5F) * 6F;
-        position = Vector2.Min(
+        newPos = Vector2.Min(
             _maxPositionReal + minMaxLeniency,
             Vector2.Max(
                 _minPositionReal - minMaxLeniency,
-                position
+                newPos
             )
         );
-        position.z = characterPosition.z + zDistance;
-        transform.position = position;
+        newPos.z = characterPosition.z + zDistance;
+        transform.position = newPos;
+
+        renderTextureCamera.screenRectRelative = screenRects[
+            LevelManager.current.characters.Count - 1
+        ][character.playerId];
     }
 
-    Vector2 resolutionPrev;
+    public static List<Rect[]> screenRects = new List<Rect[]> {
+        new Rect[] {
+            new Rect(0, 0, 1, 1)
+        },
+        new Rect[] {
+            new Rect(0, 0, 1, 0.5F),
 
-    public void ResizeRenderTexture() {
-        if (
-            (resolutionPrev.x == Screen.width) &&
-            (resolutionPrev.y == Screen.height)
-         ) return;
-        resolutionPrev = new Vector2(Screen.width, Screen.height);
-        
-        renderTexture.Release();
-        renderTexture.width = (int)Mathf.Round(
-            (float)renderTexture.height * (
-                ((float)Screen.width) /
-                ((float)Screen.height)
-            )
-        );
-    }
+            new Rect(0, 0.5F, 1, 0.5F)
+        },
+        new Rect[] {
+            new Rect(0.25F, 0, 0.5F, 0.5F),
 
-    void OnPreRender() {
-        ResizeRenderTexture();
-        camera.targetTexture = renderTexture;
-    }
+            new Rect(0F, 0.5F, 0.5F, 0.5F),
+            new Rect(0.5F, 0.5F, 0.5F, 0.5F)
+        },
+        new Rect[] {
+            new Rect(0, 0, 0.5F, 0.5F),
+            new Rect(0.5F, 0, 0.5F, 0.5F),
 
+            new Rect(0, 0.5F, 0.5F, 0.5F),
+            new Rect(0.5F, 0.5F, 0.5F, 0.5F)
+        },
+        new Rect[] {
+            new Rect(0.16667F, 0, 0.33333F, 0.5F),
+            new Rect(0.5F, 0, 0.33333F, 0.5F),
 
-     void OnPostRender() {
-        camera.targetTexture = null;
-        Graphics.Blit(
-            renderTexture,
-            null as RenderTexture
-        );
+            new Rect(0, 0.5F, 0.33333F, 0.5F),
+            new Rect(0.33333F, 0.5F, 0.33333F, 0.5F),
+            new Rect(0.66667F, 0.5F, 0.33333F, 0.5F)
+        },
+        new Rect[] {
+            new Rect(0, 0, 0.33333F, 0.5F),
+            new Rect(0.33333F, 0, 0.33333F, 0.5F),
+            new Rect(0.66667F, 0, 0.33333F, 0.5F),
+
+            new Rect(0, 0.5F, 0.33333F, 0.5F),
+            new Rect(0.33333F, 0.5F, 0.33333F, 0.5F),
+            new Rect(0.66667F, 0.5F, 0.33333F, 0.5F)
+        },
+        new Rect[] {
+            new Rect(0.16667F, 0, 0.33333F, 0.33333F),
+            new Rect(0.5F, 0, 0.33333F, 0.33333F),
+
+            new Rect(0, 0.33333F, 0.33333F, 0.33333F),
+            new Rect(0.33333F, 0.33333F, 0.33333F, 0.33333F),
+            new Rect(0.66667F, 0.33333F, 0.33333F, 0.33333F),
+
+            new Rect(0.16667F, 0.66667F, 0.33333F, 0.33333F),
+            new Rect(0.5F, 0.66667F, 0.33333F, 0.33333F)
+        },
+        new Rect[] {
+            new Rect(0.16667F,  0,        0.33333F, 0.33333F),
+            new Rect(0.5F,      0,        0.33333F, 0.33333F),
+
+            new Rect(0,         0.33333F, 0.33333F, 0.33333F),
+            new Rect(0.33333F,  0.33333F, 0.33333F, 0.33333F),
+            new Rect(0.66667F,  0.33333F, 0.33333F, 0.33333F),
+
+            new Rect(0,         0.66667F, 0.33333F, 0.33333F),
+            new Rect(0.33333F,  0.66667F, 0.33333F, 0.33333F),
+            new Rect(0.66667F,  0.66667F, 0.33333F, 0.33333F),
+        },
+        new Rect[] {
+            new Rect(0,         0,        0.33333F, 0.33333F),
+            new Rect(0.33333F,  0,        0.33333F, 0.33333F),
+            new Rect(0.66667F,  0,        0.33333F, 0.33333F),
+
+            new Rect(0,         0.33333F, 0.33333F, 0.33333F),
+            new Rect(0.33333F,  0.33333F, 0.33333F, 0.33333F),
+            new Rect(0.66667F,  0.33333F, 0.33333F, 0.33333F),
+
+            new Rect(0,         0.66667F, 0.33333F, 0.33333F),
+            new Rect(0.33333F,  0.66667F, 0.33333F, 0.33333F),
+            new Rect(0.66667F,  0.66667F, 0.33333F, 0.33333F),
+        }
+    };
+
+    public static List<Rect[]> screenRectsAlt = new List<Rect[]> {
+        null,
+        new Rect[] {
+            new Rect(0, 0, 0.5F, 1),
+            new Rect(0.5F, 0, 0.5F, 1)
+        },
+        null,
+        null
+    };
+
+    void OnDestroy() {
+        Destroy(backgroundObjRaw);
     }
 }

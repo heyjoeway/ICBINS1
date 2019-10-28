@@ -210,6 +210,21 @@ PrefabInstance:
         type: 3}
       propertyPath: m_TargetTexture
       value: 
+      objectReference: {fileID: 8600000, guid: 75ab778f13c69ed4e980f40719e9f500, type: 2}
+    - target: {fileID: 87674402007106750, guid: 65e2bbf533e460e478e416a569ca5037,
+        type: 3}
+      propertyPath: far clip plane
+      value: 1000
+      objectReference: {fileID: 0}
+    - target: {fileID: 87674402007106750, guid: 65e2bbf533e460e478e416a569ca5037,
+        type: 3}
+      propertyPath: field of view
+      value: 60
+      objectReference: {fileID: 0}
+    - target: {fileID: 87674402007106750, guid: 65e2bbf533e460e478e416a569ca5037,
+        type: 3}
+      propertyPath: m_TargetEye
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 3386257334487685808, guid: 65e2bbf533e460e478e416a569ca5037,
         type: 3}
@@ -428,21 +443,6 @@ PrefabInstance:
       propertyPath: m_Pivot.y
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 1276396721151019171, guid: 87c3d8082a0fc7945b20fbcf50731b8a,
-        type: 3}
-      propertyPath: m_RenderMode
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 1276396721151019171, guid: 87c3d8082a0fc7945b20fbcf50731b8a,
-        type: 3}
-      propertyPath: m_Camera
-      value: 
-      objectReference: {fileID: 1592085276}
-    - target: {fileID: 1276396721151019171, guid: 87c3d8082a0fc7945b20fbcf50731b8a,
-        type: 3}
-      propertyPath: m_PlaneDistance
-      value: 0
-      objectReference: {fileID: 0}
     - target: {fileID: 1276396721151019169, guid: 87c3d8082a0fc7945b20fbcf50731b8a,
         type: 3}
       propertyPath: brightness
@@ -463,6 +463,21 @@ PrefabInstance:
       propertyPath: stopTime
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 1276396721151019170, guid: 87c3d8082a0fc7945b20fbcf50731b8a,
+        type: 3}
+      propertyPath: m_UiScaleMode
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1276396721151019171, guid: 87c3d8082a0fc7945b20fbcf50731b8a,
+        type: 3}
+      propertyPath: m_RenderMode
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1276396721151019171, guid: 87c3d8082a0fc7945b20fbcf50731b8a,
+        type: 3}
+      propertyPath: m_Camera
+      value: 
+      objectReference: {fileID: 1592085276}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 87c3d8082a0fc7945b20fbcf50731b8a, type: 3}
 --- !u!1 &182815756
@@ -587,6 +602,24 @@ GameObject:
     type: 3}
   m_PrefabInstance: {fileID: 37166831}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &354431599
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 354431598}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f8733a32b06071246830cf3e6149e246, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  screenRectRelative:
+    serializedVersion: 2
+    x: 0
+    y: 0
+    width: 1
+    height: 1
 --- !u!81 &354431601
 AudioListener:
   m_ObjectHideFlags: 0
@@ -918,7 +951,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0cd44c1031e13a943bb63640046fad76, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_UiScaleMode: 1
+  m_UiScaleMode: 0
   m_ReferencePixelsPerUnit: 32
   m_ScaleFactor: 1
   m_ReferenceResolution: {x: 320, y: 224}

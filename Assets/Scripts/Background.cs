@@ -4,12 +4,12 @@ using UnityEngine;
 
 public class Background : MonoBehaviour {
     static int backgroundCount = 0;
-    public BackgroundCamera backgroundCamera {
-        get { return transform.Find("Camera").GetComponent<BackgroundCamera>(); }
-    }
+    public Camera camera;
     public Character character;
 
-    public virtual void Start() {
+    void Awake() {
+        camera = transform.Find("Camera").GetComponent<Camera>();
+
         transform.position = new Vector3(
             0, 0,
             (backgroundCount + 1) * -100 
@@ -25,5 +25,8 @@ public class Background : MonoBehaviour {
 
         if (character != null && character.characterCamera != null)
             targetPosition = character.characterCamera.position;
+
+        if ((character != null) && (character.characterCamera != null))
+            camera.rect = character.characterCamera.camera.rect;
     }
 }

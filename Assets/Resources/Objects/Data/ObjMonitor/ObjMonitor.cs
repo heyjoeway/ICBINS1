@@ -37,9 +37,11 @@ public class ObjMonitor : MonoBehaviour {
         if (characters.Length == 0) return;
         Character character = characters[0];
         if (!DidCharacterHitFromBottom(character)) {
+            if (!character.InStateGroup("rolling")) return;
+
             Explode(character);
 
-            if (!(character.InStateGroup("rolling") && character.InStateGroup("airCollision"))) return;
+            if (!character.InStateGroup("airCollision")) return;
             Vector3 velocityTemp = character.velocity;
             velocityTemp.y = Mathf.Abs(character.velocity.y);
             character.velocity = velocityTemp;
@@ -67,7 +69,7 @@ public class ObjMonitor : MonoBehaviour {
 
     void Explode(Character sourceCharacter) {
         Instantiate(
-            (GameObject)Resources.Load("Objects/Explosion (Enemy)"),
+            Constants.Get<GameObject>("prefabExplosionEnemy"),
             transform.position,
             Quaternion.identity
         );
@@ -82,5 +84,14 @@ public class ObjMonitor : MonoBehaviour {
         rigidbody.velocity = Vector3.zero;
 
         Destroy(GetComponent<HomingAttackTarget>());
+    }
+
+    float kinematicTimer = 0;
+
+    void Update() {
+        if (Mathf.Abs(rigidbody.velocity.y) < 0.01) {
+            kinematicTimer += Utils.cappedUnscaledDeltaTime;
+            if (kinematicTimer > 0.5F) rigidbody.isKinematic = true;
+        } else kinematicTimer = 0;
     }
 }

@@ -8,7 +8,6 @@ public class GlobalOptions : MonoBehaviour {
         ["dropDash"] = "ON",
         ["spindash"] = "ON",
         ["levelTransitions"] = "ON",
-        ["timeLimit"] = "OFF",
         ["smoothRotation"] = "ON",
         ["afterImages"] = "ON",
         ["linearInterpolation"] = "ON",
@@ -18,7 +17,10 @@ public class GlobalOptions : MonoBehaviour {
         ["lightDash"] = "OFF",
         ["airCurling"] = "OFF",
         ["gbaMode"] = "OFF",
-        ["tinyMode"] = "OFF"
+        ["tinyMode"] = "OFF",
+        ["integerScaling"] = "OFF",
+        ["timeLimit"] = "OFF", // TODO
+        ["elementalShields"] = "OFF" // TODO
     };
 
     public static string Get(string key) {
@@ -27,26 +29,9 @@ public class GlobalOptions : MonoBehaviour {
 
     public static T Get<T>(string key) {
         string data = Get(key);
-        if (typeof(T) == typeof(bool)) {
-            switch (data.ToLower()) {
-                case "true":
-                case "on":
-                case "yes":
-                case "y":
-                case "t":
-                case "ok":
-                    return (T)(object)true;
-                case "false":
-                case "off":
-                case "no":
-                case "n":
-                case "f":
-                case "cancel":
-                    return (T)(object)false;
-                default:
-                    return (T)(object)null;
-            }
-        }
+        
+        if (typeof(T) == typeof(bool))
+            return (T)(object)Utils.StringBool(data);
 
         return (T)(object)data;
     }

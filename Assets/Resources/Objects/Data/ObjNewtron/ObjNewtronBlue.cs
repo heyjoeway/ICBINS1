@@ -30,7 +30,7 @@ public class ObjNewtronBlue : MonoBehaviour {
                 triggerDistance,
                 Utils.AxisType.X,
                 Utils.DistanceType.Character,
-                Utils.GetLevelManager().characters
+                LevelManager.current.characters
             );
             if (character != null) {
                 if (!activated) {

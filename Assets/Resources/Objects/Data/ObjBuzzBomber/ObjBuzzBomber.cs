@@ -5,12 +5,10 @@ using UnityEngine;
 public class ObjBuzzBomber : MonoBehaviour {
     Animator animator;
     new Rigidbody rigidbody;
-    LevelManager levelManager;
     Transform bulletLocationTransform;
 
     void InitReferences() {
         animator = GetComponent<Animator>();
-        levelManager = Utils.GetLevelManager();
         rigidbody = GetComponent<Rigidbody>();
         bulletLocationTransform = transform.Find("Bullet Location");
     }
@@ -64,7 +62,7 @@ public class ObjBuzzBomber : MonoBehaviour {
                     3,
                     Utils.AxisType.X,
                     Utils.DistanceType.Character,
-                    levelManager.characters
+                    LevelManager.current.characters
                 );
 
                 if (characterInRange != null) {

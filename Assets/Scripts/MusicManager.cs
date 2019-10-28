@@ -4,6 +4,13 @@ using UnityEngine;
 using UnityEngine.Audio;
 
 public class MusicManager : MonoBehaviour {
+    static MusicManager _current;
+    public static MusicManager current { get {
+        if (_current == null)
+            _current = GameObject.FindObjectOfType<MusicManager>();
+        return _current;
+    }}
+
     public class MusicStackEntry {
         public string introPath;
         public string loopPath;

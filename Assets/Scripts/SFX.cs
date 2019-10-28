@@ -15,7 +15,10 @@ public static class SFX {
 
     static AudioMixer _mixer;
 
-    public static void PlayOneShot(AudioSource audioSource, string path, float volume = 1F) {
+    public static void PlayOneShot(AudioSource audioSource, string constantName, float volume = 1F) {
+        if (constantName == null || constantName == "") return;
+        string path = Constants.Get(constantName);
+
         if (_mixer == null)
             _mixer = Resources.Load<AudioMixer>("Main");
 
@@ -29,7 +32,10 @@ public static class SFX {
         );
     }
 
-    public static void Play(AudioSource audioSource, string path, float pitch = 1) {
+    public static void Play(AudioSource audioSource, string constantName, float pitch = 1) {
+        if (constantName == null || constantName == "") return;
+        string path = Constants.Get(constantName);
+        
         audioSource.clip = Get(path);
         audioSource.pitch = pitch;
         audioSource.Play();

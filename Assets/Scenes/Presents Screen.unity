@@ -242,6 +242,11 @@ PrefabInstance:
       propertyPath: m_Pivot.y
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 6622680318891453871, guid: 924c1edfd94302442abe046c4c32add9,
+        type: 3}
+      propertyPath: m_Camera
+      value: 
+      objectReference: {fileID: 1832219331}
     - target: {fileID: 6622680318891453869, guid: 924c1edfd94302442abe046c4c32add9,
         type: 3}
       propertyPath: fadeDelay
@@ -597,7 +602,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0cd44c1031e13a943bb63640046fad76, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_UiScaleMode: 1
+  m_UiScaleMode: 0
   m_ReferencePixelsPerUnit: 32
   m_ScaleFactor: 1
   m_ReferenceResolution: {x: 224, y: 224}
@@ -690,7 +695,7 @@ Camera:
   m_Enabled: 1
   serializedVersion: 2
   m_ClearFlags: 2
-  m_BackGroundColor: {r: 0, g: 0, b: 0, a: 0}
+  m_BackGroundColor: {r: 0, g: 0, b: 0, a: 1}
   m_projectionMatrixMode: 1
   m_GateFitMode: 2
   m_FOVAxisMode: 0
@@ -732,11 +737,15 @@ MonoBehaviour:
   m_GameObject: {fileID: 1832219330}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a4ae0b1e28c901f49bb42ffb3c2d9b44, type: 3}
+  m_Script: {fileID: 11500000, guid: f8733a32b06071246830cf3e6149e246, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  camera: {fileID: 0}
-  renderTexture: {fileID: 8600000, guid: 75ab778f13c69ed4e980f40719e9f500, type: 2}
+  screenRectRelative:
+    serializedVersion: 2
+    x: 0
+    y: 0
+    width: 1
+    height: 1
 --- !u!81 &1832219333
 AudioListener:
   m_ObjectHideFlags: 0

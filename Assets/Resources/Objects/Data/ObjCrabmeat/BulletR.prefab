@@ -15,7 +15,7 @@ GameObject:
   - component: {fileID: 6023488152537961793}
   - component: {fileID: 6023488152537961798}
   - component: {fileID: 6023488152537961799}
-  - component: {fileID: 6023488152537961796}
+  - component: {fileID: -1027520806935507108}
   m_Layer: 0
   m_Name: BulletR
   m_TagString: Untagged
@@ -136,6 +136,7 @@ MonoBehaviour:
   distanceType: 0
   triggerDistance: 8
   runEveryOtherFrame: 0
+  enableWait: 0
 --- !u!54 &6023488152537961798
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -165,7 +166,7 @@ BoxCollider:
   serializedVersion: 2
   m_Size: {x: 0.4375, y: 0.4375, z: 0.2}
   m_Center: {x: 0, y: 0, z: 0}
---- !u!114 &6023488152537961796
+--- !u!114 &-1027520806935507108
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -174,7 +175,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 6023488152537961797}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e6dc9a33f5d42c14dac65cbb457467cb, type: 3}
+  m_Script: {fileID: 11500000, guid: e8c812b70f61e474ca4ba9241e75f68d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   intialVelocity: {x: 1.875, y: 7.5, z: 0}

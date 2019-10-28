@@ -5,10 +5,7 @@ public class CharacterCapability {
     public Character character;
     public Transform transform;
 
-    bool _initDone = false;
     public CharacterCapability(Character character) {
-        if (_initDone) return;
-        _initDone = true;
         this.character = character;
         this.transform = character.transform;
         Init();

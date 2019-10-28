@@ -66,7 +66,7 @@ public class ObjEnemy : MonoBehaviour {
         )];
 
         GameObject pointsObj = Instantiate(
-            (GameObject)Resources.Load("Objects/Points"),
+            Constants.Get<GameObject>("prefabPoints"),
             transform.position,
             Quaternion.identity
         );
@@ -77,14 +77,14 @@ public class ObjEnemy : MonoBehaviour {
         sourceCharacter.destroyEnemyChain++;
 
         Instantiate(
-            (GameObject)Resources.Load("Objects/Explosion (Enemy)"),
+            Constants.Get<GameObject>("prefabExplosionEnemy"),
             transform.position,
             Quaternion.identity
         );
         
         if (animalTypes.Length > 0) {
             GameObject animalObj = Instantiate(
-                (GameObject)Resources.Load("Objects/Animal"),
+                Constants.Get<GameObject>("prefabAnimal"),
                 transform.position,
                 Quaternion.identity
             );

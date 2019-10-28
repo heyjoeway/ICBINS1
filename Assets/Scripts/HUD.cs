@@ -5,6 +5,7 @@ using UnityEngine.UI;
 
 public class HUD : MonoBehaviour {
     public Character character;
+    Canvas canvas;
 
     Text scoreText;
     Text timeText;
@@ -13,7 +14,8 @@ public class HUD : MonoBehaviour {
     Text ringsTitleText;
     Text livesText;
 
-    void InitReferences() {
+    void Awake() {
+        canvas = GetComponent<Canvas>();
         scoreText = transform.Find("Score Content").GetComponent<Text>();
         timeText = transform.Find("Time Content").GetComponent<Text>();
         timeTitleText = transform.Find("Time Title").GetComponent<Text>();
@@ -22,14 +24,10 @@ public class HUD : MonoBehaviour {
         livesText = transform.Find("Lives Content").GetComponent<Text>();
     }
 
-    // Start is called before the first frame update
-    void Start() {
-        InitReferences();
-        GetComponent<Canvas>().worldCamera = character.characterCamera.camera;
-    }
+    public void Update() {
+        canvas.worldCamera = character.characterCamera.camera;
+        // Debug.Log(character.characterCamera.camera);
 
-    // Update is called once per frame
-    void Update() {
         scoreText.text = character.score.ToString();
         ringsText.text = character.rings.ToString();
         livesText.text = character.lives.ToString();

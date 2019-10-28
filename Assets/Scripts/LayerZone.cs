@@ -7,14 +7,6 @@ public class LayerZone : MonoBehaviour {
     public float zRight = 0;
     public bool groundedOnly = false;
 
-    new Renderer renderer;
-    LevelManager levelManager;
-
-    void Start() {
-        renderer = GetComponent<Renderer>();
-        levelManager = Utils.GetLevelManager();
-    }
-
     void OnTriggerStay(Collider other) {
         OnTriggerEnter(other);
     }

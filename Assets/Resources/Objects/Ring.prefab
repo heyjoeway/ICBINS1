@@ -14,8 +14,8 @@ GameObject:
   - component: {fileID: 2886270049992103384}
   - component: {fileID: 2886270049992103391}
   - component: {fileID: 2816354920986079857}
-  - component: {fileID: 448716595008381569}
-  m_Layer: 2
+  - component: {fileID: 1174270575067413097}
+  m_Layer: 23
   m_Name: Ring
   m_TagString: Untagged
   m_Icon: {fileID: 3443629218296621865, guid: 0000000000000000d000000000000000, type: 0}
@@ -100,6 +100,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   initialVelocity: {x: 0, y: 0, z: 0}
   falling: 0
+  collected: 0
 --- !u!65 &2886270049992103384
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -226,7 +227,7 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 120
   m_CollisionDetection: 0
---- !u!95 &448716595008381569
+--- !u!95 &1174270575067413097
 Animator:
   serializedVersion: 3
   m_ObjectHideFlags: 0

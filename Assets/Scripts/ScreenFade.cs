@@ -7,23 +7,17 @@ using UnityEngine.UI;
 public class ScreenFade : MonoBehaviour {
     new Image renderer;
     Material material;
+    public Canvas canvas;
 
-    bool _initDone = false;
-    public void InitReferences() {
-        if (_initDone) return;
-
+    void Awake() {
         renderer = transform.Find("Image").GetComponent<Image>();
         material = Instantiate(renderer.material);
         renderer.material = material;
-        Update();
-
-        _initDone = true;
+        canvas = GetComponent<Canvas>();
     }
 
     // Start is called before the first frame update
-    void Start() {
-        InitReferences();
-    }
+    void Start() { Update(); }
 
     public float fadeDelay = 5F;
     public float fadeSpeed = 0F; // percent per second
@@ -45,20 +39,31 @@ public class ScreenFade : MonoBehaviour {
 
     bool isComplete = false;
     void Complete() {
+        if (isComplete) return;
         if (onComplete != null) {
             onComplete();
             onComplete = null;
         }
-        isComplete = true;
         if (stopTime) Time.timeScale = 0;
+        isComplete = true;
     }
 
     public void Update() {
+        if ((LevelManager.current != null) && (LevelManager.current.characters.Count != 1))
+            stopTime = false;
+
+        if (canvas.worldCamera == null) {
+            CharacterCamera characterCamera = FindObjectOfType<CharacterCamera>();
+            if (characterCamera != null) canvas.worldCamera = characterCamera.camera;
+            else canvas.worldCamera = FindObjectOfType<Camera>();
+        }
+
         if (stopTime) Time.timeScale = 0;
 
         if (isComplete && destroyWhenDone && (destroyDelay > 0)) {
             destroyDelay -= Utils.cappedUnscaledDeltaTime;
             if (destroyDelay <= 0) {
+                Complete();
                 Destroy(gameObject);
                 return;
             }

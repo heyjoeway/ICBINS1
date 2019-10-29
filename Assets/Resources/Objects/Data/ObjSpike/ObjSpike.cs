@@ -30,6 +30,8 @@ public class ObjSpike : MonoBehaviour {
     }
 
     public void OnCollisionEnter(Collision collision) {
+        if (topAngle == 0) return;
+
         GameObject other = collision.gameObject;
         Character[] characters = other.GetComponentsInParent<Character>();
         if (characters.Length == 0) return;

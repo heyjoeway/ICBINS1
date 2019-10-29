@@ -45,6 +45,7 @@ public class CharacterCapabilityAir : CharacterCapability {
         UpdateAirGravity(deltaTime);
         UpdateAirAnim(deltaTime);
         character.GroundSpeedSync();
+        UpdateAirReacquireGround();
     }
 
     // 3D-Ready: YES
@@ -148,6 +149,27 @@ public class CharacterCapabilityAir : CharacterCapability {
         // to jump at walls and stick to them
         float hitAngle = Mathf.Round(hitEuler.z); // TODO: 3D
 
+        ReacquireGround(hitAngle);
+    }
+    
+    public void UpdateAirReacquireGround() {
+        Utils.RaycastHitHybrid hit = Utils.RaycastHybrid(
+            character.position, // origin
+            Vector3.down, // direction,
+            0.8F * character.sizeScale, // max distance
+            LayerMask.GetMask("Object - Top Solid Only")
+        );
+        if (!hit.isValid) return;
+
+        Vector3 hitEuler = Quaternion.FromToRotation(Vector3.up, hit.normal).eulerAngles;
+        // Round this or any tiiiny deviation in angle can allow the character
+        // to jump at walls and stick to them
+        float hitAngle = Mathf.Round(hitEuler.z); // TODO: 3D
+
+        ReacquireGround(hitAngle);
+    }
+
+    public void ReacquireGround(float hitAngle) {
         // This looks like a mess, but honestly this is about as simple as it can be.
         // This is pretty much implemented 1:1 from the SPG, so read that for an explanation
         // See: https://info.sonicretro.org/SPG:Solid_Tiles#Reacquisition_Of_The_Ground
@@ -177,7 +199,10 @@ public class CharacterCapabilityAir : CharacterCapability {
 
         // Set position and angle
         // -------------------------
-        transform.eulerAngles = hitEuler;
+        transform.eulerAngles = new Vector3(
+            0, 0,
+            hitAngle
+        );
 
         // If we don't snap to the ground, then we're still in the air and
         // should keep going the speed we were before.

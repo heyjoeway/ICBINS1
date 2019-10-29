@@ -20,6 +20,7 @@ public class CharacterCapabilityLightDash : CharacterCapability {
     public override void StateInit(string stateName, string prevStateName) {
         if (character.stateCurrent != "lightDash") return;
         
+        failsafeTimer = 5F;
         SFX.Play(character.audioSource, "sfxLightDash");
         character.velocity = Vector3.zero;
         character.modeGroupCurrent = character.airModeGroup;
@@ -30,7 +31,6 @@ public class CharacterCapabilityLightDash : CharacterCapability {
 
     public override void StateDeinit(string stateName, string nextStateName) {
         if (character.stateCurrent != "lightDash") return;
-        failsafeTimer = 5F;
         if (afterImageEffect != null)
             afterImageEffect.DestroyBase();
     }

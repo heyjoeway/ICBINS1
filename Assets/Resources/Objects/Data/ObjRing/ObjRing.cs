@@ -142,6 +142,8 @@ public class ObjRing : MonoBehaviour {
             ringSparkle.GetComponent<AudioSource>().panStereo = panStereo;
             ringSparkle.GetComponent<AudioSource>().Play();
 
+            collected = true;
+
             Destroy(gameObject);
         }
     }

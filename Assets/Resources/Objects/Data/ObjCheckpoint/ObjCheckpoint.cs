@@ -50,6 +50,7 @@ public class ObjCheckpoint : MonoBehaviour {
 
         charactersHit.Add(character);
         character.respawnData.position = respawnPosition;
+        character.respawnData.timer = character.timer;
         animator.Play("Hit");
         audioSource.time = 0;
         audioSource.Play();

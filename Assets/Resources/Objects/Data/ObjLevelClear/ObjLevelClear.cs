@@ -56,6 +56,7 @@ public class ObjLevelClear : MonoBehaviour {
         character.timer = 0;
         character.rings = 0;
         character.respawnData.position = character.currentLevel.spawnPosition;
+        character.respawnData.timer = 0;
         character.checkpointId = 0;
 
         if (GlobalOptions.Get("levelTransitions") != "OFF") {

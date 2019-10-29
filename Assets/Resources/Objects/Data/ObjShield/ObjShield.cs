@@ -33,7 +33,7 @@ public class ObjShield : MonoBehaviour {
         transform.position = new Vector3(
             character.position.x,
             character.position.y,
-            transform.position.z
+            character.position.z - 0.2F
         );
         if (!character.InStateGroup("rolling")) transform.position += new Vector3(
             0, 0.125F, 0

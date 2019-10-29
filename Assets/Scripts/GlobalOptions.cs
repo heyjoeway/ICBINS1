@@ -18,7 +18,7 @@ public class GlobalOptions : MonoBehaviour {
         ["airCurling"] = "OFF",
         ["gbaMode"] = "OFF",
         ["tinyMode"] = "OFF",
-        ["integerScaling"] = "OFF",
+        ["integerScaling"] = "ON",
         ["timeLimit"] = "OFF", // TODO
         ["elementalShields"] = "OFF" // TODO
     };

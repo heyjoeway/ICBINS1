@@ -12,7 +12,7 @@ public class GameMode : MonoBehaviour {
         mixer.SetFloat("SFX Volume", 0);
     }
     
-    int physicsStepsPerFrame = 2;
+    int physicsStepsPerFrame = 4;
 
     public virtual void Update() {
         float deltaTime = Utils.cappedUnscaledDeltaTime;

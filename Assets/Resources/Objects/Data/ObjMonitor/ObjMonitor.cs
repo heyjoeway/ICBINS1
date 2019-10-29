@@ -11,7 +11,7 @@ public class ObjMonitor : MonoBehaviour {
     ObjMonitorContents contents;
     new Rigidbody rigidbody;
 
-    void InitReferences() {
+    void Awake() {
         collider = GetComponent<Collider>();
         solidityObj = transform.Find("Solidity").gameObject;
         animator = GetComponent<Animator>();
@@ -21,10 +21,6 @@ public class ObjMonitor : MonoBehaviour {
         rigidbody = GetComponent<Rigidbody>();
     }
 
-    void Start() {
-        InitReferences();
-    }
-
     bool DidCharacterHitFromBottom(Character character) {
         return Mathf.Abs(Mathf.DeltaAngle(
             transform.position.AngleTowards(character.position) + 90,
@@ -32,10 +28,15 @@ public class ObjMonitor : MonoBehaviour {
         )) < 30;
     }
 
+    void OnTriggerStay(Collider other) {
+        OnTriggerEnter(other);
+    }
+
     void OnTriggerEnter(Collider other) {
         Character[] characters = other.gameObject.GetComponentsInParent<Character>();
         if (characters.Length == 0) return;
         Character character = characters[0];
+
         if (!DidCharacterHitFromBottom(character)) {
             if (!character.InStateGroup("rolling")) return;
 

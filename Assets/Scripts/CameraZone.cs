@@ -1,7 +1,10 @@
 using UnityEngine;
+using UnityEngine.Events;
 using System.Collections.Generic;
 
 public class CameraZone : MonoBehaviour {
+    public UnityEvent initialHitEvent;
+
     Level level;
     public Vector2 cameraMin;
     public Vector2 cameraMax;
@@ -37,6 +40,11 @@ public class CameraZone : MonoBehaviour {
         characterCamera.maxPosition = cameraMax;
         if (positionMin != Vector2.zero) character.positionMin = positionMin;
         if (positionMax != Vector2.zero) character.positionMax = positionMax;
+
+        if (charactersHit.Count == 0)
+            initialHitEvent.Invoke();
+
         charactersHit.Add(character);
+        character.characterCamera.cameraZone = this;
     }
 }

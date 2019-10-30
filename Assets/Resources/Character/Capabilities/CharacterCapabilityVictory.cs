@@ -17,6 +17,7 @@ public class CharacterCapabilityVictory : CharacterCapability {
         } else {
             if (!character.InStateGroup("ground")) return;
 
+            character.modeGroupCurrent = null;
             character.facingRight = true;
             character.stateCurrent = "victory";
             character.AnimatorPlay("Victory");

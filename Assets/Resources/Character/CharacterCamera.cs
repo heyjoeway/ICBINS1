@@ -378,4 +378,6 @@ public class CharacterCamera : MonoBehaviour {
     void OnDestroy() {
         Destroy(backgroundObjRaw);
     }
+
+    public CameraZone cameraZone;
 }

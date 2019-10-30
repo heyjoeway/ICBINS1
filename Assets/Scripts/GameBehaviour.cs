@@ -3,6 +3,7 @@ using UnityEngine;
 using System.Collections.Generic;
 
 public class GameBehaviour : MonoBehaviour {
+    public bool useUnscaledDeltaTime = true;
     public static HashSet<GameBehaviour> allGameBehvaiours = new HashSet<GameBehaviour>();
 
     public virtual void Awake() { allGameBehvaiours.Add(this); }

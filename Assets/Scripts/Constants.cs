@@ -24,11 +24,13 @@ public static class Constants {
         ["sfxTallyChaChing"] = "SFX/Sonic 1/S1_C5",
         ["sfxRingMonitor"] = "SFX/Sonic 1/S1_B5",
         ["sfxShieldNormal"] = "SFX/Sonic 1/S1_AF",
+        ["sfxBossHit"] = "SFX/Sonic 1/S1_AC",
 
         ["prefabDropDashDust"] = "Objects/Dash Dust (Drop Dash)",
         ["prefabSpindashDust"] = "Objects/Dash Dust (Spindash)",
         ["prefabAnimal"] = "Objects/Animal",
         ["prefabExplosionEnemy"] = "Objects/Explosion (Enemy)",
+        ["prefabExplosionBoss"] = "Objects/Explosion (Boss)",
         ["prefabPoints"] = "Objects/Points",
         ["prefabShieldNormal"] = "Objects/Shield (Normal)",
         ["prefabShieldFire"] = "Objects/Shield (Fire)",
@@ -39,7 +41,8 @@ public static class Constants {
         ["prefabScreenFadeOut"] = "Objects/Screen Fade Out",
         ["prefabTitleCard"] = "Objects/Title Card",
         ["prefabInvincibilityStars"] = "Objects/Invincibility Stars",
-        ["prefabRingSparkle"] = "Objects/Ring Sparkle"
+        ["prefabRingSparkle"] = "Objects/Ring Sparkle",
+        ["prefabGHZBall"] = "Objects/GHZ Rolling Ball"
     };
 
     public static string Get(string key) => defaults[key];

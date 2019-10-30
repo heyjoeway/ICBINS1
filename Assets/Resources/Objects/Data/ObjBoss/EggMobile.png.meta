@@ -1,40 +1,37 @@
 fileFormatVersion: 2
-guid: 0e5a20e45cc9adc4380997ad0a6db0dd
+guid: 968dcb3aeddbbf040a5fef170484dfc4
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: 7670737578450736210
-    second: Smoke1
+      213: 2270957790454125496
+    second: EggMobile_0
   - first:
-      213: -5926845618464751425
-    second: Smoke2
+      213: -1329453513980883781
+    second: EggMobile_1
   - first:
-      213: 3112387866308179848
-    second: Smoke3
+      213: 4243595458480562337
+    second: EggMobile_2
   - first:
-      213: 5188503376888000258
-    second: Smoke4
+      213: 2599638679529554639
+    second: EggMobile_3
   - first:
-      213: 5998457434575000268
-    second: Smoke5
+      213: 5789866429078481230
+    second: EggMobile_4
   - first:
-      213: -2217470198051517562
-    second: Fire1
+      213: -6372165377394126637
+    second: EggMobile_5
   - first:
-      213: -7667366730336587119
-    second: Fire2
+      213: 2794885777405468556
+    second: EggMobile_6
   - first:
-      213: 2099746008705510084
-    second: Fire3
+      213: 1019302395222797523
+    second: EggMobile_7
   - first:
-      213: -1873510547025132079
-    second: Fire4
+      213: 4882486134650705317
+    second: EggMobile_8
   - first:
-      213: 3784787124753034640
-    second: Fire5
-  - first:
-      213: -7050129638846038990
-    second: Empty
+      213: 1219318127706021436
+    second: EggMobile_9
   externalObjects: {}
   serializedVersion: 10
   mipmaps:
@@ -74,8 +71,8 @@ TextureImporter:
   lightmap: 0
   compressionQuality: 50
   spriteMode: 2
-  spriteExtrude: 1
-  spriteMeshType: 1
+  spriteExtrude: 0
+  spriteMeshType: 0
   alignment: 0
   spritePivot: {x: 0.5, y: 0.5}
   spritePixelsToUnits: 32
@@ -131,223 +128,13 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: Smoke1
+      name: EggMobile_0
       rect:
         serializedVersion: 2
-        x: 0
-        y: 54
-        width: 19
-        height: 16
-      alignment: 0
-      pivot: {x: 0.5, y: 0.5}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: 0f231e823906cc541a42b10387bfeb66
-      internalID: 7670737578450736210
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: Smoke2
-      rect:
-        serializedVersion: 2
-        x: 30
-        y: 47
-        width: 27
-        height: 30
-      alignment: 0
-      pivot: {x: 0.5, y: 0.5}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: 76f34b1b9e51b2e41be4f1a2df5c2e11
-      internalID: -5926845618464751425
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: Smoke3
-      rect:
-        serializedVersion: 2
-        x: 62
-        y: 46
-        width: 32
+        x: 1
+        y: 45
+        width: 64
         height: 32
-      alignment: 0
-      pivot: {x: 0.5, y: 0.5}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: 2de5b00054388e047be0712b21afdc8d
-      internalID: 3112387866308179848
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: Smoke4
-      rect:
-        serializedVersion: 2
-        x: 97
-        y: 43
-        width: 38
-        height: 38
-      alignment: 0
-      pivot: {x: 0.5, y: 0.5}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: 54bf27bada7cdbf41b559dd2f826a657
-      internalID: 5188503376888000258
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: Smoke5
-      rect:
-        serializedVersion: 2
-        x: 138
-        y: 43
-        width: 38
-        height: 38
-      alignment: 0
-      pivot: {x: 0.5, y: 0.5}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: b561e94f1f2c9ea408286866d9778bbf
-      internalID: 5998457434575000268
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: Fire1
-      rect:
-        serializedVersion: 2
-        x: 0
-        y: 11
-        width: 19
-        height: 16
-      alignment: 0
-      pivot: {x: 0.5, y: 0.5}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: 3d098d627a86fb743a277a67588e2c31
-      internalID: -2217470198051517562
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: Fire2
-      rect:
-        serializedVersion: 2
-        x: 30
-        y: 4
-        width: 28
-        height: 30
-      alignment: 0
-      pivot: {x: 0.5, y: 0.5}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: 761a9bbb18d49984692ba438e5b686e7
-      internalID: -7667366730336587119
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: Fire3
-      rect:
-        serializedVersion: 2
-        x: 62
-        y: 3
-        width: 32
-        height: 32
-      alignment: 0
-      pivot: {x: 0.5, y: 0.5}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: 4d2d660533aa37b4e8bd973c1fa35f82
-      internalID: 2099746008705510084
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: Fire4
-      rect:
-        serializedVersion: 2
-        x: 97
-        y: 0
-        width: 38
-        height: 38
-      alignment: 0
-      pivot: {x: 0.5, y: 0.5}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: 0a491d3f9e9c67f47b7dd5df8efdc71e
-      internalID: -1873510547025132079
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: Fire5
-      rect:
-        serializedVersion: 2
-        x: 138
-        y: 0
-        width: 38
-        height: 38
-      alignment: 0
-      pivot: {x: 0.5, y: 0.5}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: 6cd513a36be0e5040b0a38e67f37464e
-      internalID: 3784787124753034640
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: Empty
-      rect:
-        serializedVersion: 2
-        x: 0
-        y: 0
-        width: 1
-        height: 1
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -355,8 +142,197 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 6a0b026c49f248844b7ec29e28b3e008
-      internalID: -7050129638846038990
+      spriteID: 61d95197cd6e31d498c46e56547450b5
+      internalID: 2270957790454125496
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: EggMobile_1
+      rect:
+        serializedVersion: 2
+        x: 1
+        y: 11
+        width: 64
+        height: 32
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 6da3f6e65975b1f49a7fd55165ab3dc8
+      internalID: -1329453513980883781
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: EggMobile_2
+      rect:
+        serializedVersion: 2
+        x: 66
+        y: 74
+        width: 54
+        height: 18
+      alignment: 9
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: ab362b63c29db0f49853c0dbf63f0663
+      internalID: 4243595458480562337
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: EggMobile_3
+      rect:
+        serializedVersion: 2
+        x: 121
+        y: 74
+        width: 54
+        height: 18
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: ca2f84b7ab74920459143194dbdae8cc
+      internalID: 2599638679529554639
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: EggMobile_4
+      rect:
+        serializedVersion: 2
+        x: 66
+        y: 49
+        width: 54
+        height: 20
+      alignment: 9
+      pivot: {x: 0.5, y: 0.45000002}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: e90fea8d61bd9864d890c6995b8d2437
+      internalID: 5789866429078481230
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: EggMobile_5
+      rect:
+        serializedVersion: 2
+        x: 121
+        y: 49
+        width: 54
+        height: 20
+      alignment: 9
+      pivot: {x: 0.5, y: 0.45000002}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 84851afd3f9a53441a7575a43caeb26e
+      internalID: -6372165377394126637
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: EggMobile_6
+      rect:
+        serializedVersion: 2
+        x: 66
+        y: 26
+        width: 54
+        height: 20
+      alignment: 9
+      pivot: {x: 0.5, y: 0.45000002}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 8dc159a963e469340ac7a74e4d86a348
+      internalID: 2794885777405468556
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: EggMobile_7
+      rect:
+        serializedVersion: 2
+        x: 121
+        y: 26
+        width: 54
+        height: 21
+      alignment: 9
+      pivot: {x: 0.5, y: 0.42857143}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: a9b9cc49525de8c44a9e3d96d9dc5fc3
+      internalID: 1019302395222797523
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: EggMobile_8
+      rect:
+        serializedVersion: 2
+        x: 66
+        y: 1
+        width: 54
+        height: 22
+      alignment: 9
+      pivot: {x: 0.5, y: 0.40909094}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: e4e7330ec6ff72f4c88c839ffbce0541
+      internalID: 4882486134650705317
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: EggMobile_9
+      rect:
+        serializedVersion: 2
+        x: 121
+        y: 1
+        width: 54
+        height: 22
+      alignment: 9
+      pivot: {x: 0.5, y: 0.40909094}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: ce5b77544956fe34a88052080538b8c3
+      internalID: 1219318127706021436
       vertices: []
       indices: 
       edges: []
@@ -364,7 +340,7 @@ TextureImporter:
     outline: []
     physicsShape: []
     bones: []
-    spriteID: 557e7cb98b7e6dd4bb5aed730ef8c21c
+    spriteID: 5e97eb03825dee720800000000000000
     internalID: 0
     vertices: []
     indices: 

@@ -33,16 +33,20 @@ public class GameMode : MonoBehaviour {
             if (GlobalOptions.Get<bool>("gbaMode"))
                 modDeltaTime += (Random.value * 0.032F) - 0.016F;
             
-            foreach (GameBehaviour gameBehaviour in GameBehaviour.allGameBehvaiours)
-                gameBehaviour.UpdateDelta(modDeltaTime);
+            foreach (GameBehaviour gameBehaviour in GameBehaviour.allGameBehvaiours) {
+                float gbDeltaTime = gameBehaviour.useUnscaledDeltaTime ? modDeltaTime : modDeltaTime * Time.timeScale;
+                gameBehaviour.UpdateDelta(gbDeltaTime);
+            }
             
             // Run multiple simulations per frame to avoid clipping.
             // Without this, the character sometimes clips into the ground slightly before popping out.
             for (int i = 0; i < physicsStepsPerFrame; i++)
                 Physics.Simulate(modDeltaTime * Time.timeScale * (1F / physicsStepsPerFrame));
 
-            foreach (GameBehaviour gameBehaviour in GameBehaviour.allGameBehvaiours)
-                gameBehaviour.LateUpdateDelta(modDeltaTime);
+            foreach (GameBehaviour gameBehaviour in GameBehaviour.allGameBehvaiours) {
+                float gbDeltaTime = gameBehaviour.useUnscaledDeltaTime ? modDeltaTime : modDeltaTime * Time.timeScale;
+                gameBehaviour.LateUpdateDelta(gbDeltaTime);
+            }
 
             // Since we're updating the character multiple times per frame, we
             // need to prevent Input.GetButtonDown from firing multiple times.

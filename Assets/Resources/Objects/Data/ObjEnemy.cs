@@ -40,11 +40,11 @@ public class ObjEnemy : MonoBehaviour {
         10000
     };
 
-    void CharacterBounceEnemy(Character character, GameObject enemyObj) {
+    void CharacterBounce(Character character) {
         if (character.InStateGroup("ground")) return;
 
         bool shouldntRebound = (
-            (character.position.y < enemyObj.transform.position.y) ||
+            (character.position.y < transform.position.y) ||
             (character.velocity.y > 0)
         );
 
@@ -58,7 +58,7 @@ public class ObjEnemy : MonoBehaviour {
     }
 
     void Explode(Character sourceCharacter) {
-        CharacterBounceEnemy(sourceCharacter, gameObject);
+        CharacterBounce(sourceCharacter);
 
         int points = pointsTable[Mathf.Min(
             sourceCharacter.destroyEnemyChain,

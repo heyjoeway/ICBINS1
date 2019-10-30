@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class ObjHarmful : MonoBehaviour {
+    void Update() { }
+
     void OnTriggerEnter(Collider other) {
         if (!enabled) return;
 
@@ -11,5 +13,8 @@ public class ObjHarmful : MonoBehaviour {
         Character character = characters[0];
 
         character.Hurt(character.position.x <= transform.position.x);
+
+        ObjBoss bossParent = GetComponentInParent<ObjBoss>();
+        if (bossParent != null) bossParent.Laugh();
     }
 }

@@ -205,7 +205,7 @@ public class ObjBossGHZ : ObjBoss {
 
     public override void Hurt(Character sourceCharacter) {
         base.Hurt(sourceCharacter);
-        eggmanAnimator.Play("Hurt");
+        eggmanAnimator.Play("Hurt", -1, 0);
     }
 
     public override void Laugh() {

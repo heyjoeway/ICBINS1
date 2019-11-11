@@ -2,8 +2,7 @@ using UnityEngine;
 using UnityEngine.Audio;
 
 public class GameMode : MonoBehaviour {
-    public virtual void Start() {
-        Utils.SetFramerate();
+    public virtual void Awake() {
         Time.timeScale = 1;
         AudioMixer mixer = Resources.Load<AudioMixer>("Main");
         mixer.SetFloat("Music Pitch", 1);
@@ -15,6 +14,8 @@ public class GameMode : MonoBehaviour {
     int physicsStepsPerFrame = 4;
 
     public virtual void Update() {
+        Utils.SetFramerate();
+
         float deltaTime = Utils.cappedUnscaledDeltaTime;
         // Limit small fluctuations in deltatime
         deltaTime = Mathf.Round(deltaTime * Application.targetFrameRate) / Application.targetFrameRate;

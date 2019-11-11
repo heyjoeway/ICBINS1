@@ -30,8 +30,8 @@ public class LevelManager : GameMode {
         ReloadDisposablesScene();
     }
 
-    public override void Start() {
-        base.Start();
+    public override void Awake() {
+        base.Awake();
         Level levelDefault = FindObjectOfType<Level>();
         if (levelDefault == null) {
             StartCoroutine(Utils.LoadLevelAsync(
@@ -83,7 +83,7 @@ public class LevelManager : GameMode {
                 bool alreadySpawned = false;
                 foreach (Character character in characters) {
                     if (character.input.controllerId == controllerId) {
-                        alreadySpawned = true;
+                        // alreadySpawned = true;
                         break;
                     }
                 }

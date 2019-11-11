@@ -24,7 +24,7 @@ public class ObjBoss : GameBehaviour {
         musicStackEntry = new MusicManager.MusicStackEntry {
             introClip = introClip,
             loopClip = loopClip,
-            priority = 1
+            priority = 2
         };
         MusicManager.current.Add(musicStackEntry);
     }

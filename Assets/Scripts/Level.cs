@@ -4,7 +4,6 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 
 public class Level : MonoBehaviour {
-    public GameObject background;
     public AudioClip musicIntro;
     public AudioClip musicLoop;
     public CameraZone cameraZoneStart;
@@ -25,11 +24,7 @@ public class Level : MonoBehaviour {
     void Update() {
         foreach(Character character in LevelManager.current.characters) {
             if (character.currentLevel != this) continue;
-            
             DLEUpdateCharacter(character);
-            
-            if (character.characterCamera != null)
-                character.characterCamera.backgroundObj = background;
         }
     }
 
@@ -38,6 +33,7 @@ public class Level : MonoBehaviour {
             if (character.currentLevel == this) return;
         }
         SceneManager.UnloadSceneAsync(gameObject.scene);
+        Resources.UnloadUnusedAssets();
     }
 
     public void ReloadFadeOut(Character character = null) {

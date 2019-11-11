@@ -132,23 +132,6 @@ public class CharacterCamera : MonoBehaviour {
     }}
 
     // ========================================================================
-
-    public GameObject backgroundObjRaw;
-    public GameObject backgroundObj {
-        get { return backgroundObjRaw; }
-        set {
-            if (value == null) return;
-            if (backgroundObjRaw != null) return;
-            Destroy(backgroundObjRaw);
-            backgroundObjRaw = Instantiate(value);
-            Background background = backgroundObjRaw.GetComponent<Background>();
-            background.camera.targetTexture = camera.targetTexture;
-            // background.camera.targetDisplay = camera.targetDisplay;
-            if (character == null) return;
-            background.character = character;
-        }
-    }
-
     public Vector3 position {
         get { return transform.position; }
         set { transform.position = value; }
@@ -374,10 +357,6 @@ public class CharacterCamera : MonoBehaviour {
         null,
         null
     };
-
-    void OnDestroy() {
-        Destroy(backgroundObjRaw);
-    }
 
     public CameraZone cameraZone;
 }

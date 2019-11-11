@@ -5,6 +5,10 @@ using UnityEngine;
 public class ObjHarmful : MonoBehaviour {
     void Update() { }
 
+    void OnTriggerStay(Collider other) {
+        OnTriggerEnter(other);
+    }
+
     void OnTriggerEnter(Collider other) {
         if (!enabled) return;
 

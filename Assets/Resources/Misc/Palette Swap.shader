@@ -66,7 +66,6 @@
                 uint maxPaletteLength = 64;
                 
                 fixed4 bgcolor = tex2Dproj(_GrabTexture, i.grabPos);
-                int3 bgcolor256 = round(bgcolor.rgb * 255);
                 uint colorMapWidth = colorMap_TexelSize.z; // In pixels
                 
                 // Search through the index of the color map and try to find a color that matches the current pixel.
@@ -80,10 +79,8 @@
                             1
                         )
                     );
-                    int3 colMapIndex256 = round(colMapIndex.rgb * 255);
 
-                    if (all(abs(bgcolor256.rgb - colMapIndex256.rgb) <= _Threshold)) { // Did we find a matching color?
-                    // if (all(bgcolor256.rgb == colMapIndex256.rgb)) { // Did we find a matching color?
+                    if (all(abs(int4(bgcolor * 255).rgb - int4(colMapIndex * 255).rgb) <= _Threshold)) { // Did we find a matching color?
                         // If so, grab the replacement color for the cycle
                         return tex2D(
                             colorMap,

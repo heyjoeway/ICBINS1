@@ -941,12 +941,12 @@ PrefabInstance:
     - target: {fileID: 1627240442812890190, guid: e6e68f2bc55c1d449b7a82ac30b9fa7e,
         type: 3}
       propertyPath: autoscrollSpeed.x
-      value: 0.125
+      value: 0.0625
       objectReference: {fileID: 0}
     - target: {fileID: 1627240442812890190, guid: e6e68f2bc55c1d449b7a82ac30b9fa7e,
         type: 3}
       propertyPath: baseOffset.y
-      value: 10
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: e6e68f2bc55c1d449b7a82ac30b9fa7e, type: 3}

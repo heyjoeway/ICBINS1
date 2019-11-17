@@ -7,6 +7,7 @@
         _CycleSpeed ("Cycle Speed", Float) = 200
         [Toggle]
         _Lerp ("Linear Interpolation", Float) = 0
+        _Threshold ("Threshold", Float) = 1
     }
     SubShader
     {
@@ -57,6 +58,7 @@
             float _CycleSpeed;
             float4 colorMap_TexelSize;
             float _Lerp;
+            float _Threshold;
 
             fixed4 frag (v2f i) : SV_Target {
                 uint maxPaletteLength = 32;
@@ -89,7 +91,8 @@
                             1
                         )
                     );
-                    if (all(col.rgb == colMapIndex.rgb)) { // Did we find a matching color?
+
+                    if (all(abs(int4(col * 255).rgb - int4(colMapIndex * 255).rgb) <= _Threshold)) { // Did we find a matching color?
                         // If so, grab the replacement color for the cycle
                         colorResult = tex2D(
                             colorMap,

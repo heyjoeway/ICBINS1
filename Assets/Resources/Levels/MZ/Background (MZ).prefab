@@ -59,6 +59,10 @@ MeshRenderer:
   m_RendererPriority: 0
   m_Materials:
   - {fileID: 2100000, guid: e597786a061b08e4aa639282b57f7571, type: 2}
+  - {fileID: 2100000, guid: 7e45d13cf9ef563469a83aab0c66695b, type: 2}
+  - {fileID: 2100000, guid: e1146f14391c1bb40b8e131161fbda59, type: 2}
+  - {fileID: 2100000, guid: 7cb2a8fafd7196b4abf46840b11d9d06, type: 2}
+  - {fileID: 2100000, guid: 59f5814dbdff613408960d064bd39bb8, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -91,7 +95,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: dde49a710c4de4540942678b99786aac, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  rows: 2
+  rows: 4
   textures:
   - {fileID: 2800000, guid: d20775a0c3a67e649a73d058869c9f4c, type: 3}
   - {fileID: 2800000, guid: 8ebcc04b12207734d8ea21ad6c6489a2, type: 3}
@@ -106,27 +110,69 @@ MonoBehaviour:
   - {fileID: 2800000, guid: f088dcf418d2b784d816a59891b9f0b8, type: 3}
   - {fileID: 2800000, guid: c138304540132944e89cca2eab244580, type: 3}
   textureOrder:
+  - 8
+  - 10
+  - 6
   - 4
+  - 11
+  - 3
+  - 5
+  - 7
+  - 9
+  - 6
   - 4
+  - 5
+  - 8
+  - 7
+  - 9
+  - 11
+  - 3
+  - 10
+  - 7
+  - 9
+  - 6
+  - 5
+  - 11
+  - 10
+  - 3
+  - 7
+  - 6
+  - 8
+  - 9
   - 4
+  - 3
+  - 5
+  - 9
   - 4
+  - 11
+  - 7
+  - 8
+  - 10
+  - 6
   - 4
+  - 7
+  - 9
+  - 7
+  - 6
+  - 3
+  - 10
+  - 8
+  - 5
   - 4
+  - 9
+  - 11
+  - 10
+  - 7
+  - 3
+  - 8
+  - 11
+  - 9
+  - 5
+  - 6
   - 4
-  - 4
-  - 4
-  - 4
-  - 4
-  - 4
-  - 4
-  - 4
-  - 4
-  - 4
-  - 4
-  - 4
-  - 4
-  - 4
-  - 4
+  - 9
+  - 5
+  - 3
   - 0
   - 2
   - 1
@@ -149,7 +195,7 @@ MonoBehaviour:
   - 2
   - 0
   lineDeformationsHeight:
-  - 256
+  - 768
   - 144
   - 32
   - 16
@@ -161,16 +207,18 @@ MonoBehaviour:
   - 0
   lineDeformationsCamera:
   - -0.9
-  - -0.8
   - -0.7
+  - -0.3
   - -0.1
   - -0.25
   - -0.5
   - -0.75
   - -1
   verticalDeformationCamera: -1
-  baseOffset: {x: 0, y: 0}
+  baseOffset: {x: 0, y: 38}
   autoscrollSpeed: {x: 0, y: 0}
+  positionMax: {x: 99999, y: 26}
+  positionMin: {x: -99999, y: -99999}
   texture2DArray: {fileID: 0}
   filterMode: 0
   wrapMode: 1

@@ -48,10 +48,6 @@
                 // use ComputeGrabScreenPos function from UnityCG.cginc
                 // to get the correct texture coordinate
                 o.grabPos = ComputeGrabScreenPos(o.pos);
-                // #if UNITY_UV_STARTS_AT_TOP
-                // if (_MainTex_TexelSize.y < 0)
-                //         o.grabPos.y = 1-o.grabPos.y;
-                // #endif
                 return o;
             }
 

@@ -355,7 +355,7 @@ PrefabInstance:
     - target: {fileID: 6622680318891453869, guid: 924c1edfd94302442abe046c4c32add9,
         type: 3}
       propertyPath: fadeDelay
-      value: 2
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 6622680318891453869, guid: 924c1edfd94302442abe046c4c32add9,
         type: 3}

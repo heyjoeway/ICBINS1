@@ -96,9 +96,13 @@ public class ObjRing : MonoBehaviour {
     // ========================================================================
 
     static bool _staticInitDone = false;
+    static int layerIDStatic;
+    static int layerIDMoving;
     void StaticInit() {
         if (_staticInitDone) return;
         sprites = Resources.LoadAll<Sprite>("Objects/Data/ObjRing/Rings");
+        layerIDStatic = LayerMask.NameToLayer("Object - Player Only and Ignore Raycast");
+        layerIDMoving = LayerMask.NameToLayer("Ignore Raycast");
         _staticInitDone = true;
     }
 
@@ -179,6 +183,7 @@ public class ObjRing : MonoBehaviour {
 
         rigidbody.isKinematic = !falling;
         if (falling) {
+            gameObject.layer = layerIDMoving;
             animator.enabled = true;
             animator.Play("Spin");
             rigidbody.velocity += new Vector3(0, gravity * Utils.physicsScale, 0);
@@ -189,6 +194,7 @@ public class ObjRing : MonoBehaviour {
             if (fallingTimer <= 0)
                 Destroy(gameObject);
         } else {
+            gameObject.layer = layerIDStatic;
             // Make all rings spin at the same speed/frame
             animator.enabled = false;
             spriteRenderer.sprite = _staticSpinSprite;

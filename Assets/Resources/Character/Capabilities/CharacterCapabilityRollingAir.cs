@@ -20,8 +20,8 @@ public class CharacterCapabilityRollingAir : CharacterCapability {
 
     public override void Update(float deltaTime) {
         if (!character.InStateGroup("air") || !character.InStateGroup("rolling")) {
-            if (!GlobalOptions.Get<bool>("airCurling")) return;
-            if (character.InStateGroup("air") && character.input.GetButtonsDownPreventRepeat("Primary"))
+            if (!GlobalOptions.GetBool("airCurling")) return;
+            if (character.InStateGroup("air") && character.input.GetButtonDownPreventRepeat("Primary"))
                 character.stateCurrent = "jump";
             else return;
         };

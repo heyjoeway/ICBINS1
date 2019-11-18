@@ -66,11 +66,11 @@ public class CharacterCapabilityAir : CharacterCapability {
         float accelerationMagnitude = 0;
 
         // Acceleration
-        if (character.input.GetAxesNegative("Horizontal")) {
+        if (character.input.GetAxisNegative("Horizontal")) {
             if (velocityTemp.x > -character.topSpeed) {
                 accelerationMagnitude = -accelerationAir;
             }
-        } else if (character.input.GetAxesPositive("Horizontal")) {
+        } else if (character.input.GetAxisPositive("Horizontal")) {
             if (velocityTemp.x < character.topSpeed) {
                 accelerationMagnitude = accelerationAir;
             }
@@ -139,10 +139,10 @@ public class CharacterCapabilityAir : CharacterCapability {
         // Wait a minute, why are we doing a raycast to get a normal/position that we already know??
         // BECAUSE, the normal/position from the collision is glitchy as fuck.
         // This helps smooth things out.
-        Utils.RaycastHitHybrid hit = character.GetSolidRaycast(
+        RaycastHit hit = character.GetSolidRaycast(
             collision.GetContact(0).point - transform.position
         );
-        if (!hit.isValid) return;
+        if (hit.collider == null) return;
 
         Vector3 hitEuler = Quaternion.FromToRotation(Vector3.up, hit.normal).eulerAngles;
         // Round this or any tiiiny deviation in angle can allow the character
@@ -153,13 +153,15 @@ public class CharacterCapabilityAir : CharacterCapability {
     }
     
     public void UpdateAirReacquireGround() {
-        Utils.RaycastHitHybrid hit = Utils.RaycastHybrid(
+        RaycastHit hit;
+        Physics.Raycast(
             character.position, // origin
             Vector3.down, // direction,
+            out hit,
             0.8F * character.sizeScale, // max distance
             LayerMask.GetMask("Object - Top Solid Only")
         );
-        if (!hit.isValid) return;
+        if (hit.collider == null) return;
 
         Vector3 hitEuler = Quaternion.FromToRotation(Vector3.up, hit.normal).eulerAngles;
         // Round this or any tiiiny deviation in angle can allow the character
@@ -219,9 +221,9 @@ public class CharacterCapabilityAir : CharacterCapability {
 
 
     void UpdateAirAnimDirection() {
-        if (character.input.GetAxesNegative("Horizontal"))
+        if (character.input.GetAxisNegative("Horizontal"))
             character.facingRight = false;
-        else if (character.input.GetAxesPositive("Horizontal"))
+        else if (character.input.GetAxisPositive("Horizontal"))
             character.facingRight = true;
     }
 

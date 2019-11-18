@@ -2,7 +2,9 @@ using UnityEngine;
 
 public class CharacterCapabilityJump : CharacterCapability {
     const float jumpSpeedNormal = 6.5F;
-    public float jumpSpeed { get { return jumpSpeedNormal * character.physicsScale; }}
+    public float jumpSpeed => jumpSpeedNormal * character.physicsScale;
+    string[] buttonsJump = new string[] { "Secondary", "Tertiary" };
+    string[] buttonsJumpHold = new string[] { "Primary", "Secondary", "Tertiary" };
 
     // ========================================================================
 
@@ -33,7 +35,7 @@ public class CharacterCapabilityJump : CharacterCapability {
     // 3D-Ready: YES
     void UpdateGroundJump() {
         if (character.InStateGroup("noJump")) return;
-        if (!character.input.GetButtonsDownPreventRepeat("Secondary", "Tertiary")) return;
+        if (!character.input.GetButtonsDownPreventRepeat(buttonsJump)) return;
 
         character.velocity += transform.up * jumpSpeed;
         SFX.PlayOneShot(character.audioSource, "sfxJump");
@@ -42,7 +44,7 @@ public class CharacterCapabilityJump : CharacterCapability {
 
     // 3D-Ready: YES
     void UpdateJumpHeight() {
-        if (!character.input.GetButtons("Primary", "Secondary", "Tertiary")) {
+        if (!character.input.GetButtons(buttonsJumpHold)) {
             if (character.velocity.y > 4 * character.physicsScale)
                 character.velocity = new Vector3(
                     character.velocity.x,

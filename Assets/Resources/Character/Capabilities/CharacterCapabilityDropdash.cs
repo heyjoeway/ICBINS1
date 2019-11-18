@@ -2,6 +2,7 @@ using UnityEngine;
 
 public class CharacterCapabilityDropdash : CharacterCapability {
     public CharacterCapabilityDropdash(Character character) : base(character) { }
+    string[] buttonsDropDash = new string[] { "Secondary", "Tertiary" };
 
     Transform dustLocation;
 
@@ -20,7 +21,7 @@ public class CharacterCapabilityDropdash : CharacterCapability {
         if (nextStateName != "ground") return;
         if (
             (dropDashTimer <= 0) &&
-            character.input.GetButtons("Secondary", "Tertiary")
+            character.input.GetButtons(buttonsDropDash)
         ) DropDashRelease();
     }
 
@@ -29,15 +30,15 @@ public class CharacterCapabilityDropdash : CharacterCapability {
     public override void Update(float deltaTime) {
         if (character.stateCurrent != "jump") return;
 
-        if (!character.input.GetButtons("Secondary", "Tertiary")) {
+        if (!character.input.GetButtons(buttonsDropDash)) {
             character.AnimatorPlay("Roll");
             dropDashTimer = Mathf.Infinity;
         }
 
-        if (character.input.GetButtonsDownPreventRepeat("Secondary", "Tertiary"))
+        if (character.input.GetButtonsDownPreventRepeat(buttonsDropDash))
             dropDashTimer = 0.33333F;
 
-        if (character.input.GetButtons("Secondary", "Tertiary") && dropDashTimer > 0) {
+        if (character.input.GetButtons(buttonsDropDash) && dropDashTimer > 0) {
             dropDashTimer -= deltaTime;
 
             if (dropDashTimer <= 0) {

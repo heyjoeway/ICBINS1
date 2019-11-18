@@ -77,8 +77,8 @@ public class CharacterCapabilityGround : CharacterCapability {
         int inputDir = 0;
         if (character.horizontalInputLockTimer <= 0) {
             // ORDER MATTERS!
-            if (character.input.GetAxesPositive("Horizontal")) inputDir = 1;
-            if (character.input.GetAxesNegative("Horizontal")) inputDir = -1;
+            if (character.input.GetAxisPositive("Horizontal")) inputDir = 1;
+            if (character.input.GetAxisNegative("Horizontal")) inputDir = -1;
         } else character.horizontalInputLockTimer -= deltaTime;
 
         if (inputDir == 1) {
@@ -155,9 +155,9 @@ public class CharacterCapabilityGround : CharacterCapability {
             // Standing still, looking up/down, idle animation
             // ======================
             if (character.groundSpeed == 0) {
-                if (character.input.GetAxesNegative("Vertical"))
+                if (character.input.GetAxisNegative("Vertical"))
                     character.AnimatorPlay("Look Down");
-                else if (character.input.GetAxesPositive("Vertical"))
+                else if (character.input.GetAxisPositive("Vertical"))
                     character.AnimatorPlay("Look Up");
                 else if (character.balanceState != Character.BalanceState.None) {
                     ignoreFlipX = true;
@@ -190,7 +190,7 @@ public class CharacterCapabilityGround : CharacterCapability {
             // ======================
             } else if (
                 (Mathf.Abs(character.groundSpeed) >= 10F * character.physicsScale) &&
-                GlobalOptions.Get<bool>("peelOut")
+                GlobalOptions.GetBool("peelOut")
              ) {
                 character.AnimatorPlay("Fast");
                 character.spriteAnimatorSpeed = Mathf.Abs(character.groundSpeed) / character.topSpeedNormal;

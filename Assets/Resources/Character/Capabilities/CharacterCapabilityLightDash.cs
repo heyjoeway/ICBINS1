@@ -1,9 +1,7 @@
 using UnityEngine;
 
 public class CharacterCapabilityLightDash : CharacterCapability {
-    float lightDashSpeed { get {
-        return 9F * character.physicsScale;
-    }}
+    float lightDashSpeed => 9F * character.physicsScale;
 
     float failsafeTimer;
 
@@ -39,7 +37,7 @@ public class CharacterCapabilityLightDash : CharacterCapability {
 
     public override void Update(float deltaTime) {
         if (character.stateCurrent != "lightDash") {
-            if (!character.input.GetButtonsDownPreventRepeat("Primary")) return;
+            if (!character.input.GetButtonDownPreventRepeat("Primary")) return;
             target = FindClosestTarget(true);
             if (target != null) character.stateCurrent = "lightDash";
             return;

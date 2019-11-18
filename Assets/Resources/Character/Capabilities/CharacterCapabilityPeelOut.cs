@@ -1,6 +1,8 @@
 using UnityEngine;
 
 public class CharacterCapabilityPeelOut : CharacterCapability {
+    string[] buttonsPeelOut = new string[] { "Secondary", "Tertiary" };
+
     float peelOutTimer;
 
     // ========================================================================
@@ -37,8 +39,8 @@ public class CharacterCapabilityPeelOut : CharacterCapability {
             // Switches the character to spindash state if connditions are met:
             // - Pressing spindash key combo
             // - Standing still
-            if (!character.input.GetAxesPositive("Vertical")) return;
-            if (!character.input.GetButtonsDownPreventRepeat("Secondary", "Tertiary")) return;
+            if (!character.input.GetAxisPositive("Vertical")) return;
+            if (!character.input.GetButtonsDownPreventRepeat(buttonsPeelOut)) return;
             if (character.groundSpeed != 0) return;
             character.stateCurrent = name;
             return;
@@ -53,7 +55,7 @@ public class CharacterCapabilityPeelOut : CharacterCapability {
 
     // 3D-Ready: YES
     void UpdateSpindashInput() {
-        if (!character.input.GetAxesPositive("Vertical"))
+        if (!character.input.GetAxisPositive("Vertical"))
             SpindashRelease();
     }
 

@@ -204,28 +204,31 @@ public class Character : GameBehaviour {
 
     // ========================================================================
     
-    public Utils.RaycastHitHybrid GetGroundRaycast() {
+    public RaycastHit GetGroundRaycast() {
         return GetSolidRaycast(-transform.up);
     }
 
     // 3D-Ready: YES
-    public Utils.RaycastHitHybrid GetSolidRaycast(Vector3 direction, float maxDistance = 0.8F) {
-        return Utils.RaycastHybrid(
+    public RaycastHit GetSolidRaycast(Vector3 direction, float maxDistance = 0.8F) {
+        RaycastHit hit;
+        Physics.Raycast(
             position, // origin
-            direction.normalized, // direction,
+            direction.normalized, // direction
+            out hit,
             maxDistance * sizeScale, // max distance
             ~solidRaycastMask // layer mask
         );
+        return hit;
     }
 
     bool GetIsGrounded() {
-        Utils.RaycastHitHybrid hit = GetGroundRaycast();
+        RaycastHit hit = GetGroundRaycast();
         return GetIsGrounded(hit);
     }
 
     // 3D-Ready: NO
-    bool GetIsGrounded(Utils.RaycastHitHybrid hit) { // Potentially avoid recomputing raycast
-        if (!hit.isValid) return false;
+    bool GetIsGrounded(RaycastHit hit) { // Potentially avoid recomputing raycast
+        if (hit.collider == null) return false;
 
         float angleDiff = Mathf.DeltaAngle(
             Quaternion.FromToRotation(Vector3.up, hit.normal).eulerAngles.z,
@@ -260,7 +263,7 @@ public class Character : GameBehaviour {
     // Keeps character locked to ground while in ground state
     // 3D-Ready: No, but pretty close, actually.
     public bool GroundSnap() {
-        Utils.RaycastHitHybrid hit = GetGroundRaycast();
+        RaycastHit hit = GetGroundRaycast();
         balanceState = BalanceState.None;
 
         if (GetIsGrounded(hit)) {
@@ -280,13 +283,15 @@ public class Character : GameBehaviour {
             // We might be on a ledge. Better check to the left and right of
             // the character to be sure.
             for (int dir = -1; dir <= 1; dir += 2) {
-                Utils.RaycastHitHybrid hitLedge = Utils.RaycastHybrid(
+                RaycastHit hitLedge;
+                Physics.Raycast(
                     position + (dir * transform.right * 0.375F * sizeScale * sizeScale), // origin
-                    -transform.up, // direction,
+                    -transform.up, // direction
+                    out hitLedge,
                     0.8F * sizeScale, // max distance
                     ~solidRaycastMask // layer mask
                 );
-                if (hitLedge.isValid) {
+                if (hitLedge.collider != null) {
                     balanceState = dir < 0 ? BalanceState.Left : BalanceState.Right;
                     groundedDetectorCurrent = hitLedge.transform.GetComponentInChildren<CharacterGroundedDetector>();
 
@@ -357,7 +362,7 @@ public class Character : GameBehaviour {
     // Gets rotation for sprite
     // 3D-Ready: No
     public Vector3 GetSpriteRotation(float deltaTime) {
-        if (!GlobalOptions.Get<bool>("smoothRotation"))
+        if (!GlobalOptions.GetBool("smoothRotation"))
             return (transform.eulerAngles / 45F).Round(0) * 45F;
     
         Vector3 currentRotation = sprite.transform.eulerAngles;
@@ -635,12 +640,8 @@ public class Character : GameBehaviour {
     }
 
     // ========================================================================
-    public bool pressingLeft { get {
-        return input.GetAxesNegative("Horizontal");
-    }}
-    public bool pressingRight { get {
-        return input.GetAxesPositive("Horizontal") && !pressingLeft;
-    }}
+    public bool pressingLeft => input.GetAxisNegative("Horizontal");
+    public bool pressingRight => input.GetAxisPositive("Horizontal");
 
     // ========================================================================
 
@@ -731,6 +732,8 @@ public class Character : GameBehaviour {
         Destroy(characterCamera.gameObject);
         Destroy(spriteContainer.gameObject);
         Destroy(hud.gameObject);
+
+        // Keep player IDs sequential
         if (playerId < 0) return;
         foreach (Character character in LevelManager.current.characters) {
             if (character.playerId > playerId)        
@@ -779,7 +782,7 @@ public class Character : GameBehaviour {
             Respawn();
         }
 
-        if (GlobalOptions.Get<bool>("tinyMode"))
+        if (GlobalOptions.GetBool("tinyMode"))
             sizeScale = 0.5F;
     }
 

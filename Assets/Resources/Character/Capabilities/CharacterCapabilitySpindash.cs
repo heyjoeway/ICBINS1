@@ -1,19 +1,16 @@
 using UnityEngine;
 
 public class CharacterCapabilitySpindash : CharacterCapability {
-    float spindashPower;
-    float spindashPowerMax { get {
-        return 8F * character.physicsScale;
-    }}
-    float spindashSpeedMax { get {
-        return 12F * character.physicsScale;
-    }}
+    float spindashPowerMax => 8F * character.physicsScale;
+    float spindashSpeedMax => 12F * character.physicsScale;
+    string[] buttonsSpindash = new string[] { "Secondary", "Tertiary" };
+
 
     // ========================================================================
 
     Transform dustLocation;
     GameObject dust = null;
-
+    float spindashPower;
 
     // ========================================================================
 
@@ -60,8 +57,8 @@ public class CharacterCapabilitySpindash : CharacterCapability {
             // Switches the character to spindash state if connditions are met:
             // - Pressing spindash key combo
             // - Standing still
-            if (!character.input.GetAxesNegative("Vertical")) return;
-            if (!character.input.GetButtonsDownPreventRepeat("Secondary", "Tertiary")) return;
+            if (!character.input.GetAxisNegative("Vertical")) return;
+            if (!character.input.GetButtonsDownPreventRepeat(buttonsSpindash)) return;
             if (character.groundSpeed != 0) return;
             character.stateCurrent = name;
             return;
@@ -83,12 +80,12 @@ public class CharacterCapabilitySpindash : CharacterCapability {
 
     // 3D-Ready: YES
     void UpdateSpindashInput() {
-        if (!character.input.GetAxesNegative("Vertical")) {
+        if (!character.input.GetAxisNegative("Vertical")) {
             SpindashRelease();
             return;
         }
 
-        if (character.input.GetButtonsDownPreventRepeat("Secondary", "Tertiary"))
+        if (character.input.GetButtonsDownPreventRepeat(buttonsSpindash))
             SpindashCharge();
     }
 

@@ -40,7 +40,7 @@ public class ObjMonitorContents : MonoBehaviour {
     Animator animator { get { return GetComponent<Animator>(); }}
 
     void Start() {
-        if (!GlobalOptions.Get<bool>("elementalShields")) {
+        if (!GlobalOptions.GetBool("elementalShields")) {
             switch(type) {
                 case ContentsType.ShieldElectricity:
                 case ContentsType.ShieldBubble:

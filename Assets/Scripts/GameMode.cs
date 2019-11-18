@@ -31,7 +31,7 @@ public class GameMode : MonoBehaviour {
             float modDeltaTime = deltaTime > 1F / 60F ? 1F / 60F : deltaTime;
 
             // (meme)
-            if (GlobalOptions.Get<bool>("gbaMode"))
+            if (GlobalOptions.GetBool("gbaMode"))
                 modDeltaTime += (Random.value * 0.032F) - 0.016F;
             
             foreach (GameBehaviour gameBehaviour in GameBehaviour.allGameBehvaiours) {

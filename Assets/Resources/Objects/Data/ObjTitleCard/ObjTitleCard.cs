@@ -4,6 +4,8 @@ using UnityEngine;
 using UnityEngine.UI;
 
 public class ObjTitleCard : MonoBehaviour {
+    bool debug = true; // Finishes card instantly
+
     public static ObjTitleCard Make(Character character = null, bool fadeIn = true) {
         ObjTitleCard titleCard = Instantiate(
             Constants.Get<GameObject>("prefabTitleCard"),
@@ -24,7 +26,7 @@ public class ObjTitleCard : MonoBehaviour {
     [HideInInspector]
     public Character character;
     [HideInInspector]
-    public ScreenFade screenFade { get { return GetComponent<ScreenFade>(); }}
+    public ScreenFade screenFade => GetComponent<ScreenFade>();
     [HideInInspector]
     public Canvas canvas;
     Animator animator;
@@ -40,6 +42,13 @@ public class ObjTitleCard : MonoBehaviour {
         zoneTextComponent = transform.Find("Zone Name").GetComponent<Text>();
         canvas = GetComponent<Canvas>();
         animator = GetComponent<Animator>();
+
+        if (debug) {
+            Destroy(screenFade.gameObject);
+            StartTime();
+            Destroy(gameObject);
+            return;
+        }
     }
 
     public void Init() {

@@ -6,19 +6,19 @@ public class CharacterSonic : Character {
         capabilities.Add(new CharacterCapabilityAir(this));
         capabilities.Add(new CharacterCapabilityHurt(this));
     
-        if (GlobalOptions.Get<bool>("spindash"))
+        if (GlobalOptions.GetBool("spindash"))
             capabilities.Add(new CharacterCapabilitySpindash(this));
 
-        if (GlobalOptions.Get<bool>("peelOut"))
+        if (GlobalOptions.GetBool("peelOut"))
             capabilities.Add(new CharacterCapabilityPeelOut(this));
     
-        if (GlobalOptions.Get<bool>("dropDash"))
+        if (GlobalOptions.GetBool("dropDash"))
             capabilities.Add(new CharacterCapabilityDropdash(this));
 
-        if (GlobalOptions.Get<bool>("homingAttack"))
+        if (GlobalOptions.GetBool("homingAttack"))
             capabilities.Add(new CharacterCapabilityHomingAttack(this));
     
-        if (GlobalOptions.Get<bool>("lightDash"))
+    if (GlobalOptions.GetBool("lightDash"))
             capabilities.Add(new CharacterCapabilityLightDash(this));
             
         capabilities.Add(new CharacterCapabilityJump(this));
@@ -27,7 +27,7 @@ public class CharacterSonic : Character {
         capabilities.Add(new CharacterCapabilityVictory(this));
         capabilities.Add(new CharacterCapabilityDeath(this));
 
-        if (GlobalOptions.Get<bool>("afterImages"))
+        if (GlobalOptions.GetBool("afterImages"))
             capabilities.Add(new CharacterCapabilityAfterImage(this));
             
         base.Start();

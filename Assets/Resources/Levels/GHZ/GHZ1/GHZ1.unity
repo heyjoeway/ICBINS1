@@ -9068,7 +9068,7 @@ GameObject:
   - component: {fileID: 652209697}
   - component: {fileID: 652209696}
   - component: {fileID: 652209695}
-  m_Layer: 0
+  m_Layer: 22
   m_Name: Cube (5)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -9859,7 +9859,7 @@ GameObject:
   - component: {fileID: 732272792}
   - component: {fileID: 732272791}
   - component: {fileID: 732272790}
-  m_Layer: 0
+  m_Layer: 22
   m_Name: Cube (2)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -10597,7 +10597,7 @@ GameObject:
   - component: {fileID: 768283868}
   - component: {fileID: 768283867}
   - component: {fileID: 768283870}
-  m_Layer: 0
+  m_Layer: 22
   m_Name: Cube (1)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -15433,6 +15433,11 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 2587325721628848518, guid: a62bfb89d0c8412408b1b74bc68629b2,
+        type: 3}
+      propertyPath: m_Enabled
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 206227095604070394, guid: a62bfb89d0c8412408b1b74bc68629b2,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -15441,11 +15446,6 @@ PrefabInstance:
     - target: {fileID: 206227095604070394, guid: a62bfb89d0c8412408b1b74bc68629b2,
         type: 3}
       propertyPath: m_LocalPosition.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 2587325721628848518, guid: a62bfb89d0c8412408b1b74bc68629b2,
-        type: 3}
-      propertyPath: m_Enabled
       value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
@@ -16357,7 +16357,7 @@ GameObject:
   - component: {fileID: 1117906927}
   - component: {fileID: 1117906926}
   - component: {fileID: 1117906925}
-  m_Layer: 0
+  m_Layer: 22
   m_Name: Cube (1)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -20310,7 +20310,7 @@ GameObject:
   - component: {fileID: 1312854128}
   - component: {fileID: 1312854127}
   - component: {fileID: 1312854130}
-  m_Layer: 0
+  m_Layer: 22
   m_Name: Cube
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -21667,7 +21667,7 @@ GameObject:
   - component: {fileID: 1431667917}
   - component: {fileID: 1431667916}
   - component: {fileID: 1431667915}
-  m_Layer: 0
+  m_Layer: 22
   m_Name: Cube
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -24470,7 +24470,7 @@ GameObject:
   - component: {fileID: 1642468833}
   - component: {fileID: 1642468832}
   - component: {fileID: 1642468831}
-  m_Layer: 0
+  m_Layer: 22
   m_Name: Cube (3)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -26246,6 +26246,11 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 7981619281850033702, guid: c95f709bddbf7b0418d1877774530877,
+        type: 3}
+      propertyPath: characterCurrent
+      value: 
+      objectReference: {fileID: 0}
     - target: {fileID: 1253703060727521175, guid: c95f709bddbf7b0418d1877774530877,
         type: 3}
       propertyPath: m_LocalPosition.y
@@ -26255,11 +26260,6 @@ PrefabInstance:
         type: 3}
       propertyPath: m_LocalPosition.y
       value: 0.44
-      objectReference: {fileID: 0}
-    - target: {fileID: 7981619281850033702, guid: c95f709bddbf7b0418d1877774530877,
-        type: 3}
-      propertyPath: characterCurrent
-      value: 
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: c95f709bddbf7b0418d1877774530877, type: 3}
@@ -26678,7 +26678,7 @@ GameObject:
   - component: {fileID: 1811769315}
   - component: {fileID: 1811769314}
   - component: {fileID: 1811769313}
-  m_Layer: 0
+  m_Layer: 22
   m_Name: Cube (4)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -31890,6 +31890,11 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 7981619281850033702, guid: c95f709bddbf7b0418d1877774530877,
+        type: 3}
+      propertyPath: characterCurrent
+      value: 
+      objectReference: {fileID: 0}
     - target: {fileID: 5645914944418987550, guid: c95f709bddbf7b0418d1877774530877,
         type: 3}
       propertyPath: m_IsActive
@@ -31899,11 +31904,6 @@ PrefabInstance:
         type: 3}
       propertyPath: m_IsActive
       value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 7981619281850033702, guid: c95f709bddbf7b0418d1877774530877,
-        type: 3}
-      propertyPath: characterCurrent
-      value: 
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: c95f709bddbf7b0418d1877774530877, type: 3}

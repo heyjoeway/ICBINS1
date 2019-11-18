@@ -1,13 +1,9 @@
 using UnityEngine;
 
 public class CharacterCapabilityHomingAttack : CharacterCapability {
-    float homingAttackSpeed { get {
-        return 9F * character.physicsScale;
-    }}
-
-    float homingAttackBounceSpeed { get {
-        return 6.5F * character.physicsScale;
-    }}
+    string[] buttonsHomingAttack = new string[] { "Secondary", "Tertiary" };
+    float homingAttackSpeed => 9F * character.physicsScale;
+    float homingAttackBounceSpeed => 6.5F * character.physicsScale;
     
     float failsafeTimer;
 
@@ -54,7 +50,7 @@ public class CharacterCapabilityHomingAttack : CharacterCapability {
 
     public override void Update(float deltaTime) {
         if (character.stateCurrent == "jump") {
-            if (character.input.GetButtonsDownPreventRepeat("Secondary", "Tertiary"))
+            if (character.input.GetButtonsDownPreventRepeat(buttonsHomingAttack))
                 character.stateCurrent = "homingAttack";
         }
 

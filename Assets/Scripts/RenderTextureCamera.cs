@@ -44,7 +44,7 @@ public class RenderTextureCamera : MonoBehaviour {
     }
 
     void Update() {
-        integerScaling = GlobalOptions.Get<bool>("integerScaling");
+        integerScaling = GlobalOptions.GetBool("integerScaling");
 
         if (LevelManager.current != null)
             integerScaling &= LevelManager.current.characters.Count <= 1;
@@ -76,14 +76,9 @@ public class RenderTextureCamera : MonoBehaviour {
             camera.targetTexture.height
         );
         camera.rect = viewportRect;
-
-        // clearScreen = true;
     }
 
     static bool clearScreen = true;
-
-
-
     void OnPreRender() {
         ResizeRenderTexture();
         clearScreen = true;

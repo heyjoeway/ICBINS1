@@ -58,7 +58,7 @@ public class CharacterCapabilityRolling : CharacterCapability {
     public override void Update(float deltaTime) {
         if (character.stateCurrent == "ground") {
             if (character.pressingLeft || character.pressingRight) return;
-            if (!character.input.GetAxesNegative("Vertical")) return;
+            if (!character.input.GetAxisNegative("Vertical")) return;
             if (Mathf.Abs(character.groundSpeed) < rollThreshold) return;
             character.stateCurrent = "rolling";
             SFX.PlayOneShot(character.audioSource, "sfxRoll");
@@ -88,10 +88,10 @@ public class CharacterCapabilityRolling : CharacterCapability {
     void UpdateRollingMove(float deltaTime) {
         float accelerationMagnitude = 0F;
 
-        if (character.input.GetAxesNegative("Horizontal")) {
+        if (character.input.GetAxisNegative("Horizontal")) {
             if (character.groundSpeed > 0)
                 accelerationMagnitude = -decelerationRoll;
-        } else if (character.input.GetAxesPositive("Horizontal")) {
+        } else if (character.input.GetAxisPositive("Horizontal")) {
             if (character.groundSpeed < 0)
                 accelerationMagnitude = decelerationRoll;
         }

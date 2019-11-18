@@ -23,20 +23,19 @@ public class GlobalOptions : MonoBehaviour {
         ["elementalShields"] = "OFF" // TODO
     };
 
+    static Dictionary<string, string> playerPrefsCache = new Dictionary<string, string>();
+
     public static string Get(string key) {
-        return PlayerPrefs.GetString(key, defaults[key]);
-    }
-
-    public static T Get<T>(string key) {
-        string data = Get(key);
+        if (!playerPrefsCache.ContainsKey(key))
+            playerPrefsCache[key] = PlayerPrefs.GetString(key, defaults[key]);
         
-        if (typeof(T) == typeof(bool))
-            return (T)(object)Utils.StringBool(data);
-
-        return (T)(object)data;
+        return playerPrefsCache[key];
     }
+
+    public static bool GetBool(string key) => Utils.StringBool(Get(key));
 
     static void Set(string key, string value) {
+        playerPrefsCache[key] = value;
         PlayerPrefs.SetString(key, value);
         PlayerPrefs.Save();
     }

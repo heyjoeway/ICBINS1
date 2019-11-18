@@ -84,9 +84,11 @@ public class RenderTextureCamera : MonoBehaviour {
         clearScreen = true;
     }
 
-    void OnGUI() {}
+    void OnGUI() { }
+    
+    static WaitForEndOfFrame waitForEndOfFrame = new WaitForEndOfFrame();
     IEnumerator OnPostRender() {
-        yield return new WaitForEndOfFrame();
+        yield return waitForEndOfFrame;
         if (clearScreen) {
             GL.Clear(false, true, Color.black);
             clearScreen = false;

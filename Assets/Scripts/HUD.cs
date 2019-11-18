@@ -1,4 +1,5 @@
 ﻿using System.Collections;
+using System.Text;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
@@ -23,26 +24,40 @@ public class HUD : MonoBehaviour {
         ringsTitleText = transform.Find("Rings Title").GetComponent<Text>();
         livesText = transform.Find("Lives Content").GetComponent<Text>();
     }
+    StringBuilder sb = new StringBuilder("", 50);
 
     public void Update() {
         canvas.worldCamera = character.characterCamera.camera;
         // Debug.Log(character.characterCamera.camera);
 
-        scoreText.text = character.score.ToString();
-        ringsText.text = character.rings.ToString();
-        livesText.text = character.lives.ToString();
+        scoreText.text = Utils.IntToStrCached(character.score);
+        ringsText.text = Utils.IntToStrCached(character.rings);
+        livesText.text = Utils.IntToStrCached(character.lives);
 
-        timeText.text = (
-            Mathf.Floor(character.timer / 60).ToString() +
-            ":" +
-            Mathf.Floor(character.timer % 60).ToString().PadLeft(2, '0')
-        );
+        int minutes = (int)(character.timer / 60);
+        int seconds = (int)(character.timer % 60);
 
-        if (GlobalOptions.Get("timerType") == "CENTISECOND")
-            timeText.text += ":" + Mathf.Floor((character.timer % 1) * 100F).ToString().PadLeft(2, '0');
+        sb.Clear();
+        sb.Append(Utils.IntToStrCached(minutes));
+        sb.Append(":");
+        if (seconds < 10) sb.Append("0");
+        sb.Append(Utils.IntToStrCached(seconds));
+
+        if (GlobalOptions.Get("timerType") != "NORMAL") {
+            sb.Append(":");
+            int preciseTime = 0;
+            
+            if (GlobalOptions.Get("timerType") == "CENTISECOND")
+                preciseTime = (int)((character.timer % 1) * 100F);
+            
+            if (GlobalOptions.Get("timerType") == "FRAMES")
+                preciseTime = (int)((character.timer * 60) % 60);
+
+            if (preciseTime < 10) sb.Append("0");
+            sb.Append(Utils.IntToStrCached(preciseTime));
+        }
         
-        if (GlobalOptions.Get("timerType") == "FRAMES")
-            timeText.text += ":" + Mathf.Floor((character.timer * 60) % 60).ToString().PadLeft(2, '0');
+        timeText.text = sb.ToString();
 
         bool shouldFlash = (((int)(Time.unscaledTime * 60)) % 16) > 8;
         if (shouldFlash) {

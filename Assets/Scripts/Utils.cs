@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Collections;
+using System.Text;
 using System;
 
 using UnityEngine;
@@ -193,4 +194,14 @@ public static class Utils {
         "ok",   "Ok",   "OK"
     };
     public static bool StringBool(string str) => stringsPositive.Contains(str);
+
+    // ========================================================================
+
+    static Dictionary<int, string> intStrCache = new Dictionary<int, string>();
+    public static string IntToStrCached(int val) {
+        if (!intStrCache.ContainsKey(val))
+            intStrCache[val] = val.ToString();
+        return intStrCache[val];
+    }
+    public static string IntToStrCached(float val) => IntToStrCached((int)val);
 }

@@ -109,7 +109,24 @@ public class ObjRing : MonoBehaviour {
     // ========================================================================
 
     static int panStereo = 1;
-    public bool falling = false;
+    bool _falling = false;
+    public bool falling {
+        get { return _falling; }
+        set {
+            _falling = value;
+
+            rigidbody.isKinematic = !_falling;
+            if (_falling) {
+                gameObject.layer = layerIDMoving;
+                animator.enabled = true;
+                animator.Play("Spin");
+            } else {
+                gameObject.layer = layerIDStatic;
+                // Make all rings spin at the same speed/frame
+                animator.enabled = false;
+            }
+        }
+    }
     float fallingTimerMax = 4.27F;
     float fallingTimer = 4.27F;
     public bool collected = false;
@@ -181,11 +198,7 @@ public class ObjRing : MonoBehaviour {
             initialVelocity = Vector3.zero;
         }
 
-        rigidbody.isKinematic = !falling;
         if (falling) {
-            gameObject.layer = layerIDMoving;
-            animator.enabled = true;
-            animator.Play("Spin");
             rigidbody.velocity += new Vector3(0, gravity * Utils.physicsScale, 0);
 
             fallingTimer -= Utils.cappedDeltaTime;
@@ -194,9 +207,6 @@ public class ObjRing : MonoBehaviour {
             if (fallingTimer <= 0)
                 Destroy(gameObject);
         } else {
-            gameObject.layer = layerIDStatic;
-            // Make all rings spin at the same speed/frame
-            animator.enabled = false;
             spriteRenderer.sprite = _staticSpinSprite;
         }
     }

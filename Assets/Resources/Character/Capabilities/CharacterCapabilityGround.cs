@@ -1,52 +1,37 @@
 using UnityEngine;
+using System.Collections.Generic;
+using System;
 
 public class CharacterCapabilityGround : CharacterCapability {
-    const float accelerationGroundNormal = 0.046875F;
-    const float accelerationGroundSpeedUp = 0.09375F;
-    float accelerationGround { get {
-        return (
-            character.HasEffect("speedUp") ?
-                accelerationGroundSpeedUp :
-                accelerationGroundNormal
-        ) * character.physicsScale;
-    }}
-
-    const float frictionGroundNormal = 0.046875F;
-    const float frictionGroundSpeedUp = 0.09375F;
-    float frictionGround { get {
-        return (
-            character.HasEffect("speedUp") ?
-                frictionGroundSpeedUp :
-                frictionGroundNormal
-        ) * character.physicsScale;
-    }}
-
-    float decelerationGround { get {
-        return 0.5F * character.physicsScale;
-    }}
-
-    float slopeFactorGround { get {
-        return 0.125F * character.physicsScale;
-    }}
-
-    float skidThreshold { get {
-        return 4.5F * character.physicsScale;
-    }}
-
-    float fallThreshold { get {
-        return 2.5F * character.physicsScale;
-    }}
-
-    // ========================================================================
-    
-
-    public CharacterCapabilityGround(Character character) : base(character) { }
+     public CharacterCapabilityGround(Character character) : base(character) { }
 
     bool pushing = false;
 
     public override void Init() {
         name = "ground";
         character.AddStateGroup("ground", "ground");
+
+        character.stats.Add(new Dictionary<string, object>() {
+            ["accelerationGroundNormal"] = 0.046875F,
+            ["accelerationGroundSpeedUp"] = 0.09375F,
+            ["accelerationGround"] = (Func<string>)(() => (
+                character.HasEffect("speedUp") ?
+                    "accelerationGroundSpeedUp" :
+                    "accelerationGroundNormal"
+            )),
+            ["frictionGroundNormal"] = 0.046875F,
+            ["frictionGroundSpeedUp"] = 0.09375F,
+            ["frictionGround"] = (Func<string>)(() => (
+                character.HasEffect("speedUp") ?
+                    "frictionGroundSpeedUp" :
+                    "frictionGroundNormal"
+            )),
+            ["decelerationGround"] = 0.5F,
+            ["slopeFactorGround"] = 0.125F,
+            ["skidThreshold"] = 4.5F,
+            ["fallThreshold"] = 2.5F
+        });
+
     }
 
     public override void StateInit(string stateName, string prevStateName) {
@@ -83,26 +68,33 @@ public class CharacterCapabilityGround : CharacterCapability {
 
         if (inputDir == 1) {
             if (character.groundSpeed < 0) {
-                accelerationMagnitude = decelerationGround;
-            } else if (character.groundSpeed < character.topSpeed) {
-                accelerationMagnitude = accelerationGround;
+                accelerationMagnitude = character.stats.Get("decelerationGround");
+            } else if (character.groundSpeed < character.stats.Get("topSpeed")) {
+                accelerationMagnitude = character.stats.Get("accelerationGround");
             }
         } else if (inputDir == -1) {
             if (character.groundSpeed > 0) {
-                accelerationMagnitude = -decelerationGround;
-            } else if (character.groundSpeed > -character.topSpeed) {
-                accelerationMagnitude = -accelerationGround;
+                accelerationMagnitude = -character.stats.Get("decelerationGround");
+            } else if (character.groundSpeed > -character.stats.Get("topSpeed")) {
+                accelerationMagnitude = -character.stats.Get("accelerationGround");
             }
         } else {
             if (Mathf.Abs(character.groundSpeed) > 0.05F * character.physicsScale) {
-                accelerationMagnitude = -Mathf.Sign(character.groundSpeed) * frictionGround;
+                accelerationMagnitude = -Mathf.Sign(character.groundSpeed) * character.stats.Get("frictionGround");
             } else {
                 character.groundSpeed = 0;
                 accelerationMagnitude = 0;
             }
         }
 
-        float slopeFactorAcc = slopeFactorGround * Mathf.Sin(character.forwardAngle * Mathf.Deg2Rad);
+        float slopeFactorAcc = (
+            character.stats.Get("slopeFactorGround") *
+            Mathf.Sin(
+                character.forwardAngle *
+                Mathf.Deg2Rad
+            )
+        );
+
         if (Mathf.Abs(slopeFactorAcc) > 0.04)
             accelerationMagnitude -= slopeFactorAcc;
 
@@ -120,7 +112,7 @@ public class CharacterCapabilityGround : CharacterCapability {
             character.spriteAnimatorSpeed = 1 + (
                 (
                     Mathf.Abs(character.groundSpeed) /
-                    character.topSpeedNormal
+                    character.stats.Get("topSpeedNormal")
                 ) * 2F
             );
         } else {
@@ -147,7 +139,7 @@ public class CharacterCapabilityGround : CharacterCapability {
                         (character.forwardAngle <= 45F) ||
                         (character.forwardAngle >= 270F)
                     ) && (
-                        Mathf.Abs(character.groundSpeed) >= skidThreshold
+                        Mathf.Abs(character.groundSpeed) >= character.stats.Get("skidThreshold")
                     )
                 ) || character.spriteAnimator.GetCurrentAnimatorStateInfo(0).IsName("Skid")
             );
@@ -173,7 +165,7 @@ public class CharacterCapabilityGround : CharacterCapability {
             // ======================
             } else if (pushing) {
                 character.AnimatorPlay("Push");
-                character.spriteAnimatorSpeed = 1 + (Mathf.Abs(character.groundSpeed) / character.topSpeedNormal);
+                character.spriteAnimatorSpeed = 1 + (Mathf.Abs(character.groundSpeed) / character.stats.Get("topSpeedNormal"));
             // Skidding, again
             // ======================
             } else if (skidding && canSkid) {
@@ -183,9 +175,9 @@ public class CharacterCapabilityGround : CharacterCapability {
                 character.AnimatorPlay("Skid");
             // Walking
             // ======================
-            } else if (Mathf.Abs(character.groundSpeed) < character.topSpeedNormal) {
+            } else if (Mathf.Abs(character.groundSpeed) < character.stats.Get("topSpeedNormal")) {
                 character.AnimatorPlay("Walk");
-                character.spriteAnimatorSpeed = 1 + (Mathf.Abs(character.groundSpeed) / character.topSpeedNormal);
+                character.spriteAnimatorSpeed = 1 + (Mathf.Abs(character.groundSpeed) / character.stats.Get("topSpeedNormal"));
             // Running Fast
             // ======================
             } else if (
@@ -193,12 +185,12 @@ public class CharacterCapabilityGround : CharacterCapability {
                 GlobalOptions.GetBool("peelOut")
              ) {
                 character.AnimatorPlay("Fast");
-                character.spriteAnimatorSpeed = Mathf.Abs(character.groundSpeed) / character.topSpeedNormal;
+                character.spriteAnimatorSpeed = Mathf.Abs(character.groundSpeed) / character.stats.Get("topSpeedNormal");
             } else {
             // Running
             // ======================
                 character.AnimatorPlay("Run");
-                character.spriteAnimatorSpeed = Mathf.Abs(character.groundSpeed) / character.topSpeedNormal;
+                character.spriteAnimatorSpeed = Mathf.Abs(character.groundSpeed) / character.stats.Get("topSpeedNormal");
             }
         }
 
@@ -219,14 +211,13 @@ public class CharacterCapabilityGround : CharacterCapability {
         // represented between pixel-based and vector-based collision
 
         if (character.horizontalInputLockTimer > 0) return;
-        if (Mathf.Abs(character.groundSpeed) >= fallThreshold) return;
+        if (Mathf.Abs(character.groundSpeed) >= character.stats.Get("fallThreshold")) return;
 
         if (!((character.forwardAngle <= 315) && (character.forwardAngle >= 45))) return;
         character.horizontalInputLockTimer = 0.5F;
 
-        if (!((character.forwardAngle <= 270) && (character.forwardAngle >= 90))) {
+        if (!((character.forwardAngle <= 270) && (character.forwardAngle >= 90)))
             return;
-        }
 
         if (character.stateCurrent == "rolling")
             character.stateCurrent = "rollingAir";
@@ -237,7 +228,7 @@ public class CharacterCapabilityGround : CharacterCapability {
     void UpdateGroundTerminalSpeed() {
         character.groundSpeed = Mathf.Min(
             Mathf.Abs(character.groundSpeed),
-            character.terminalSpeed
+            character.stats.Get("terminalSpeed")
         ) * Mathf.Sign(character.groundSpeed);
     }
 

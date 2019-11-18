@@ -1,10 +1,7 @@
 using UnityEngine;
+using System.Collections.Generic;
 
 public class CharacterCapabilityHurt : CharacterCapability {
-    float hurtGravity { get {
-        return -0.1875F * character.physicsScale;
-    }}
-
     float failsafeTimer;
 
     public CharacterCapabilityHurt(Character character) : base(character) { }
@@ -13,6 +10,10 @@ public class CharacterCapabilityHurt : CharacterCapability {
         name = "hurt";
         character.AddStateGroup("airCollision", "hurt");
         character.AddStateGroup("ignore", "hurt");
+
+        character.stats.Add(new Dictionary<string, object>() {
+            ["hurtGravity"] = -0.1875F
+        });
     }
 
     public override void StateInit(string stateName, string prevStateName) {
@@ -44,7 +45,7 @@ public class CharacterCapabilityHurt : CharacterCapability {
 
         character.velocity += new Vector3(
             0,
-            hurtGravity,
+            character.stats.Get("hurtGravity"),
             0
         ) * deltaTime * 60F;
 

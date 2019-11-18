@@ -1,8 +1,7 @@
 using UnityEngine;
+using System.Collections.Generic;
 
 public class CharacterCapabilityLightDash : CharacterCapability {
-    float lightDashSpeed => 9F * character.physicsScale;
-
     float failsafeTimer;
 
     public CharacterCapabilityLightDash(Character character) : base(character) { }
@@ -13,6 +12,10 @@ public class CharacterCapabilityLightDash : CharacterCapability {
     public override void Init() {
         name = "lightDash";
         character.AddStateGroup("harmful", "lightDash");
+
+        character.stats.Add(new Dictionary<string, object>() {
+            ["lightDashSpeed"] = 9F
+        });
     }
 
     public override void StateInit(string stateName, string prevStateName) {
@@ -48,8 +51,8 @@ public class CharacterCapabilityLightDash : CharacterCapability {
             if (target != null) character.stateCurrent = "lightDash";
             else {
                 character.velocity = (character.position - positionPrev) * 60F * 0.75F;
-                if (character.velocity.magnitude > character.terminalSpeed)
-                    character.velocity = character.terminalSpeed * character.velocity.normalized;
+                if (character.velocity.magnitude > character.stats.Get("terminalSpeed"))
+                    character.velocity = character.stats.Get("terminalSpeed") * character.velocity.normalized;
                     
                 character.stateCurrent = "air";
                 character.AnimatorPlay("Fast");
@@ -61,7 +64,7 @@ public class CharacterCapabilityLightDash : CharacterCapability {
             Vector3 newPos = Vector3.MoveTowards(
                 character.position,
                 target.transform.position,
-                lightDashSpeed * deltaTime * 2
+                character.stats.Get("lightDashSpeed") * deltaTime * 2
             );
             newPos.z = character.position.z;
             character.position = newPos;

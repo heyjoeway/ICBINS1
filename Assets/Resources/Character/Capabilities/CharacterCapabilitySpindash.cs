@@ -1,8 +1,7 @@
 using UnityEngine;
+using System.Collections.Generic;
 
 public class CharacterCapabilitySpindash : CharacterCapability {
-    float spindashPowerMax => 8F * character.physicsScale;
-    float spindashSpeedMax => 12F * character.physicsScale;
     string[] buttonsSpindash = new string[] { "Secondary", "Tertiary" };
 
 
@@ -23,6 +22,11 @@ public class CharacterCapabilitySpindash : CharacterCapability {
         character.AddStateGroup("harmful", "spindash");
 
         dustLocation = character.spriteContainer.Find("Spindash Dust Position");
+
+        character.stats.Add(new Dictionary<string, object>() {
+            ["spindashPowerMax"] = 8F,
+            ["spindashSpeedMax"] = 12F
+        });
     }
 
     public override void StateInit(string stateName, string prevStateName) {
@@ -99,8 +103,14 @@ public class CharacterCapabilitySpindash : CharacterCapability {
     void SpindashCharge() {
         character.AnimatorPlay("Spindash", 0);
         spindashPower += 2;
-        SFX.Play(character.audioSource, "sfxSpindashCharge",
-            1 + ((spindashPower / (spindashPowerMax + 2)) * 0.5F)
+        SFX.Play(
+            character.audioSource,
+            "sfxSpindashCharge",
+            1 + ((
+                    spindashPower /
+                    (character.stats.Get("spindashPowerMax") + 2)
+                ) * 0.5F
+            ) // pitch
         );
     }
 

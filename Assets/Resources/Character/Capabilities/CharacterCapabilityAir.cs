@@ -1,31 +1,26 @@
 using UnityEngine;
+using System.Collections.Generic;
+using System;
 
 public class CharacterCapabilityAir : CharacterCapability {
-    const float accelerationAirNormal = 0.09375F;
-    const float accelerationAirSpeedUp = 0.1875F;
-    float accelerationAir { get {
-        return (character.HasEffect("speedUp") ?
-            accelerationAirSpeedUp :
-            accelerationAirNormal
-        ) * character.physicsScale;
-    }}
-
-    float airDragThreshold { get {
-        return 4F * character.physicsScale;
-    }}
-
-    float gravity { get {
-        return -0.21875F * character.physicsScale;
-    }}
-    
-    // ========================================================================
-
     public CharacterCapabilityAir(Character character) : base(character) { }
 
     public override void Init() {
         name = "air";
         character.AddStateGroup("air", "air");
         character.AddStateGroup("airCollision", "air");
+
+        character.stats.Add(new Dictionary<string, object>() {
+            ["accelerationAirNormal"] = 0.09375F,
+            ["accelerationAirSpeedUp"] = 0.1875F,
+            ["accelerationAir"] = (Func<string>)(
+                () => character.HasEffect("speedUp") ?
+                    "accelerationAirSpeedUp" :
+                    "accelerationAirNormal"
+            ),
+            ["airDragThreshold"] = 4F,
+            ["gravityNormal"] = -0.21875F,            
+        });
     }
 
     public override void StateInit(string stateName, string prevStateName) {
@@ -67,12 +62,12 @@ public class CharacterCapabilityAir : CharacterCapability {
 
         // Acceleration
         if (character.input.GetAxisNegative("Horizontal")) {
-            if (velocityTemp.x > -character.topSpeed) {
-                accelerationMagnitude = -accelerationAir;
+            if (velocityTemp.x > -character.stats.Get("topSpeed")) {
+                accelerationMagnitude = -character.stats.Get("accelerationAir");
             }
         } else if (character.input.GetAxisPositive("Horizontal")) {
-            if (velocityTemp.x < character.topSpeed) {
-                accelerationMagnitude = accelerationAir;
+            if (velocityTemp.x < character.stats.Get("topSpeed")) {
+                accelerationMagnitude = character.stats.Get("accelerationAir");
             }
         }
 
@@ -84,7 +79,7 @@ public class CharacterCapabilityAir : CharacterCapability {
         velocityTemp += acceleration;
 
         // Air Drag
-        if ((velocityTemp.y > 0 ) && (velocityTemp.y < airDragThreshold))
+        if ((velocityTemp.y > 0 ) && (velocityTemp.y < character.stats.Get("airDragThreshold")))
             velocityTemp.x -= (
                 ((int)(velocityTemp.x / 0.125F)) / 256F
             ) * (deltaTime * 60F);
@@ -104,7 +99,7 @@ public class CharacterCapabilityAir : CharacterCapability {
     
     // 3D-Ready: Yes
     void UpdateAirGravity(float deltaTime) {
-        character.velocity += Vector3.up * gravity * deltaTime * 60F;
+        character.velocity += Vector3.up * character.stats.Get("gravityNormal") * deltaTime * 60F;
     }
 
     // Handle air collisions

@@ -1,9 +1,8 @@
 using UnityEngine;
+using System.Collections.Generic;
 
 public class CharacterCapabilityHomingAttack : CharacterCapability {
     string[] buttonsHomingAttack = new string[] { "Secondary", "Tertiary" };
-    float homingAttackSpeed => 9F * character.physicsScale;
-    float homingAttackBounceSpeed => 6.5F * character.physicsScale;
     
     float failsafeTimer;
 
@@ -17,6 +16,11 @@ public class CharacterCapabilityHomingAttack : CharacterCapability {
         character.AddStateGroup("rolling", "homingAttack");
         character.AddStateGroup("airCollision", "homingAttack");
         character.AddStateGroup("harmful", "homingAttack");
+
+        character.stats.Add(new Dictionary<string, object>() {
+            ["homingAttackSpeed"] = 9F,
+            ["homingAttackBounceSpeed"] = 6.5F
+        });
     }
 
     public override void StateInit(string stateName, string prevStateName) {
@@ -29,7 +33,10 @@ public class CharacterCapabilityHomingAttack : CharacterCapability {
 
         if (target == null) {
             character.velocity = new Vector2(
-                homingAttackSpeed * (character.facingRight ? 1 : -1),
+                (
+                    character.stats.Get("homingAttackSpeed") *
+                    (character.facingRight ? 1 : -1)
+                ),
                 0
             );
             character.stateCurrent = "rollingAir";
@@ -62,7 +69,7 @@ public class CharacterCapabilityHomingAttack : CharacterCapability {
             character.position = Vector3.MoveTowards(
                 character.position,
                 target.position,
-                homingAttackSpeed * deltaTime * 2
+                character.stats.Get("homingAttackSpeed") * deltaTime * 2
             );
 
             failsafeTimer -= deltaTime;
@@ -84,7 +91,7 @@ public class CharacterCapabilityHomingAttack : CharacterCapability {
 
         character.velocity = new Vector2(
             0,
-            homingAttackBounceSpeed
+            character.stats.Get("homingAttackBounceSpeed")
         );
         character.stateCurrent = "jump";
     }

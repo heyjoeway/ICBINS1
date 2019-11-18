@@ -1,4 +1,5 @@
 using UnityEngine;
+using System.Collections.Generic;
 
 public class CharacterCapabilityPeelOut : CharacterCapability {
     string[] buttonsPeelOut = new string[] { "Secondary", "Tertiary" };
@@ -18,6 +19,10 @@ public class CharacterCapabilityPeelOut : CharacterCapability {
         name = "peelOut";
         character.AddStateGroup("noJump", "spindash");
         character.AddStateGroup("ground", "spindash");
+
+        character.stats.Add(new Dictionary<string, object>() {
+            ["peelOutSpeed"] = 12F
+        });
     }
 
     public override void StateInit(string stateName, string prevStateName) {
@@ -62,7 +67,7 @@ public class CharacterCapabilityPeelOut : CharacterCapability {
     // 3D-Ready: YES
     void SpindashRelease() {
         if (peelOutTimer <= 0) {
-            character.groundSpeed = 12F * character.physicsScale * (character.flipX ? -1 : 1);
+            character.groundSpeed = character.stats.Get("peelOutSpeed") * (character.flipX ? -1 : 1);
             character.groundSpeedPrev = character.groundSpeed; // Hack for breakable walls
             if (character.characterCamera != null)
                 character.characterCamera.lagTimer = 0.26667F;
@@ -77,11 +82,11 @@ public class CharacterCapabilityPeelOut : CharacterCapability {
         character.flipX = !character.facingRight;
 
         float runSpeed = (1F - (peelOutTimer / 0.5F)) * 12F;
-        character.spriteAnimatorSpeed = runSpeed / character.topSpeedNormal;
+        character.spriteAnimatorSpeed = runSpeed / character.stats.Get("topSpeedNormal");
 
         if (runSpeed < 6F) {
             character.AnimatorPlay("Walk");
-            character.spriteAnimatorSpeed = 1 + (runSpeed / character.topSpeedNormal);
+            character.spriteAnimatorSpeed = 1 + (runSpeed / character.stats.Get("topSpeedNormal"));
         } else if (runSpeed >= 12F)
             character.AnimatorPlay("Fast");
         else character.AnimatorPlay("Run");

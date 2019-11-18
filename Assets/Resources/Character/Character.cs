@@ -3,20 +3,8 @@ using UnityEngine.Networking;
 using System.Collections.Generic;
 using System;
 
-public class Character : GameBehaviour {
-    public float topSpeedNormal { get {
-        return 6F * physicsScale;
-    }}
-    public float topSpeedSpeedUp { get {
-        return 12F * physicsScale;
-    }}
-    public float topSpeed { get {
-        return HasEffect("speedUp") ? topSpeedSpeedUp : topSpeedNormal;
-    }}
-
-    public float terminalSpeed { get {
-        return 16.5F * physicsScale;
-    }}
+public class Character : GameBehaviour {  
+    public CharacterStats stats = new CharacterStats();
 
     // ========================================================================
 
@@ -36,10 +24,8 @@ public class Character : GameBehaviour {
 
     // ========================================================================
 
-    // [HideInInspector, SyncVar]
     [HideInInspector]
     public string statePrev = "ground";
-    // [SyncVar]
     string _stateCurrent = "ground";
     public string stateCurrent {
         get { return _stateCurrent; }
@@ -340,9 +326,7 @@ public class Character : GameBehaviour {
     // [SyncVar]
     public float sizeScale = 1F;
 
-    public float physicsScale {
-        get { return sizeScale * Utils.physicsScale; }
-    }
+    public float physicsScale => sizeScale * Utils.physicsScale;
 
     // [SyncVar]
     public bool flipX = false;
@@ -553,20 +537,16 @@ public class Character : GameBehaviour {
 
     // ========================================================================
 
-    public bool isInvulnerable { get {
-        return (
-            InStateGroup("ignore") ||
-            HasEffect("invulnerable") ||
-            HasEffect("invincible")
-        );
-    } }
+    public bool isInvulnerable => (
+        InStateGroup("ignore") ||
+        HasEffect("invulnerable") ||
+        HasEffect("invincible")
+    );
 
-    public bool isHarmful { get {
-        return(
-            InStateGroup("harmful") ||
-            HasEffect("invincible")
-        );
-    }}
+    public bool isHarmful => (
+        InStateGroup("harmful") ||
+        HasEffect("invincible")
+    );
 
     // 3D-Ready: NO
     public void Hurt(bool moveLeft = true, bool spikes = false) {
@@ -650,6 +630,7 @@ public class Character : GameBehaviour {
 
     public override void UpdateDelta(float deltaTime) {
         UpdateEffects(deltaTime);
+        stats.physicsScale = physicsScale;
 
         if (!isLocalPlayer) {
             isGhost = true;
@@ -767,6 +748,13 @@ public class Character : GameBehaviour {
 
     public override void Awake() {
         base.Awake();
+
+        stats.Add(new Dictionary<string, object>() {
+            ["topSpeedNormal"] = 6F,
+            ["topSpeedSpeedUp"] = 12F,
+            ["topSpeed"] = (Func<string>)(() => HasEffect("speedUp") ? "topSpeedSpeedUp" : "topSpeedNormal"),
+            ["terminalSpeed"] = 16.5F
+        });
 
         LevelManager.current.characters.Add(this);
         playerId = LevelManager.current.GetFreePlayerId();

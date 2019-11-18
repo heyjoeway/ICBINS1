@@ -15,7 +15,7 @@ public class CharacterCapabilityRollingAir : CharacterCapability {
         if (!character.InStateGroup("air") || !character.InStateGroup("rolling")) return;
         character.modeGroupCurrent = character.rollingAirModeGroup;
         character.AnimatorPlay("Roll");
-        character.spriteAnimatorSpeed = 1 + ((Mathf.Abs(character.groundSpeed) / character.topSpeedNormal) * 2F);
+        character.spriteAnimatorSpeed = 1 + ((Mathf.Abs(character.groundSpeed) / character.stats.Get("topSpeedNormal")) * 2F);
     }
 
     public override void Update(float deltaTime) {

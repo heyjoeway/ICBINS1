@@ -1,8 +1,7 @@
 using UnityEngine;
+using System.Collections.Generic;
 
 public class CharacterCapabilityJump : CharacterCapability {
-    const float jumpSpeedNormal = 6.5F;
-    public float jumpSpeed => jumpSpeedNormal * character.physicsScale;
     string[] buttonsJump = new string[] { "Secondary", "Tertiary" };
     string[] buttonsJumpHold = new string[] { "Primary", "Secondary", "Tertiary" };
 
@@ -17,6 +16,10 @@ public class CharacterCapabilityJump : CharacterCapability {
         character.AddStateGroup("rolling", "jump");
         character.AddStateGroup("jump", "jump");
         character.AddStateGroup("harmful", "jump");
+
+        character.stats.Add(new Dictionary<string, object>() {
+            ["jumpSpeed"] = 6.5F
+        });
     }
 
     public override void Update(float deltaTime) {
@@ -37,7 +40,7 @@ public class CharacterCapabilityJump : CharacterCapability {
         if (character.InStateGroup("noJump")) return;
         if (!character.input.GetButtonsDownPreventRepeat(buttonsJump)) return;
 
-        character.velocity += transform.up * jumpSpeed;
+        character.velocity += transform.up * character.stats.Get("jumpSpeed");
         SFX.PlayOneShot(character.audioSource, "sfxJump");
         character.stateCurrent = "jump";
     }

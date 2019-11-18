@@ -1,11 +1,8 @@
 using UnityEngine;
+using System.Collections.Generic;
 
 public class CharacterCapabilityDeath : CharacterCapability {
     float dyingTimer;
-
-    float gravity { get {
-        return -0.21875F * character.physicsScale;
-    }}
 
     public CharacterCapabilityDeath(Character character) : base(character) { }
 
@@ -23,6 +20,10 @@ public class CharacterCapabilityDeath : CharacterCapability {
         character.AddStateGroup("dying", "dying");
         character.AddStateGroup("dying", "drowning");
         character.AddStateGroup("dead", "dead");
+
+        character.stats.Add(new Dictionary<string, object>() {
+            ["gravityDying"] = -0.21875F
+        });
     }
 
     public override void StateInit(string stateName, string prevStateName) {
@@ -59,7 +60,7 @@ public class CharacterCapabilityDeath : CharacterCapability {
     public override void Update(float deltaTime) {
         if (!character.InStateGroup("dying")) return;
 
-        character.velocity += Vector3.up * gravity * deltaTime * 60F;
+        character.velocity += Vector3.up * character.stats.Get("gravityDying") * deltaTime * 60F;
         
         dyingTimer -= deltaTime;
         if (dyingTimer <= 0) {

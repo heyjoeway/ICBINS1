@@ -69,6 +69,9 @@ public class CharacterCapabilitySpindash : CharacterCapability {
         } else if (character.stateCurrent != name) return;
 
         character.GroundSnap();
+        character.groundSpeed = 0;
+        character.velocity = Vector3.zero;
+        
         UpdateSpindashDrain(deltaTime);
         UpdateSpindashInput();
         UpdateSpindashAnim(deltaTime);

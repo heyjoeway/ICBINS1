@@ -24,6 +24,7 @@ public class CharacterCapabilityRolling : CharacterCapability {
             ["slopeFactorRollDown"] =  0.3125F,
             ["rollThreshold"] =  1.03125F,
             ["unrollThreshold"] = .5F,
+            ["rollLockBoostSpeed"] = 3F,
             ["frictionRoll"] = (Func<string>)(() =>
                 character.HasEffect("speedUp") ?
                     "frictionRollSpeedUp" :

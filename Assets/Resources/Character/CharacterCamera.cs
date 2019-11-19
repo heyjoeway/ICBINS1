@@ -127,9 +127,7 @@ public class CharacterCamera : MonoBehaviour {
     const float vMoveMaxGroundFast = 16F;
     const float vMoveMaxAir = 16F;
     const float vBorderDistanceAir = 32F;
-    float valScale { get {
-        return character.sizeScale / 32F;
-    }}
+    float valScale => character.sizeScale / 32F;
 
     // ========================================================================
     public Vector3 position {

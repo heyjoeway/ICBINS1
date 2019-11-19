@@ -17,8 +17,10 @@ public class Level : MonoBehaviour {
     public int act = 0;
     public string zone = "Unknown";
 
-    void Start() {
-        Utils.SetFramerate();
+    void Awake() {
+        Scene levelScene = SceneManager.GetSceneByName("Level");
+        if (!levelScene.isLoaded)
+            SceneManager.LoadScene("Scenes/Level", LoadSceneMode.Additive);
     }
 
     void Update() {

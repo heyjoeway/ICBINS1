@@ -1,1 +1,0 @@
-﻿public class LevelGHZ3 : LevelGHZ { } // TODO: Remove

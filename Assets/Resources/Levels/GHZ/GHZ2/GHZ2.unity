@@ -1610,7 +1610,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 102563445}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 9e1dfd0ccdc704649811df717b453cb1, type: 3}
+  m_Script: {fileID: 11500000, guid: bd0cf73cb491a4c42b6ea307e0babffc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   musicIntro: {fileID: 8300000, guid: cadfc6581c481fa46a4f63df6c7d96c3, type: 3}

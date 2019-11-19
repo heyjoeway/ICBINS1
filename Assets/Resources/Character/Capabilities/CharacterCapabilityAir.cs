@@ -118,16 +118,6 @@ public class CharacterCapabilityAir : CharacterCapability {
     public override void OnCollisionEnter(Collision collision) {
         if (!character.InStateGroup("airCollision")) return;
 
-        CharacterCollisionModifier collisionModifier = collision.transform.GetComponentInParent<CharacterCollisionModifier>();
-        if (collisionModifier != null) {
-            switch (collisionModifier.type) {
-                case CharacterCollisionModifier.CollisionModifierType.NoGrounding:
-                    return;
-                default:
-                    break;
-            }
-        }
-
         // Set ground speed or ignore collision based on angle
         // See: https://info.sonicretro.org/SPG:Solid_Tiles#Reacquisition_Of_The_Ground
 
@@ -143,6 +133,20 @@ public class CharacterCapabilityAir : CharacterCapability {
         // Round this or any tiiiny deviation in angle can allow the character
         // to jump at walls and stick to them
         float hitAngle = Mathf.Round(hitEuler.z); // TODO: 3D
+
+        CharacterCollisionModifier collisionModifier = collision.transform.GetComponentInParent<CharacterCollisionModifier>();
+        if (collisionModifier != null) {
+            switch (collisionModifier.type) {
+                case CharacterCollisionModifier.CollisionModifierType.NoGrounding:
+                    return;
+                case CharacterCollisionModifier.CollisionModifierType.NoGroundingLRB:
+                    if (hitAngle > 90 && hitAngle < 270) return;
+                    break;
+                case CharacterCollisionModifier.CollisionModifierType.NoGroundingLRBHigher:
+                    if (hitAngle > 45 && hitAngle < 315) return;
+                    break;
+            }
+        }
 
         ReacquireGround(hitAngle);
     }

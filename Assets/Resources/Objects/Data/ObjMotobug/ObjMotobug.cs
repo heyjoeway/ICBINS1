@@ -33,7 +33,7 @@ public class ObjMotobug : MonoBehaviour {
 
     // ========================================================================
 
-    int direction { get { return moveRight ? 1 : -1; }}
+    int direction => moveRight ? 1 : -1;
 
     // ========================================================================
 

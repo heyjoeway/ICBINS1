@@ -3,7 +3,9 @@ using UnityEngine;
 public class CharacterCollisionModifier : MonoBehaviour { 
     public enum CollisionModifierType {
         None,
-        NoGrounding
+        NoGrounding,
+        NoGroundingLRB,
+        NoGroundingLRBHigher
     }
     public CollisionModifierType type;
 }

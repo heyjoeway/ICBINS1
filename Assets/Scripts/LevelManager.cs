@@ -17,7 +17,7 @@ public class LevelManager : GameMode {
     }}
     // ========================================================================
     // Inspector options
-    public bool debugMutliplayer = false; // Allows P1 to spawn multiple players
+    public bool debugMutliplayer = true; // Allows P1 to spawn multiple players
     public SceneReference sceneDefault; // Default scene to load when no levels are loaded
 
     // ========================================================================
@@ -29,7 +29,7 @@ public class LevelManager : GameMode {
             Character character = Instantiate(
                 Resources.Load<GameObject>("Character/Character")
             ).GetComponent<Character>();
-            character.transform.SetParent(null); // Trick to instantiate in specific scene
+            Utils.SetScene(character.transform, "Level");
             Time.timeScale = 0;
         }
         ReloadDisposablesScene();
@@ -37,8 +37,9 @@ public class LevelManager : GameMode {
 
     void Start() {
         // Must be run on Start rather than Awake to give any Levels time to spawn
+        Utils.SetActiveScene("Level");
+
         Level levelDefault = FindObjectOfType<Level>();
-        Debug.Log(levelDefault);
         if (levelDefault == null) {
             StartCoroutine(Utils.LoadLevelAsync(
                 sceneDefault.ScenePath,
@@ -98,7 +99,7 @@ public class LevelManager : GameMode {
                     Resources.Load<GameObject>("Character/Character"),
                     transform
                 ).GetComponent<Character>();
-                characterNew.transform.SetParent(null); // Trick to instantiate in specific scene
+                Utils.SetScene(characterNew.transform, "Level");
                 characterNew.input.controllerId = controllerId;
             }
         }

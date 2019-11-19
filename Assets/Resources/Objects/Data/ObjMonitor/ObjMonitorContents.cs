@@ -31,13 +31,11 @@ public class ObjMonitorContents : MonoBehaviour {
         "Hurt"
     };
 
-    public AudioSource audioSource { get {
-        return GetComponent<AudioSource>();
-    }}
+    public AudioSource audioSource => GetComponent<AudioSource>();
 
     public ContentsType type = ContentsType.Ring;
 
-    Animator animator { get { return GetComponent<Animator>(); }}
+    Animator animator => GetComponent<Animator>();
 
     void Start() {
         if (!GlobalOptions.GetBool("elementalShields")) {

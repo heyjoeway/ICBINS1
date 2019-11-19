@@ -118,9 +118,10 @@ public class Character : GameBehaviour {
         }
     }
 
-    public bool movingUphill { get {
-        return Mathf.Sign(groundSpeed) == Mathf.Sign(Mathf.Sin(forwardAngle * Mathf.Deg2Rad));
-    }}
+    public bool movingUphill => (
+        Mathf.Sign(groundSpeed) ==
+        Mathf.Sign(Mathf.Sin(forwardAngle * Mathf.Deg2Rad))
+    );
 
     // ========================================================================
 
@@ -216,10 +217,26 @@ public class Character : GameBehaviour {
     bool GetIsGrounded(RaycastHit hit) { // Potentially avoid recomputing raycast
         if (hit.collider == null) return false;
 
+        float hitAngle = Quaternion.FromToRotation(Vector3.up, hit.normal).eulerAngles.z;
         float angleDiff = Mathf.DeltaAngle(
-            Quaternion.FromToRotation(Vector3.up, hit.normal).eulerAngles.z,
+            hitAngle,
             forwardAngle
         );
+
+        CharacterCollisionModifier collisionModifier = hit.transform.GetComponentInParent<CharacterCollisionModifier>();
+        if (collisionModifier != null) {
+            switch (collisionModifier.type) {
+                case CharacterCollisionModifier.CollisionModifierType.NoGrounding:
+                    return false;
+                case CharacterCollisionModifier.CollisionModifierType.NoGroundingLRB:
+                    if (hitAngle > 90 && hitAngle < 270) return false;
+                    break;
+                case CharacterCollisionModifier.CollisionModifierType.NoGroundingLRBHigher:
+                    if (hitAngle > 45 && hitAngle < 315) return false;
+                    break;
+            }
+        }
+
         return angleDiff < 67.5F;
     }
 
@@ -264,38 +281,39 @@ public class Character : GameBehaviour {
             position = newPos;
             groundedDetectorCurrent = hit.transform.GetComponentInChildren<CharacterGroundedDetector>();
             return true;
-        } else {
-            // Didn't find the ground from the player center?
-            // We might be on a ledge. Better check to the left and right of
-            // the character to be sure.
-            for (int dir = -1; dir <= 1; dir += 2) {
-                RaycastHit hitLedge;
-                Physics.Raycast(
-                    position + (dir * transform.right * 0.375F * sizeScale * sizeScale), // origin
-                    -transform.up, // direction
-                    out hitLedge,
-                    0.8F * sizeScale, // max distance
-                    ~solidRaycastMask // layer mask
+        } 
+
+        // Didn't find the ground from the player center?
+        // We might be on a ledge. Better check to the left and right of
+        // the character to be sure.
+        for (int dir = -1; dir <= 1; dir += 2) {
+            RaycastHit hitLedge;
+            Physics.Raycast(
+                position + (dir * transform.right * 0.375F * sizeScale * sizeScale), // origin
+                -transform.up, // direction
+                out hitLedge,
+                0.8F * sizeScale, // max distance
+                ~solidRaycastMask // layer mask
+            );
+            if (GetIsGrounded(hitLedge)) {
+                balanceState = dir < 0 ? BalanceState.Left : BalanceState.Right;
+                groundedDetectorCurrent = hitLedge.transform.GetComponentInChildren<CharacterGroundedDetector>();
+
+                Vector3 newPos = (
+                    hitLedge.point -
+                    (dir * transform.right * 0.375F * sizeScale) +
+                    (transform.up * 0.5F * sizeScale)
                 );
-                if (hitLedge.collider != null) {
-                    balanceState = dir < 0 ? BalanceState.Left : BalanceState.Right;
-                    groundedDetectorCurrent = hitLedge.transform.GetComponentInChildren<CharacterGroundedDetector>();
-
-                    Vector3 newPos = (
-                        hitLedge.point -
-                        (dir * transform.right * 0.375F * sizeScale) +
-                        (transform.up * 0.5F * sizeScale)
-                    );
-                    newPos.x = position.x;
-                    newPos.z = position.z;
-                    position = newPos;
-                    return true;
-                }
+                newPos.x = position.x;
+                newPos.z = position.z;
+                position = newPos;
+                return true;
             }
-
-            if (stateCurrent == "rolling") stateCurrent = "rollingAir";
-            else stateCurrent = "air";
         }
+
+        if (stateCurrent == "rolling") stateCurrent = "rollingAir";
+        else stateCurrent = "air";
+        
         return false;
     }
 

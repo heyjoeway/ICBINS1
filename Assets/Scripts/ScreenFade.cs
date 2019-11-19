@@ -30,12 +30,8 @@ public class ScreenFade : MonoBehaviour {
     public float greenOffset = -0.125F;
     public float brightness = 0F;
     public bool stopTime = false;
-    public float brightnessMin { get {
-        return Mathf.Max(redOffset, blueOffset, greenOffset);
-    }}
-    public float brightnessMax { get {
-        return 1 - Mathf.Min(redOffset, blueOffset, greenOffset);
-    }}
+    public float brightnessMin => Mathf.Max(redOffset, blueOffset, greenOffset);
+    public float brightnessMax => 1 - Mathf.Min(redOffset, blueOffset, greenOffset);
 
     bool isComplete = false;
     void Complete() {

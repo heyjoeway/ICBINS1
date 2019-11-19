@@ -4,7 +4,7 @@ using UnityEngine;
 using UnityEngine.UI;
 
 public class ObjTitleCard : MonoBehaviour {
-    bool debug = true; // Finishes card instantly
+    bool debug = false; // Finishes card instantly
 
     public static ObjTitleCard Make(Character character = null, bool fadeIn = true) {
         ObjTitleCard titleCard = Instantiate(

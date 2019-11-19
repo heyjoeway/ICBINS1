@@ -18,9 +18,7 @@ public class ObjSpike : MonoBehaviour {
 
     // ========================================================================
 
-    float topAngle { get {
-        return transform.rotation.eulerAngles.z;
-    }}
+    float topAngle => transform.rotation.eulerAngles.z;
 
     // ========================================================================
 

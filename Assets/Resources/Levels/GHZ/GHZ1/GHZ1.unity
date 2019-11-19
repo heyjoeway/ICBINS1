@@ -1130,6 +1130,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: Background
       objectReference: {fileID: 0}
+    - target: {fileID: 1627240442812890189, guid: e6e68f2bc55c1d449b7a82ac30b9fa7e,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 1627240442812890185, guid: e6e68f2bc55c1d449b7a82ac30b9fa7e,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -24038,7 +24043,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 1574130595}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 9977b6770f6b0274688044bc64ca1135, type: 3}
+  m_Script: {fileID: 11500000, guid: bd0cf73cb491a4c42b6ea307e0babffc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   musicIntro: {fileID: 8300000, guid: a1c1858237fe0e1429ad06e67aae740e, type: 3}

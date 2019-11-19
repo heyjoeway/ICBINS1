@@ -1,5 +1,5 @@
 using UnityEngine;
 
 public class HomingAttackTarget : MonoBehaviour {
-    public void Update() { }
+    public void Update() { } // Allow self to be disabled
 }

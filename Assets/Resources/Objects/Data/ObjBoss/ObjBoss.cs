@@ -10,10 +10,10 @@ public class ObjBoss : GameBehaviour {
 
     float invulnTimer = 0;
 
-    bool isInvulnerable { get { return (
+    bool isInvulnerable => (
         (invulnTimer > 0) ||
         (health <= 0)
-    ); }}
+    );
 
     AudioSource audioSource;
     public MusicManager.MusicStackEntry musicStackEntry;
@@ -71,6 +71,5 @@ public class ObjBoss : GameBehaviour {
 
     public override void UpdateDelta(float modDeltaTime) {
         invulnTimer -= modDeltaTime;
-        print(invulnTimer);
     }
 }

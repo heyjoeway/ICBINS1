@@ -68,7 +68,7 @@ MonoBehaviour:
   character: {fileID: 0}
   zDistance: -13.5
   lagTimer: 0
-  backgroundObjRaw: {fileID: 0}
+  cameraZone: {fileID: 0}
 --- !u!20 &495726082896974522
 Camera:
   m_ObjectHideFlags: 0

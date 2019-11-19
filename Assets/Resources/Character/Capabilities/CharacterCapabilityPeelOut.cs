@@ -52,6 +52,9 @@ public class CharacterCapabilityPeelOut : CharacterCapability {
         } else if (character.stateCurrent != name) return;
 
         character.GroundSnap();
+        character.groundSpeed = 0;
+        character.velocity = Vector3.zero;
+
         peelOutTimer -= deltaTime;
         peelOutTimer = Mathf.Max(0, peelOutTimer);
         UpdateSpindashInput();

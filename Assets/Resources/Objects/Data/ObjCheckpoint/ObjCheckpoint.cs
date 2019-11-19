@@ -4,13 +4,11 @@ using UnityEngine;
 
 public class ObjCheckpoint : MonoBehaviour {
     List<Character> charactersHit;
-    Vector3 respawnPosition { get {
-        return transform.Find("Respawn Location").position;
-    }}
+    Vector3 respawnPosition => transform.Find("Respawn Location").position;
 
-    Animator animator { get { return GetComponent<Animator>(); }}
+    Animator animator => GetComponent<Animator>();
 
-    AudioSource audioSource { get { return GetComponent<AudioSource>(); }}
+    AudioSource audioSource => GetComponent<AudioSource>();
 
     public int id = 0;
 

@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class ObjChopper : MonoBehaviour
 {
-    new Rigidbody rigidbody { get { return GetComponent<Rigidbody>(); }}
+    new Rigidbody rigidbody => GetComponent<Rigidbody>();
     Vector3 positionOrig;
     public float jumpSpeed = 13.125F;
     public float gravity = -0.17578125F;

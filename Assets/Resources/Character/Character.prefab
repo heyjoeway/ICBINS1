@@ -198,6 +198,7 @@ GameObject:
   - component: {fileID: 1905976648882377138}
   - component: {fileID: 1905976648882377143}
   - component: {fileID: 1905976648882377142}
+  - component: {fileID: 5902334782075085907}
   m_Layer: 0
   m_Name: Character
   m_TagString: Untagged
@@ -235,6 +236,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6fd92a84abd014145b4eb735119a19ab, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  useUnscaledDeltaTime: 1
   statePrev: ground
   rigidbody: {fileID: 1905976648882377143}
   velocityPrev: {x: 0, y: 0, z: 0}
@@ -276,6 +278,7 @@ MonoBehaviour:
     type: 3}
   hudPrefab: {fileID: 4469015201789257982, guid: 69da63c90e433864c83fd930ec9fe520,
     type: 3}
+  playerId: -1
 --- !u!54 &1905976648882377143
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -389,6 +392,18 @@ AudioSource:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
+--- !u!114 &5902334782075085907
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1905976648882377140}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d4a890d43072b364b968642af9caef80, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1905976649059061196
 GameObject:
   m_ObjectHideFlags: 0

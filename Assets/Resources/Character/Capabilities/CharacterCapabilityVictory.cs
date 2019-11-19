@@ -15,15 +15,18 @@ public class CharacterCapabilityVictory : CharacterCapability {
             if (character.stateCurrent == "victory")
                 character.stateCurrent = "ground";
         } else {
-            if (!character.InStateGroup("ground")) return;
+            if (character.stateCurrent == "victory") {
+                character.velocity = Vector3.zero;
+                character.groundSpeed = 0;
+                character.GroundSnap();
+                return;
+            } else if (!character.InStateGroup("ground")) return;
 
             character.modeGroupCurrent = null;
             character.facingRight = true;
             character.stateCurrent = "victory";
             character.AnimatorPlay("Victory");
             character.spriteAnimatorSpeed = 1;
-            character.velocity = Vector3.zero;
-            character.groundSpeed = 0;
         }
     }
 }

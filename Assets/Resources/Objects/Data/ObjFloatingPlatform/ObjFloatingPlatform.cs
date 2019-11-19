@@ -24,9 +24,7 @@ public class ObjFloatingPlatform : MonoBehaviour {
 
     public float fallWaitTime = 0.5F; 
     float fallTimer;
-    bool touched {
-        get { return groundedDetector.characters.Count > 0; }
-    }
+    bool touched => groundedDetector.characters.Count > 0;
     bool touchedEver = false;
 
     bool falling = false;
@@ -40,9 +38,7 @@ public class ObjFloatingPlatform : MonoBehaviour {
     Vector3 offsetMove;
 
     // Vector3 positionPrev;
-    Vector3 position {
-        get { return offsetNudge + offsetOriginal + offsetMove; }
-    }
+    Vector3 position => offsetNudge + offsetOriginal + offsetMove;
 
     float nudgeDistance = -3F/32F;
     float nudgeTime = 0F;

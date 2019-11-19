@@ -21827,7 +21827,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 1407931124}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 045851c16f728244480a6ae17170f01b, type: 3}
+  m_Script: {fileID: 11500000, guid: bd0cf73cb491a4c42b6ea307e0babffc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   musicIntro: {fileID: 8300000, guid: cadfc6581c481fa46a4f63df6c7d96c3, type: 3}
@@ -31971,11 +31971,6 @@ PrefabInstance:
       propertyPath: type
       value: 1
       objectReference: {fileID: 0}
-    - target: {fileID: 7766281585833646916, guid: fdde7484f7cbb7140bb8a8a88396c9a5,
-        type: 3}
-      propertyPath: m_FlipX
-      value: 1
-      objectReference: {fileID: 0}
     - target: {fileID: 8291597473166667692, guid: fdde7484f7cbb7140bb8a8a88396c9a5,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -31985,6 +31980,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_LocalPosition.y
       value: -0.0000000037252903
+      objectReference: {fileID: 0}
+    - target: {fileID: 7766281585833646916, guid: fdde7484f7cbb7140bb8a8a88396c9a5,
+        type: 3}
+      propertyPath: m_FlipX
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: fdde7484f7cbb7140bb8a8a88396c9a5, type: 3}

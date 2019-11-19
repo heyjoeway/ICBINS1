@@ -8,10 +8,7 @@ using UnityEngine.SceneManagement;
 using UnityEngine.Events;
 
 public static class Utils {
-    public static float deltaTimeScale { get {
-        return 60F * Utils.cappedDeltaTime;
-    }}
-
+    public static float deltaTimeScale => 60F * Utils.cappedDeltaTime;
     public static float physicsScale = 1.875F; // 60 (framerate) / 32 (pixels per unit)
 
     // ========================================================================
@@ -149,9 +146,6 @@ public static class Utils {
 
     public static void SetFramerate() {
         Application.targetFrameRate = Screen.currentResolution.refreshRate;
-        // QualitySettings.vSyncCount = 0;
-        // Application.targetFrameRate = 180;
-        // Application.targetFrameRate = 60;
         Time.fixedDeltaTime = 1F / Application.targetFrameRate;
         Time.maximumDeltaTime = 1F / 10F;
     }
@@ -184,6 +178,8 @@ public static class Utils {
         );
     }
 
+    // ========================================================================
+
     // Store all case variants since str.ToLower() causes GC
     static HashSet<string> stringsPositive = new HashSet<string> {
         "true", "True", "TRUE",
@@ -204,4 +200,19 @@ public static class Utils {
         return intStrCache[val];
     }
     public static string IntToStrCached(float val) => IntToStrCached((int)val);
+
+    // ========================================================================
+
+    public static void SetActiveScene(string sceneName) => 
+        SceneManager.SetActiveScene(SceneManager.GetSceneByName(sceneName));
+
+    public static void SetScene(Transform transform, Scene scene) {
+        Scene sceneCurrent = SceneManager.GetActiveScene();
+        SceneManager.SetActiveScene(scene);
+        transform.SetParent(null);
+        SceneManager.SetActiveScene(sceneCurrent);
+    }
+
+    public static void SetScene(Transform transform, string sceneName) =>
+        SetScene(transform, SceneManager.GetSceneByName(sceneName));
 }

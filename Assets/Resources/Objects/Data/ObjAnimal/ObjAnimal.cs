@@ -97,9 +97,9 @@ public class ObjAnimal : MonoBehaviour {
 
     // ========================================================================
 
-    new Rigidbody rigidbody { get { return GetComponent<Rigidbody>(); }}
-    Animator animator { get { return GetComponent<Animator>(); }}
-    SpriteRenderer spriteRenderer { get { return GetComponent<SpriteRenderer>(); }}
+    new Rigidbody rigidbody => GetComponent<Rigidbody>();
+    Animator animator => GetComponent<Animator>();
+    SpriteRenderer spriteRenderer => GetComponent<SpriteRenderer>();
 
     // ========================================================================
 

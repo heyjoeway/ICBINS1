@@ -6,7 +6,14 @@ public class CharacterCapabilityHomingAttack : CharacterCapability {
     
     float failsafeTimer;
 
-    public CharacterCapabilityHomingAttack(Character character) : base(character) { }
+    bool uncurl;
+    bool useAnytime;
+    private bool used = false;
+
+    public CharacterCapabilityHomingAttack(Character character, bool uncurl = false, bool useAnytime = false) : base(character) {
+        this.uncurl = uncurl;
+        this.useAnytime = useAnytime;
+    }
 
     Transform target;
     CharacterEffect afterImageEffect;
@@ -39,7 +46,12 @@ public class CharacterCapabilityHomingAttack : CharacterCapability {
                 ),
                 0
             );
-            character.stateCurrent = "rollingAir";
+            if (this.uncurl) {
+                character.stateCurrent = "air";
+                character.AnimatorPlay("Air Dash");
+            } else {
+                character.stateCurrent = "rollingAir";
+            }
             character.effects.Add(new CharacterEffect(character, "afterImage", 0.25F));
         } else {
             character.velocity = Vector3.zero;
@@ -55,16 +67,32 @@ public class CharacterCapabilityHomingAttack : CharacterCapability {
             afterImageEffect.DestroyBase();
     }
 
+    public void OnTargetLost() {
+        if (this.uncurl) {
+            character.stateCurrent = "air";
+        } else {
+            character.stateCurrent = "rollingAir";
+        }
+    }
+
     public override void Update(float deltaTime) {
-        if (character.stateCurrent == "jump") {
-            if (character.input.GetButtonsDownPreventRepeat(buttonsHomingAttack))
+        if (!character.InStateGroup("air")) used = false;
+
+        if (
+            (
+                (useAnytime && character.InStateGroup("air")) ||
+                (character.stateCurrent == "jump")
+            ) && !used
+        ) {
+            if (character.input.GetButtonsDownPreventRepeat(buttonsHomingAttack)) {
                 character.stateCurrent = "homingAttack";
+                used = true;
+            }
         }
 
         if (character.stateCurrent != "homingAttack") return;
-
         if (target == null) {
-            character.stateCurrent = "rollingAir";
+            OnTargetLost();
         } else {
             character.position = Vector3.MoveTowards(
                 character.position,
@@ -73,15 +101,14 @@ public class CharacterCapabilityHomingAttack : CharacterCapability {
             );
 
             failsafeTimer -= deltaTime;
-            if (failsafeTimer <= 0)
-                character.stateCurrent = "rollingAir";
+            if (failsafeTimer <= 0) OnTargetLost();
         }
     }
 
     public override void OnCollisionEnter(Collision collision) {
         if (character.stateCurrent != "homingAttack") return;
         if (collision.collider.isTrigger) return;
-        character.stateCurrent = "rollingAir";        
+        OnTargetLost();     
     }
 
     public override void OnTriggerEnter(Collider other) {
@@ -94,9 +121,9 @@ public class CharacterCapabilityHomingAttack : CharacterCapability {
             character.stats.Get("homingAttackBounceSpeed")
         );
         character.stateCurrent = "jump";
+        used = false;
     }
 
-    // https://forum.unity.com/threads/clean-est-way-to-find-nearest-object-of-many-c.44315/
     Transform FindClosestTarget(float distanceLimit = 24F) {
         Transform bestTarget = null;
         float closestDistanceSqr = Mathf.Infinity;

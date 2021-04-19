@@ -3,10 +3,9 @@
     "com.litefeel.bitmapfontimporter": "https://github.com/litefeel/Unity-BitmapFontImporter.git#upm",
     "com.unity.2d.sprite": "1.0.0",
     "com.unity.2d.tilemap": "1.0.0",
-    "com.unity.ide.vscode": "1.0.7",
-    "com.unity.multiplayer-hlapi": "1.0.4",
-    "com.unity.package-manager-ui": "2.2.0",
-    "com.unity.timeline": "1.1.0",
+    "com.unity.ide.vscode": "1.2.3",
+    "com.unity.multiplayer-hlapi": "1.0.8",
+    "com.unity.timeline": "1.4.7",
     "com.unity.ugui": "1.0.0",
     "com.unity.modules.ai": "1.0.0",
     "com.unity.modules.androidjni": "1.0.0",
@@ -39,11 +38,5 @@
     "com.unity.modules.vr": "1.0.0",
     "com.unity.modules.wind": "1.0.0",
     "com.unity.modules.xr": "1.0.0"
-  },
-  "lock": {
-    "com.litefeel.bitmapfontimporter": {
-      "hash": "df6a4861e03f2091cfed53e64815216598052635",
-      "revision": "upm"
-    }
   }
 }

@@ -18,8 +18,22 @@ public class CharacterCapabilityAir : CharacterCapability {
                     "accelerationAirSpeedUp" :
                     "accelerationAirNormal"
             ),
+            ["decelerationAirNormal"] = 0.09375F,
+            ["decelerationAirSpeedUp"] = 0.1875F,
+            ["decelerationAir"] = (Func<string>)(
+                () => character.HasEffect("speedUp") ?
+                    "decelerationAirSpeedUp" :
+                    "decelerationAirNormal"
+            ),
             ["airDragThreshold"] = 4F,
-            ["gravityNormal"] = -0.21875F,            
+            ["gravityNormal"] = -0.21875F,  
+            ["frictionAirNormal"] = 0,
+            ["frictionAirSpeedUp"] = 0,
+            ["frictionAir"] = (Func<string>)(() => (
+                character.HasEffect("speedUp") ?
+                    "frictionAirSpeedUp" :
+                    "frictionAirNormal"
+            )),          
         });
     }
 
@@ -60,14 +74,29 @@ public class CharacterCapabilityAir : CharacterCapability {
         Vector3 velocityTemp = character.velocity;
         float accelerationMagnitude = 0;
 
+        int inputDir = 0;
+        if (character.input.GetAxisPositive("Horizontal")) inputDir = 1;
+        if (character.input.GetAxisNegative("Horizontal")) inputDir = -1;
+
         // Acceleration
-        if (character.input.GetAxisNegative("Horizontal")) {
-            if (velocityTemp.x > -character.stats.Get("topSpeed")) {
+        if (inputDir == 1) {
+            if (velocityTemp.x < 0) {
+                accelerationMagnitude = character.stats.Get("decelerationAir");
+            } else if (velocityTemp.x < character.stats.Get("topSpeed")) {
+                accelerationMagnitude = character.stats.Get("accelerationAir");
+            }
+        } else if (inputDir == -1) {
+            if (velocityTemp.x > 0) {
+                accelerationMagnitude = -character.stats.Get("decelerationAir");
+            } else if (velocityTemp.x > -character.stats.Get("topSpeed")) {
                 accelerationMagnitude = -character.stats.Get("accelerationAir");
             }
-        } else if (character.input.GetAxisPositive("Horizontal")) {
-            if (velocityTemp.x < character.stats.Get("topSpeed")) {
-                accelerationMagnitude = character.stats.Get("accelerationAir");
+        } else {
+            if (Mathf.Abs(velocityTemp.x) > 0.05F * character.physicsScale) {
+                accelerationMagnitude = -Mathf.Sign(velocityTemp.x) * character.stats.Get("frictionAir");
+            } else {
+                velocityTemp.x = 0;
+                accelerationMagnitude = 0;
             }
         }
 

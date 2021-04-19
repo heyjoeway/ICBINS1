@@ -118,7 +118,8 @@ public class CharacterCapabilityRolling : CharacterCapability {
 
     // 3D-Ready: YES
     void UpdateRollingAnim() {
-        character.AnimatorPlay("Roll");
+        if (!character.spriteAnimator.GetCurrentAnimatorStateInfo(0).IsTag("Roll"))
+            character.AnimatorPlay("Roll");
         character.spriteAnimatorSpeed = 1 + (
             (
                 Mathf.Abs(character.groundSpeed) /

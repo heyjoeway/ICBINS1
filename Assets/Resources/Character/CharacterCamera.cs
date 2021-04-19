@@ -193,10 +193,11 @@ public class CharacterCamera : MonoBehaviour {
     }
 
     void Awake() {
+        renderTextureCamera = GetComponent<RenderTextureCamera>();
+        if (renderTextureCamera == null) return;
+        renderTextureCamera.ResizeRenderTexture();
         camera.targetTexture = new RenderTexture(camera.targetTexture);
         camera.targetTexture.filterMode = FilterMode.Point;
-        renderTextureCamera = GetComponent<RenderTextureCamera>();
-        renderTextureCamera.ResizeRenderTexture();
     }
 
     public void UpdateDelta(float deltaTime) {
@@ -246,10 +247,11 @@ public class CharacterCamera : MonoBehaviour {
             }
         }
 
-        camera.orthographicSize = (
-            ((camera.targetTexture.height / 32) * 0.5F) *
-            character.sizeScale
-        );
+        if (renderTextureCamera != null)
+            camera.orthographicSize = (
+                ((camera.targetTexture.height / 32) * 0.5F) *
+                character.sizeScale
+            );
 
         Vector3 newPos = transform.position;
         newPos += (Vector3)moveAmt * deltaTime * 60F;
@@ -264,9 +266,10 @@ public class CharacterCamera : MonoBehaviour {
         newPos.z = characterPosition.z + zDistance;
         transform.position = newPos;
 
-        renderTextureCamera.screenRectRelative = screenRects[
-            LevelManager.current.characters.Count - 1
-        ][character.playerId];
+        if (renderTextureCamera != null)
+            renderTextureCamera.screenRectRelative = screenRects[
+                LevelManager.current.characters.Count - 1
+            ][character.playerId];
     }
 
     public static List<Rect[]> screenRects = new List<Rect[]> {

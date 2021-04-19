@@ -29,7 +29,15 @@ public class CharacterCapabilityGround : CharacterCapability {
             ["decelerationGround"] = 0.5F,
             ["slopeFactorGround"] = 0.125F,
             ["skidThreshold"] = 4.5F,
-            ["fallThreshold"] = 2.5F
+            ["fallThreshold"] = 2.5F,
+            ["horizontalInputLockTime"] = 0.5F, // seconds
+            ["topSpeedNormal"] = 6F,
+            ["topSpeedSpeedUp"] = 12F,
+            ["topSpeed"] = (Func<string>)(() => (
+                character.HasEffect("speedUp") ?
+                    "topSpeedSpeedUp" :
+                    "topSpeedNormal"
+            ))
         });
 
     }
@@ -176,7 +184,9 @@ public class CharacterCapabilityGround : CharacterCapability {
             // Walking
             // ======================
             } else if (Mathf.Abs(character.groundSpeed) < character.stats.Get("topSpeedNormal")) {
-                character.AnimatorPlay("Walk");
+                if (!character.spriteAnimator.GetCurrentAnimatorStateInfo(0).IsTag("Walk"))
+                    character.AnimatorPlay("Walk");
+    
                 character.spriteAnimatorSpeed = 1 + (Mathf.Abs(character.groundSpeed) / character.stats.Get("topSpeedNormal"));
             // Running Fast
             // ======================
@@ -214,7 +224,7 @@ public class CharacterCapabilityGround : CharacterCapability {
         if (Mathf.Abs(character.groundSpeed) >= character.stats.Get("fallThreshold")) return;
 
         if (!((character.forwardAngle <= 315) && (character.forwardAngle >= 45))) return;
-        character.horizontalInputLockTimer = 0.5F;
+        character.horizontalInputLockTimer = character.stats.Get("horizontalInputLockTime");
 
         if (!((character.forwardAngle <= 270) && (character.forwardAngle >= 90)))
             return;

@@ -357,7 +357,7 @@ public class Character : GameBehaviour {
     // ========================================================================
     
     [HideInInspector]
-    public SpriteRenderer sprite;
+    public Transform sprite;
     [HideInInspector]
     public Transform spriteContainer;
 
@@ -367,8 +367,12 @@ public class Character : GameBehaviour {
         if (!GlobalOptions.GetBool("smoothRotation"))
             return (transform.eulerAngles / 45F).Round(0) * 45F;
     
-        Vector3 currentRotation = sprite.transform.eulerAngles;
-        bool shouldRotate = Mathf.Abs(Mathf.DeltaAngle(0, forwardAngle)) > 45;
+        Vector3 currentRotation = sprite.eulerAngles;
+        bool shouldRotate = Mathf.Abs(Mathf.DeltaAngle(0, forwardAngle)) > 5;
+        // bool shouldRotate = (
+        //     Mathf.Abs(Mathf.DeltaAngle(0, forwardAngle)) >
+        //     stats.Get("smoothRotationThreshold")
+        // );
         
         Vector3 targetAngle;
         if (shouldRotate) {
@@ -676,9 +680,9 @@ public class Character : GameBehaviour {
             sizeScale * Mathf.Sign(spriteContainer.localScale.y),
             sizeScale * Mathf.Sign(spriteContainer.localScale.z)
         );
-        Color colorTemp = sprite.color;
-        colorTemp.a = opacity * (isGhost ? 0.5F : 1);
-        sprite.color = colorTemp;
+        // Color colorTemp = sprite.color;
+        // colorTemp.a = opacity * (isGhost ? 0.5F : 1);
+        // sprite.color = colorTemp;
 
         LimitPosition();
     }
@@ -749,8 +753,8 @@ public class Character : GameBehaviour {
         audioSource = GetComponent<AudioSource>();
 
         spriteContainer = Instantiate(spriteContainerPrefab).transform;
-        sprite = spriteContainer.Find("Sprite").GetComponent<SpriteRenderer>();
-        spriteAnimator = sprite.GetComponent<Animator>();
+        sprite = spriteContainer.Find("Sprite");//.GetComponent<SpriteRenderer>();
+        spriteAnimator = spriteContainer.Find("Sprite").GetComponent<Animator>();
 
         groundModeGroup = transform.Find("Ground Mode");
         rollingModeGroup = transform.Find("Rolling Mode");
@@ -768,10 +772,8 @@ public class Character : GameBehaviour {
         base.Awake();
 
         stats.Add(new Dictionary<string, object>() {
-            ["topSpeedNormal"] = 6F,
-            ["topSpeedSpeedUp"] = 12F,
-            ["topSpeed"] = (Func<string>)(() => HasEffect("speedUp") ? "topSpeedSpeedUp" : "topSpeedNormal"),
-            ["terminalSpeed"] = 16.5F
+            ["terminalSpeed"] = 16.5F,
+            ["smoothRotationThreshold"] = 45
         });
 
         LevelManager.current.characters.Add(this);

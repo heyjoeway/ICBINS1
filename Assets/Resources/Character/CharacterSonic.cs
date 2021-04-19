@@ -1,4 +1,5 @@
 using UnityEngine;
+using System.Collections.Generic;
 
 public class CharacterSonic : Character {
     public override void Start() {
@@ -16,9 +17,9 @@ public class CharacterSonic : Character {
             capabilities.Add(new CharacterCapabilityDropdash(this));
 
         if (GlobalOptions.GetBool("homingAttack"))
-            capabilities.Add(new CharacterCapabilityHomingAttack(this));
+            capabilities.Add(new CharacterCapabilityHomingAttack(this, true, true));
     
-    if (GlobalOptions.GetBool("lightDash"))
+        if (GlobalOptions.GetBool("lightDash"))
             capabilities.Add(new CharacterCapabilityLightDash(this));
             
         capabilities.Add(new CharacterCapabilityJump(this));
@@ -27,9 +28,30 @@ public class CharacterSonic : Character {
         capabilities.Add(new CharacterCapabilityVictory(this));
         capabilities.Add(new CharacterCapabilityDeath(this));
 
-        if (GlobalOptions.GetBool("afterImages"))
-            capabilities.Add(new CharacterCapabilityAfterImage(this));
+        // if (GlobalOptions.GetBool("afterImages"))
+            // capabilities.Add(new CharacterCapabilityAfterImage(this));
             
+        this.stats.Add(new Dictionary<string, object>() {
+            ["homingAttackSpeed"] = 6F, // Guessed (fix)
+            ["jumpSpeed"] = 6F, // Found from video
+            ["horizontalInputLockTime"] = 0, // seconds
+            ["slopeFactorGround"] = 0.1F,
+            ["frictionGroundNormal"] = 0.046875F * 5,
+            ["frictionGroundSpeedUp"] = 0.09375F * 5,
+            ["accelerationGroundNormal"] = 0.046875F * 2F,
+            ["accelerationGroundSpeedUp"] = 0.09375F * 2F,
+            ["topSpeedNormal"] = 8F,
+            ["topSpeedSpeedUp"] = 16F,
+            ["accelerationAirNormal"] = 0.09375F * 2F,
+            ["accelerationAirSpeedUp"] = 0.1875F * 2F,
+            ["airDragThreshold"] = 0,
+            ["frictionAirNormal"] = 0.046875F * 6,
+            ["frictionAirSpeedUp"] = 0.09375F * 6,
+            ["decelerationAirNormal"] = 0.09375F * 6,
+            ["decelerationAirSpeedUp"] = 0.1875F * 6,
+            ["smoothRotationThreshold"] = 45
+        });
+
         base.Start();
     }
 }

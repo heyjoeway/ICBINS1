@@ -31,7 +31,8 @@ public class CharacterCapabilityDropdash : CharacterCapability {
         if (character.stateCurrent != "jump") return;
 
         if (!character.input.GetButtons(buttonsDropDash)) {
-            character.AnimatorPlay("Roll");
+            if (!character.spriteAnimator.GetCurrentAnimatorStateInfo(0).IsTag("Roll"))
+                character.AnimatorPlay("Roll");
             dropDashTimer = Mathf.Infinity;
         }
 

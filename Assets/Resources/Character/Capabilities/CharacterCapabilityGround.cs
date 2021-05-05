@@ -28,6 +28,7 @@ public class CharacterCapabilityGround : CharacterCapability {
             )),
             ["decelerationGround"] = 0.5F,
             ["slopeFactorGround"] = 0.125F,
+            ["slopeFactorHInputLock"] = 0.125F,
             ["skidThreshold"] = 4.5F,
             ["fallThreshold"] = 2.5F,
             ["horizontalInputLockTime"] = 0.5F, // seconds
@@ -37,7 +38,13 @@ public class CharacterCapabilityGround : CharacterCapability {
                 character.HasEffect("speedUp") ?
                     "topSpeedSpeedUp" :
                     "topSpeedNormal"
-            ))
+            )),
+            ["slopeFactorAccThreshold"] = 0.04F,
+
+            ["animWalkThreshold"] = 2F,
+            ["animRunThreshold"] = 6F,
+            ["animPeeloutThreshold"] = 12F,
+            ["animSkidFastThreshold"] = 8F,
         });
 
     }
@@ -63,6 +70,8 @@ public class CharacterCapabilityGround : CharacterCapability {
         UpdateGroundFallOff();
     }
 
+    float accelerationPrev = 0;
+
     // 3D-Ready: Sorta
     void UpdateGroundMove(float deltaTime) {
         float accelerationMagnitude = 0F;
@@ -87,7 +96,7 @@ public class CharacterCapabilityGround : CharacterCapability {
                 accelerationMagnitude = -character.stats.Get("accelerationGround");
             }
         } else {
-            if (Mathf.Abs(character.groundSpeed) > 0.05F * character.physicsScale) {
+            if (Mathf.Abs(character.groundSpeed) > 0.25F * character.physicsScale) {
                 accelerationMagnitude = -Mathf.Sign(character.groundSpeed) * character.stats.Get("frictionGround");
             } else {
                 character.groundSpeed = 0;
@@ -95,24 +104,29 @@ public class CharacterCapabilityGround : CharacterCapability {
             }
         }
 
+        // Used to make Rush physics less sticky
+        float slopeFactor = character.stats.Get("slopeFactorGround");
+        if (character.horizontalInputLockTimer > 0)
+            slopeFactor = character.stats.Get("slopeFactorHInputLock");
+
         float slopeFactorAcc = (
-            character.stats.Get("slopeFactorGround") *
+            slopeFactor *
             Mathf.Sin(
                 character.forwardAngle *
                 Mathf.Deg2Rad
             )
         );
 
-        if (Mathf.Abs(slopeFactorAcc) > 0.04)
+        if (Mathf.Abs(slopeFactorAcc) > character.stats.Get("slopeFactorAccThreshold"))
             accelerationMagnitude -= slopeFactorAcc;
 
         character.groundSpeed += accelerationMagnitude * deltaTime * 60F;
+        accelerationPrev = accelerationMagnitude;
     }
 
     // Updates the character's animation while they're on the ground
     // 3D-Ready: NO
     void UpdateGroundAnim(float deltaTime) {
-        bool ignoreFlipX = false;
         character.spriteAnimatorSpeed = 1;
 
         // Check if we are transitioning to a rolling air state. If so, set the speed of it
@@ -133,9 +147,11 @@ public class CharacterCapabilityGround : CharacterCapability {
 
             // Skidding
             // ======================
-            bool skidding = (
-                (character.pressingRight && character.groundSpeed < 0) ||
-                (character.pressingLeft && character.groundSpeed > 0)
+            bool skidding = character.spriteAnimator.GetCurrentAnimatorStateInfo(0).IsTag("Skid");
+
+            bool notSkidding = (
+                ((accelerationPrev > 0) && (character.groundSpeed > 0)) ||
+                ((accelerationPrev < 0) && (character.groundSpeed < 0))
             );
 
             // You can only trigger a skid state if:
@@ -143,13 +159,14 @@ public class CharacterCapabilityGround : CharacterCapability {
             // - OR you're already skidding
             bool canSkid = (
                 (
-                    (
-                        (character.forwardAngle <= 45F) ||
-                        (character.forwardAngle >= 270F)
-                    ) && (
-                        Mathf.Abs(character.groundSpeed) >= character.stats.Get("skidThreshold")
-                    )
-                ) || character.spriteAnimator.GetCurrentAnimatorStateInfo(0).IsName("Skid")
+                    (character.pressingRight && character.groundSpeed < 0) ||
+                    (character.pressingLeft && character.groundSpeed > 0)
+                ) && (
+                    (character.forwardAngle <= 45F) ||
+                    (character.forwardAngle >= 270F)
+                ) && (
+                    Mathf.Abs(character.groundSpeed) >= character.stats.Get("skidThreshold")
+                )
             );
 
             // Standing still, looking up/down, idle animation
@@ -159,31 +176,52 @@ public class CharacterCapabilityGround : CharacterCapability {
                     character.AnimatorPlay("Look Down");
                 else if (character.input.GetAxisPositive("Vertical"))
                     character.AnimatorPlay("Look Up");
-                else if (character.balanceState != Character.BalanceState.None) {
-                    ignoreFlipX = true;
-                    character.flipX = character.balanceState == Character.BalanceState.Right;
+                else if (character.balanceState != Character.BalanceState.None) {                   
+                    if (!character.spriteAnimator.GetCurrentAnimatorStateInfo(0).IsTag("Balancing")) {
+                        if (
+                            (character.facingRight && (character.balanceState == Character.BalanceState.Right)) ||
+                            (!character.facingRight && (character.balanceState == Character.BalanceState.Left))
+                        ) {
+                            character.AnimatorPlay("Balancing Forwards");
+                        } else {
+                            character.AnimatorPlay("Balancing Backwards");
+                        }
+                    }
                     character.AnimatorPlay("Balancing");
                 } else {
-                    if (
-                        !character.spriteAnimator.GetCurrentAnimatorStateInfo(0).IsName("Tap") &&
-                        !character.spriteAnimator.GetCurrentAnimatorStateInfo(0).IsName("Idle")
-                    ) character.AnimatorPlay("Idle");
+                    if (!character.spriteAnimator.GetCurrentAnimatorStateInfo(0).IsTag("Idle"))
+                        character.AnimatorPlay("Idle");
                 }
             // Pushing anim
             // ======================
             } else if (pushing) {
-                character.AnimatorPlay("Push");
+                if (!character.spriteAnimator.GetCurrentAnimatorStateInfo(0).IsTag("Push"))
+                    character.AnimatorPlay("Push");
+    
                 character.spriteAnimatorSpeed = 1 + (Mathf.Abs(character.groundSpeed) / character.stats.Get("topSpeedNormal"));
             // Skidding, again
             // ======================
-            } else if (skidding && canSkid) {
-                if (!character.spriteAnimator.GetCurrentAnimatorStateInfo(0).IsName("Skid"))
+            } else if ((canSkid || skidding) && !notSkidding) {
+                if (!character.spriteAnimator.GetCurrentAnimatorStateInfo(0).IsTag("Skid")) {
                     SFX.Play(character.audioSource, "sfxSkid");
 
-                character.AnimatorPlay("Skid");
+                    if (Mathf.Abs(character.groundSpeed) < character.stats.Get("animSkidFastThreshold"))
+                        character.AnimatorPlay("Skid");
+                    else
+                        character.AnimatorPlay("Skid Fast");
+                }
+
+            // Slow Walking
+            // ======================
+            } else if (Mathf.Abs(character.groundSpeed) < character.stats.Get("animWalkThreshold")) {
+                if (!character.spriteAnimator.GetCurrentAnimatorStateInfo(0).IsTag("Slow Walk"))
+                    character.AnimatorPlay("Slow Walk");
+    
+                character.spriteAnimatorSpeed = 1 + (Mathf.Abs(character.groundSpeed) / character.stats.Get("topSpeedNormal"));
+
             // Walking
             // ======================
-            } else if (Mathf.Abs(character.groundSpeed) < character.stats.Get("topSpeedNormal")) {
+            } else if (Mathf.Abs(character.groundSpeed) < character.stats.Get("animRunThreshold")) {
                 if (!character.spriteAnimator.GetCurrentAnimatorStateInfo(0).IsTag("Walk"))
                     character.AnimatorPlay("Walk");
     
@@ -191,7 +229,7 @@ public class CharacterCapabilityGround : CharacterCapability {
             // Running Fast
             // ======================
             } else if (
-                (Mathf.Abs(character.groundSpeed) >= 10F * character.physicsScale) &&
+                (Mathf.Abs(character.groundSpeed) >= character.stats.Get("animPeeloutThreshold")) &&
                 GlobalOptions.GetBool("peelOut")
              ) {
                 character.AnimatorPlay("Fast");
@@ -206,8 +244,9 @@ public class CharacterCapabilityGround : CharacterCapability {
 
         // Final value application
         // ======================
+        // ORDER MATTERS! GetSpriteRotation may depend on flipX for rotation-based flipping
+        character.flipX = !character.facingRight;
         character.spriteContainer.transform.eulerAngles = character.GetSpriteRotation(deltaTime);
-        if (!ignoreFlipX) character.flipX = !character.facingRight;
 
         pushing = false;
     }
@@ -226,8 +265,7 @@ public class CharacterCapabilityGround : CharacterCapability {
         if (!((character.forwardAngle <= 315) && (character.forwardAngle >= 45))) return;
         character.horizontalInputLockTimer = character.stats.Get("horizontalInputLockTime");
 
-        if (!((character.forwardAngle <= 270) && (character.forwardAngle >= 90)))
-            return;
+        if (!((character.forwardAngle < 271) && (character.forwardAngle > 89))) return;
 
         if (character.stateCurrent == "rolling")
             character.stateCurrent = "rollingAir";

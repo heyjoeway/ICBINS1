@@ -42,7 +42,9 @@ public static class Constants {
         ["prefabTitleCard"] = "Objects/Title Card",
         ["prefabInvincibilityStars"] = "Objects/Invincibility Stars",
         ["prefabRingSparkle"] = "Objects/Ring Sparkle",
-        ["prefabGHZBall"] = "Objects/GHZ Rolling Ball"
+        ["prefabGHZBall"] = "Objects/GHZ Rolling Ball",
+        ["prefabBoostBurstEffect"] = "Character/Characters/Sonic - Sonic Rush/Visuals/Particles/Initial Sonic Boom",
+        ["prefabBoostEffect"] = "Character/Characters/Sonic - Sonic Rush/Visuals/Particles/Boost Effect",
     };
 
     public static string Get(string key) => defaults[key];

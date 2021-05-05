@@ -4,6 +4,7 @@
         _MainTex ("Main Texture", 2D) = "white" {}
         _Textures ("Textures", 2DArray) = "" {}
         _Rows ("Rows", Int) = 1
+        _TargetVerticalResolution ("Target Vertical Resolution", Int) = 224
     }
 
     SubShader
@@ -17,11 +18,10 @@
             "CanUseSpriteAtlas"="True"
         }
 
-        // No culling or depth
         Cull Off
+        Lighting Off
         ZWrite Off
-        ZTest Always
-        Blend SrcAlpha OneMinusSrcAlpha
+        Blend One OneMinusSrcAlpha
 
         Pass
         {
@@ -62,6 +62,7 @@
             float _LineDeformationsCamera[256];
 
             float _VerticalDeformationCamera;
+            float _TargetVerticalResolution;
 
             uint2 _BaseOffset;
             float2 _AutoscrollSpeed;
@@ -76,10 +77,15 @@
                 position += _BaseOffset; // TODO: Rework
                 position = max(_PosMin, min(_PosMax, position));
 
+                float aspectRatio =_ScreenParams.x / _ScreenParams.y;
+                float grabPosY = i.grabPos.y;
+                if (_ProjectionParams.x > 0)
+                    grabPosY = 1 - grabPosY;
+
                 // Get screen-space position (in pixels) of the pixel currently being rendered
                 uint2 screenPixelCoord = uint2(
-                    i.grabPos.x * _ScreenParams.x,
-                    i.grabPos.y * _ScreenParams.y
+                    i.grabPos.x * _TargetVerticalResolution * aspectRatio,
+                    grabPosY * _TargetVerticalResolution
                 );
                 
                 screenPixelCoord.y -= position.y * 30 * _VerticalDeformationCamera;  // TODO: Rework

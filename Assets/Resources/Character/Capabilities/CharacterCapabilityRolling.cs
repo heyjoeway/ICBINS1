@@ -29,7 +29,8 @@ public class CharacterCapabilityRolling : CharacterCapability {
                 character.HasEffect("speedUp") ?
                     "frictionRollSpeedUp" :
                     "frictionRollNormal"
-            )
+            ),
+            ["rollRotate"] = false
         });
     }
 
@@ -56,7 +57,7 @@ public class CharacterCapabilityRolling : CharacterCapability {
             character.InStateGroup("ground")
         )) return;
         UpdateRollingMove(deltaTime);
-        UpdateRollingAnim();
+        UpdateRollingAnim(deltaTime);
         UpdateTerminalSpeed();
         character.GroundSnap();
     }
@@ -117,7 +118,7 @@ public class CharacterCapabilityRolling : CharacterCapability {
     }
 
     // 3D-Ready: YES
-    void UpdateRollingAnim() {
+    void UpdateRollingAnim(float deltaTime) {
         if (!character.spriteAnimator.GetCurrentAnimatorStateInfo(0).IsTag("Roll"))
             character.AnimatorPlay("Roll");
         character.spriteAnimatorSpeed = 1 + (
@@ -126,7 +127,11 @@ public class CharacterCapabilityRolling : CharacterCapability {
                 character.stats.Get("topSpeedNormal")
             ) * 2F
         );
-        character.spriteContainer.eulerAngles = Vector3.zero;
+        // ORDER MATTERS! GetSpriteRotation may depend on flipX for rotation-based flipping
         character.flipX = !character.facingRight;
+        if (character.stats.GetRaw("rollRotate") == 1)
+            character.spriteContainer.transform.eulerAngles = character.GetSpriteRotation(deltaTime);
+        else
+            character.spriteContainer.eulerAngles = Vector3.zero;
     }
 }

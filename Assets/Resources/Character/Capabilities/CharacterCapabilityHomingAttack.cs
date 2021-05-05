@@ -51,8 +51,8 @@ public class CharacterCapabilityHomingAttack : CharacterCapability {
                 character.AnimatorPlay("Air Dash");
             } else {
                 character.stateCurrent = "rollingAir";
+                character.effects.Add(new CharacterEffect(character, "afterImage", 0.25F));
             }
-            character.effects.Add(new CharacterEffect(character, "afterImage", 0.25F));
         } else {
             character.velocity = Vector3.zero;
             character.modeGroupCurrent = character.rollingAirModeGroup;

@@ -14,14 +14,16 @@ public class CharacterCapabilityRollingAir : CharacterCapability {
     public override void StateInit(string stateName, string prevStateName) {
         if (!character.InStateGroup("air") || !character.InStateGroup("rolling")) return;
         character.modeGroupCurrent = character.rollingAirModeGroup;
-    
-        if (!character.spriteAnimator.GetCurrentAnimatorStateInfo(0).IsTag("Roll"))
-            character.AnimatorPlay("Roll");
-    
+        
         character.spriteAnimatorSpeed = 1 + ((Mathf.Abs(character.groundSpeed) / character.stats.Get("topSpeedNormal")) * 2F);
     }
 
     public override void Update(float deltaTime) {
+        if (character.InStateGroup("air") && character.InStateGroup("rolling")) {
+            if (!character.spriteAnimator.GetCurrentAnimatorStateInfo(0).IsTag("Roll"))
+                character.AnimatorPlay("Roll");
+        }
+        
         if (!character.InStateGroup("air") || !character.InStateGroup("rolling")) {
             if (!GlobalOptions.GetBool("airCurling")) return;
             if (character.InStateGroup("air") && character.input.GetButtonDownPreventRepeat("Primary"))

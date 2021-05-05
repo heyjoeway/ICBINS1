@@ -153,31 +153,34 @@ public class CharacterCapabilityAir : CharacterCapability {
         // Wait a minute, why are we doing a raycast to get a normal/position that we already know??
         // BECAUSE, the normal/position from the collision is glitchy as fuck.
         // This helps smooth things out.
-        RaycastHit hit = character.GetSolidRaycast(
-            collision.GetContact(0).point - transform.position
-        );
-        if (hit.collider == null) return;
+        for (int i = 0; i < collision.contactCount; i++) {
+            ContactPoint contact = collision.GetContact(i);
+            RaycastHit hit = character.GetSolidRaycast(
+                contact.point - transform.position
+            );
+            if (hit.collider == null) return;
 
-        Vector3 hitEuler = Quaternion.FromToRotation(Vector3.up, hit.normal).eulerAngles;
-        // Round this or any tiiiny deviation in angle can allow the character
-        // to jump at walls and stick to them
-        float hitAngle = Mathf.Round(hitEuler.z); // TODO: 3D
+            Vector3 hitEuler = Quaternion.FromToRotation(Vector3.up, hit.normal).eulerAngles;
+            // Round this or any tiiiny deviation in angle can allow the character
+            // to jump at walls and stick to them
+            float hitAngle = Mathf.Round(hitEuler.z); // TODO: 3D
 
-        CharacterCollisionModifier collisionModifier = collision.transform.GetComponentInParent<CharacterCollisionModifier>();
-        if (collisionModifier != null) {
-            switch (collisionModifier.type) {
-                case CharacterCollisionModifier.CollisionModifierType.NoGrounding:
-                    return;
-                case CharacterCollisionModifier.CollisionModifierType.NoGroundingLRB:
-                    if (hitAngle > 90 && hitAngle < 270) return;
-                    break;
-                case CharacterCollisionModifier.CollisionModifierType.NoGroundingLRBHigher:
-                    if (hitAngle > 45 && hitAngle < 315) return;
-                    break;
+            CharacterCollisionModifier collisionModifier = collision.transform.GetComponentInParent<CharacterCollisionModifier>();
+            if (collisionModifier != null) {
+                switch (collisionModifier.type) {
+                    case CharacterCollisionModifier.CollisionModifierType.NoGrounding:
+                        return;
+                    case CharacterCollisionModifier.CollisionModifierType.NoGroundingLRB:
+                        if (hitAngle > 90 && hitAngle < 270) return;
+                        break;
+                    case CharacterCollisionModifier.CollisionModifierType.NoGroundingLRBHigher:
+                        if (hitAngle > 45 && hitAngle < 315) return;
+                        break;
+                }
             }
-        }
 
-        ReacquireGround(hitAngle);
+            ReacquireGround(hitAngle);
+        }        
     }
     
     public void UpdateAirReacquireGround() {
@@ -243,6 +246,7 @@ public class CharacterCapabilityAir : CharacterCapability {
 
         // Set state
         // -------------------------
+        character.horizontalInputLockTimer = 0;
         character.stateCurrent = "ground";
         character.spriteContainer.transform.eulerAngles = transform.eulerAngles;
     }
@@ -257,7 +261,8 @@ public class CharacterCapabilityAir : CharacterCapability {
 
     void UpdateAirAnim(float deltaTime) {
         UpdateAirAnimDirection();
-        character.spriteContainer.transform.eulerAngles = character.GetSpriteRotation(deltaTime);
+        // ORDER MATTERS! GetSpriteRotation may depend on flipX for rotation-based flipping
         character.flipX = !character.facingRight;
+        character.spriteContainer.transform.eulerAngles = character.GetSpriteRotation(deltaTime);
     }
 }

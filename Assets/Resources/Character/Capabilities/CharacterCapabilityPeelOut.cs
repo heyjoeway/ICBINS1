@@ -81,8 +81,9 @@ public class CharacterCapabilityPeelOut : CharacterCapability {
 
     // 3D-Ready: YES
     void UpdateSpindashAnim(float deltaTime) {
-        character.spriteContainer.transform.eulerAngles = character.GetSpriteRotation(deltaTime);
+        // ORDER MATTERS! GetSpriteRotation may depend on flipX for rotation-based flipping
         character.flipX = !character.facingRight;
+        character.spriteContainer.transform.eulerAngles = character.GetSpriteRotation(deltaTime);
 
         float runSpeed = (1F - (peelOutTimer / 0.5F)) * 12F;
         character.spriteAnimatorSpeed = runSpeed / character.stats.Get("topSpeedNormal");

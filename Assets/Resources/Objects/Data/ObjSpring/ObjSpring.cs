@@ -11,13 +11,18 @@ public class ObjSpring : MonoBehaviour {
 
     // ========================================================================
 
-    public void TryAction(ObjSpringable character, float collisionAngle) {
+    public void TryActionAngle(ObjSpringable character, float collisionAngle) {
         if (Mathf.Abs(collisionAngle - topAngle) > 0.1) return;
         DoAction(character);
     }
 
-    public void OnCollisionEnter(Collision collision) {
+    public void TryActionCooldown(ObjSpringable character) {
+        DoAction(character);
+    }
 
+    // ========================================================================
+
+    public void OnCollisionEnter(Collision collision) {
         GameObject other = collision.gameObject;
         ObjSpringable[] characters = other.GetComponentsInParent<ObjSpringable>();
         if (characters.Length == 0) return;
@@ -31,23 +36,38 @@ public class ObjSpring : MonoBehaviour {
             + 180
         ) % 360;
 
-        TryAction(character, collisionAngle);
+        TryActionAngle(character, collisionAngle);
     }
     public void OnCollisionStay(Collision collision) {
         OnCollisionEnter(collision);
     }
+    public void OnCollisionExit(Collision collision) {}
+
+    // ========================================================================
+
+    public void OnTriggerEnter(Collider collider) {
+        GameObject other = collider.gameObject;
+        ObjSpringable[] characters = other.GetComponentsInParent<ObjSpringable>();
+        if (characters.Length == 0) return;
+        ObjSpringable character = characters[0];
+
+        TryActionCooldown(character);
+    }
+    // public void OnTriggerStay(Collider collider) {
+    //     OnTriggerEnter(collider);
+    // }
+
+    public void OnTriggerExit(Collider collider) {}
+
+    // ========================================================================
 
     void Update() {
         foreach(Character character in characterGroundedDetector.characters)
-            TryAction(
+            TryActionAngle(
                 character.GetComponent<ObjSpringable>(),
                 character.transform.eulerAngles.z
             );
     }
-
-    public void OnCollisionExit(Collision collision) {}
-    public void OnTriggerEnter(Collider other) {}
-    public void OnTriggerExit(Collider other) {}
 
     // ========================================================================
 
@@ -78,13 +98,7 @@ public class ObjSpring : MonoBehaviour {
         }
     }
 
-    float springPower { get{
-        switch(type) {
-            case SpringType.Red:
-                return 16F;
-        }
-        return 10F; // Yellow is default, switch case exists in case more types are added
-    }}
+    public float springPower = 16F;
 
     public void DoAction(ObjSpringable obj) {
         Rigidbody rigidbody = obj.GetComponent<Rigidbody>();

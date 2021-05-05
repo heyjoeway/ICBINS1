@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class Background : MonoBehaviour {
     public uint rows = 1;
+    public uint targetVerticalResolution = 224;
     public Texture2D[] textures;
     public float[] textureOrder;
     public float[] lineDeformationsHeight;
@@ -64,5 +65,6 @@ public class Background : MonoBehaviour {
         material.SetVector("_PosMax", positionMax);
         material.SetVector("_PosMin", positionMin);
 
+        material.SetInt("_TargetVerticalResolution", (int)targetVerticalResolution);
     }
 }

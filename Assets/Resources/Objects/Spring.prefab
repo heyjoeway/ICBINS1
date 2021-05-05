@@ -78,6 +78,8 @@ SpriteRenderer:
   m_MotionVectors: 1
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
+  m_RayTracingMode: 0
+  m_RayTraceProcedural: 0
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
@@ -207,6 +209,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   keepGrounded: 0
   type: 0
+  springPower: 16
 --- !u!82 &3632875115814522256
 AudioSource:
   m_ObjectHideFlags: 0

@@ -133,7 +133,8 @@ public class CharacterCapabilitySpindash : CharacterCapability {
 
     // 3D-Ready: YES
     void UpdateSpindashAnim(float deltaTime) {
-        character.spriteContainer.transform.eulerAngles = character.GetSpriteRotation(deltaTime);
+        // ORDER MATTERS! GetSpriteRotation may depend on flipX for rotation-based flipping
         character.flipX = !character.facingRight;
+        character.spriteContainer.transform.eulerAngles = character.GetSpriteRotation(deltaTime);
     }
 }

@@ -27,7 +27,7 @@ public class LevelManager : GameMode {
     void InitCharacter() {
         if (characters.Count == 0) {
             Character character = Instantiate(
-                Resources.Load<GameObject>("Character/Character")
+                Resources.Load<GameObject>("Character/Characters/Sonic - Sonic Rush/Character")
             ).GetComponent<Character>();
             Utils.SetScene(character.transform, "Level");
             Time.timeScale = 0;

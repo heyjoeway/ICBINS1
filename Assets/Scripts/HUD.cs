@@ -19,9 +19,17 @@ public class HUD : MonoBehaviour {
         canvas = GetComponent<Canvas>();
         scoreText = transform.Find("Score Content").GetComponent<Text>();
         timeText = transform.Find("Time Content").GetComponent<Text>();
-        timeTitleText = transform.Find("Time Title").GetComponent<Text>();
+
+        Transform timeTitle = transform.Find("Time Title");
+        if (timeTitle) timeTitleText = timeTitle.GetComponent<Text>();
+        else timeTitleText = timeText;
+
         ringsText = transform.Find("Rings Content").GetComponent<Text>();
-        ringsTitleText = transform.Find("Rings Title").GetComponent<Text>();
+        
+        Transform ringsTitle = transform.Find("Rings Title");
+        if (ringsTitle) ringsTitleText = ringsTitle.GetComponent<Text>();
+        else ringsTitleText = ringsText;
+
         livesText = transform.Find("Lives Content").GetComponent<Text>();
     }
     StringBuilder sb = new StringBuilder("", 50);

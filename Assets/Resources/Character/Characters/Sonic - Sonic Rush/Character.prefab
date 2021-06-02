@@ -159,17 +159,17 @@ MonoBehaviour:
   name: 
   character: {fileID: 0}
   transform: {fileID: 0}
-  accelerationGroundNormal: 0.046875
-  accelerationGroundSpeedUp: 0.09375
-  frictionGroundNormal: 0.046875
-  frictionGroundSpeedUp: 0.09375
+  accelerationGroundNormal: 0.09375
+  accelerationGroundSpeedUp: 0.140625
+  frictionGroundNormal: 0.1875
+  frictionGroundSpeedUp: 0.375
   decelerationGround: 0.5
-  slopeFactorGround: 0.125
-  slopeFactorHInputLock: 0.125
+  slopeFactorGround: 0.1
+  slopeFactorHInputLock: 0.5
   skidThreshold: 4.5
-  fallThreshold: 2.5
+  fallThreshold: 3.5
   horizontalInputLockTime: 0.5
-  topSpeedNormal: 6
+  topSpeedNormal: 8
   topSpeedSpeedUp: 12
   slopeFactorAccThreshold: 0.04
   animWalkThreshold: 2
@@ -195,12 +195,12 @@ MonoBehaviour:
   airModeGroup: {fileID: 1905976648834570164}
   accelerationAirNormal: 0.09375
   accelerationAirSpeedUp: 0.1875
-  decelerationAirNormal: 0.09375
-  decelerationAirSpeedUp: 0.1875
-  airDragThreshold: 4
+  decelerationAirNormal: 0.5625
+  decelerationAirSpeedUp: 1.125
+  airDragThreshold: 0
   gravityNormal: -0.21875
-  frictionAirNormal: 0
-  frictionAirSpeedUp: 0
+  frictionAirNormal: 0.28125
+  frictionAirSpeedUp: 0.5625
   airModeCollider: {fileID: 0}
 --- !u!114 &-6068268411037642733
 MonoBehaviour:
@@ -237,6 +237,8 @@ MonoBehaviour:
   buttonsSpindash:
   - Secondary
   - Tertiary
+  prefabSpindashDust: {fileID: 364770359781515039, guid: c59b3a57849c78c4e81ec7f52e123e66,
+    type: 3}
 --- !u!114 &6174836746150840551
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -252,10 +254,10 @@ MonoBehaviour:
   name: 
   character: {fileID: 0}
   transform: {fileID: 0}
-  homingAttackSpeed: 9
+  homingAttackSpeed: 6
   homingAttackBounceSpeed: 6.5
-  homingAttackUncurl: 0
-  homingAttackUseUncurled: 0
+  homingAttackUncurl: 1
+  homingAttackUseUncurled: 1
   buttonsHomingAttack:
   - Secondary
   - Tertiary
@@ -274,7 +276,7 @@ MonoBehaviour:
   name: 
   character: {fileID: 0}
   transform: {fileID: 0}
-  jumpSpeed: 6.5
+  jumpSpeed: 6
   buttonsJump:
   - Secondary
   - Tertiary
@@ -305,7 +307,7 @@ MonoBehaviour:
   rollThreshold: 1.03125
   unrollThreshold: 0.5
   rollLockBoostSpeed: 3
-  rollRotate: 0
+  rollRotate: 1
   rollingModeGroup: {fileID: 1905976647083121177}
 --- !u!114 &8366985030932035115
 MonoBehaviour:
@@ -426,7 +428,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   useUnscaledDeltaTime: 1
   terminalSpeed: 16.5
-  smoothRotationThreshold: 45
+  smoothRotationThreshold: 0
   capabilities: []
   statePrev: ground
   rigidbody: {fileID: 0}

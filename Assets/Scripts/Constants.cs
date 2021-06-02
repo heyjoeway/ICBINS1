@@ -26,8 +26,6 @@ public static class Constants {
         ["sfxShieldNormal"] = "SFX/Sonic 1/S1_AF",
         ["sfxBossHit"] = "SFX/Sonic 1/S1_AC",
 
-        ["prefabDropDashDust"] = "Objects/Dash Dust (Drop Dash)",
-        ["prefabSpindashDust"] = "Objects/Dash Dust (Spindash)",
         ["prefabAnimal"] = "Objects/Animal",
         ["prefabExplosionEnemy"] = "Objects/Explosion (Enemy)",
         ["prefabExplosionBoss"] = "Objects/Explosion (Boss)",
@@ -43,8 +41,6 @@ public static class Constants {
         ["prefabInvincibilityStars"] = "Objects/Invincibility Stars",
         ["prefabRingSparkle"] = "Objects/Ring Sparkle",
         ["prefabGHZBall"] = "Objects/GHZ Rolling Ball",
-        ["prefabBoostBurstEffect"] = "Character/Characters/Sonic - Sonic Rush/Visuals/Particles/Initial Sonic Boom",
-        ["prefabBoostEffect"] = "Character/Characters/Sonic - Sonic Rush/Visuals/Particles/Boost Effect",
     };
 
     public static string Get(string key) => defaults[key];

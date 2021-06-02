@@ -1,8 +1,10 @@
 using UnityEngine;
 
 public class CharacterCapabilityDropdash : CharacterCapability {
-    public CharacterCapabilityDropdash(Character character) : base(character) { }
-    string[] buttonsDropDash = new string[] { "Secondary", "Tertiary" };
+    public string[] buttonsDropDash = new string[] { "Secondary", "Tertiary" };
+    public GameObject prefabDropDashDust;
+
+    // ========================================================================
 
     Transform dustLocation;
 
@@ -27,7 +29,7 @@ public class CharacterCapabilityDropdash : CharacterCapability {
 
     float dropDashTimer;
 
-    public override void Update(float deltaTime) {
+    public override void CharUpdate(float deltaTime) {
         if (character.stateCurrent != "jump") return;
 
         if (!character.input.GetButtons(buttonsDropDash)) {
@@ -57,7 +59,7 @@ public class CharacterCapabilityDropdash : CharacterCapability {
             character.characterCamera.lagTimer = 0.26667F;
 
         GameObject dust = GameObject.Instantiate(
-            Constants.Get<GameObject>("prefabDropDashDust"),
+            prefabDropDashDust,
             dustLocation.position,
             Quaternion.identity
         );

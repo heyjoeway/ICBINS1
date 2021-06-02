@@ -2,8 +2,6 @@ using UnityEngine;
 using ActionCode2D.Renderers;
 
 public class CharacterCapabilityAfterImage3D : CharacterCapability {
-    public CharacterCapabilityAfterImage3D(Character character) : base(character) { }
-
     Transform afterImage;
     Animator afterImageAnimator;
 
@@ -18,7 +16,7 @@ public class CharacterCapabilityAfterImage3D : CharacterCapability {
     int historyIndex = 0;
     bool historyFlicker = false;
 
-    public override void Update(float deltaTime) {
+    public override void CharUpdate(float deltaTime) {
         for (int i = 0; i < afterImageAnimator.layerCount; i++) {
             afterImageAnimator.Play(
                 character.spriteAnimator.GetCurrentAnimatorStateInfo(i).fullPathHash,

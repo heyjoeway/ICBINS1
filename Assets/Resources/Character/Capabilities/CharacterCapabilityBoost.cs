@@ -2,22 +2,19 @@ using UnityEngine;
 using System.Collections.Generic;
 
 public class CharacterCapabilityBoost : CharacterCapability {
-    string[] buttonsBoost = new string[] { "Primary" };
+    public float boostSpeed = 12F;
+    public float boostLowerThreshold = 6F;
+    public string[] buttonsBoost = new string[] { "Primary" };
+    public GameObject prefabBoostEffect;
+    public GameObject prefabBoostBurstEffect;
 
     // ========================================================================
-
-    public CharacterCapabilityBoost(Character character) : base(character) { }
 
     GameObject boostParticle;
 
     public override void Init() {
-        character.stats.Add(new Dictionary<string, object>() {
-            ["boostSpeed"] = 12F,
-            ["boostLowerThreshold"] = 6F
-        });
-
         boostParticle = GameObject.Instantiate(
-            Constants.Get<GameObject>("prefabBoostEffect"),
+            prefabBoostEffect,
             Vector3.zero,
             Quaternion.identity
         );
@@ -30,7 +27,6 @@ public class CharacterCapabilityBoost : CharacterCapability {
         if (boostingEffect == null) return;
         boostingEffect.DestroyBase();
         boostingEffect = null;
-        Debug.Log("what");
     }
 
     void EnterBoost() {
@@ -45,7 +41,7 @@ public class CharacterCapabilityBoost : CharacterCapability {
             character.facingRight = false;
 
         character.groundSpeed = (
-            character.stats.Get("boostSpeed") *
+            boostSpeed * character.physicsScale *
             (character.facingRight ? 1 : -1)
         );
 
@@ -53,7 +49,7 @@ public class CharacterCapabilityBoost : CharacterCapability {
             character.characterCamera.lagTimer = 0.26667F / 2;
 
         GameObject boostBurstParticle = GameObject.Instantiate(
-            Constants.Get<GameObject>("prefabBoostBurstEffect"),
+            prefabBoostBurstEffect,
             character.position,
             character.rotation
         );
@@ -66,7 +62,7 @@ public class CharacterCapabilityBoost : CharacterCapability {
         // SFX.PlayOneShot(character.audioSource, "sfxBoost");
     }
 
-    public override void Update(float deltaTime) {
+    public override void CharUpdate(float deltaTime) {
         bool buttonDown = character.input.GetButtons(buttonsBoost);
         bool buttonPressed = character.input.GetButtonsDownPreventRepeat(buttonsBoost);
 
@@ -76,7 +72,7 @@ public class CharacterCapabilityBoost : CharacterCapability {
         if (!buttonDown)
             ExitBoost();
 
-        if (Mathf.Abs(character.groundSpeed) < character.stats.Get("boostLowerThreshold"))
+        if (Mathf.Abs(character.groundSpeed) < boostLowerThreshold * character.physicsScale)
             ExitBoost();
 
         boostParticle.SetActive(character.HasEffect("boosting"));

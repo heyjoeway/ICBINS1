@@ -359,5 +359,6 @@ public class CharacterCamera : MonoBehaviour {
         null
     };
 
+    [HideInInspector]
     public CameraZone cameraZone;
 }

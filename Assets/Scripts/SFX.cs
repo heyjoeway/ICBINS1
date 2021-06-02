@@ -35,8 +35,11 @@ public static class SFX {
     public static void Play(AudioSource audioSource, string constantName, float pitch = 1) {
         if (constantName == null || constantName == "") return;
         string path = Constants.Get(constantName);
-        
-        audioSource.clip = Get(path);
+        Play(audioSource, clip, pitch);
+    }
+
+    public static void Play(AudioSource audioSource, AudioClip clip, float pitch = 1) {
+        audioSource.clip = clip;
         audioSource.pitch = pitch;
         audioSource.Play();
     }

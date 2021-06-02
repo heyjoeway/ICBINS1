@@ -2,8 +2,9 @@ using UnityEngine;
 using System.Collections.Generic;
 
 public class CharacterCapabilitySpindash : CharacterCapability {
-    string[] buttonsSpindash = new string[] { "Secondary", "Tertiary" };
-
+    public float spindashPowerMax = 8F;
+    public string[] buttonsSpindash = new string[] { "Secondary", "Tertiary" };
+    public GameObject prefabSpindashDust;
 
     // ========================================================================
 
@@ -13,8 +14,6 @@ public class CharacterCapabilitySpindash : CharacterCapability {
 
     // ========================================================================
 
-    public CharacterCapabilitySpindash(Character character) : base(character) { }
-
     public override void Init() {
         name = "spindash";
         character.AddStateGroup("noJump", "spindash");
@@ -22,18 +21,13 @@ public class CharacterCapabilitySpindash : CharacterCapability {
         character.AddStateGroup("harmful", "spindash");
 
         dustLocation = character.spriteContainer.Find("Spindash Dust Position");
-
-        character.stats.Add(new Dictionary<string, object>() {
-            ["spindashPowerMax"] = 8F,
-            ["spindashSpeedMax"] = 12F
-        });
     }
 
     public override void StateInit(string stateName, string prevStateName) {
         if (character.stateCurrent != name) return;
 
         dust = GameObject.Instantiate(
-            Constants.Get<GameObject>("prefabSpindashDust"),
+            prefabSpindashDust,
             dustLocation.position,
             Quaternion.identity
         );
@@ -41,7 +35,6 @@ public class CharacterCapabilitySpindash : CharacterCapability {
 
         spindashPower = -2F;
         SpindashCharge();
-        character.modeGroupCurrent = character.rollingModeGroup;
     }
 
     public override void StateDeinit(string stateName, string nextStateName) {
@@ -56,7 +49,7 @@ public class CharacterCapabilitySpindash : CharacterCapability {
     }
 
     // See: https://info.sonicretro.org/SPG:Special_Abilities#Spindash_.28Sonic_2.2C_3.2C_.26_K.29
-    public override void Update(float deltaTime) {
+    public override void CharUpdate(float deltaTime) {
         if (character.stateCurrent == "ground") {
             // Switches the character to spindash state if connditions are met:
             // - Pressing spindash key combo
@@ -111,7 +104,7 @@ public class CharacterCapabilitySpindash : CharacterCapability {
             "sfxSpindashCharge",
             1 + ((
                     spindashPower /
-                    (character.stats.Get("spindashPowerMax") + 2)
+                    (spindashPowerMax + 2)
                 ) * 0.5F
             ) // pitch
         );

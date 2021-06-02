@@ -2,15 +2,14 @@
 using UnityEngine;
 
 public class CharacterCapabilityVictory : CharacterCapability {
+    [HideInInspector]
     public bool victoryLock = false;
-
-    public CharacterCapabilityVictory(Character character) : base(character) { }
 
     public override void Init() {
         name = "victory";
     }
 
-    public override void Update(float deltaTime) {
+    public override void CharUpdate(float deltaTime) {
         if (!victoryLock) {
             if (character.stateCurrent == "victory")
                 character.stateCurrent = "ground";

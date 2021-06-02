@@ -2,19 +2,16 @@ using UnityEngine;
 using System.Collections.Generic;
 
 public class CharacterCapabilityHomingAttack : CharacterCapability {
-    string[] buttonsHomingAttack = new string[] { "Secondary", "Tertiary" };
+    public float homingAttackSpeed = 9F;
+    public float homingAttackBounceSpeed = 6.5F;
+    public bool homingAttackUncurl = false;
+    public bool homingAttackUseUncurled = false;
+    public string[] buttonsHomingAttack = new string[] { "Secondary", "Tertiary" };
     
+    // ========================================================================
+
     float failsafeTimer;
-
-    bool uncurl;
-    bool useAnytime;
     private bool used = false;
-
-    public CharacterCapabilityHomingAttack(Character character, bool uncurl = false, bool useAnytime = false) : base(character) {
-        this.uncurl = uncurl;
-        this.useAnytime = useAnytime;
-    }
-
     Transform target;
     CharacterEffect afterImageEffect;
 
@@ -23,11 +20,6 @@ public class CharacterCapabilityHomingAttack : CharacterCapability {
         character.AddStateGroup("rolling", "homingAttack");
         character.AddStateGroup("airCollision", "homingAttack");
         character.AddStateGroup("harmful", "homingAttack");
-
-        character.stats.Add(new Dictionary<string, object>() {
-            ["homingAttackSpeed"] = 9F,
-            ["homingAttackBounceSpeed"] = 6.5F
-        });
     }
 
     public override void StateInit(string stateName, string prevStateName) {
@@ -41,12 +33,12 @@ public class CharacterCapabilityHomingAttack : CharacterCapability {
         if (target == null) {
             character.velocity = new Vector2(
                 (
-                    character.stats.Get("homingAttackSpeed") *
+                    homingAttackSpeed * character.physicsScale *
                     (character.facingRight ? 1 : -1)
                 ),
                 0
             );
-            if (this.uncurl) {
+            if (homingAttackUncurl) {
                 character.stateCurrent = "air";
                 character.AnimatorPlay("Air Dash");
             } else {
@@ -55,7 +47,6 @@ public class CharacterCapabilityHomingAttack : CharacterCapability {
             }
         } else {
             character.velocity = Vector3.zero;
-            character.modeGroupCurrent = character.rollingAirModeGroup;
             afterImageEffect = new CharacterEffect(character, "afterImage");
             character.effects.Add(afterImageEffect);
         }
@@ -68,19 +59,19 @@ public class CharacterCapabilityHomingAttack : CharacterCapability {
     }
 
     public void OnTargetLost() {
-        if (this.uncurl) {
+        if (homingAttackUncurl) {
             character.stateCurrent = "air";
         } else {
             character.stateCurrent = "rollingAir";
         }
     }
 
-    public override void Update(float deltaTime) {
+    public override void CharUpdate(float deltaTime) {
         if (!character.InStateGroup("air")) used = false;
 
         if (
             (
-                (useAnytime && character.InStateGroup("air")) ||
+                (homingAttackUseUncurled && character.InStateGroup("air")) ||
                 (character.stateCurrent == "jump")
             ) && !used
         ) {
@@ -97,7 +88,7 @@ public class CharacterCapabilityHomingAttack : CharacterCapability {
             character.position = Vector3.MoveTowards(
                 character.position,
                 target.position,
-                character.stats.Get("homingAttackSpeed") * deltaTime * 2
+                homingAttackSpeed * character.physicsScale * deltaTime * 2
             );
 
             failsafeTimer -= deltaTime;
@@ -105,20 +96,20 @@ public class CharacterCapabilityHomingAttack : CharacterCapability {
         }
     }
 
-    public override void OnCollisionEnter(Collision collision) {
+    public override void OnCharCollisionEnter(Collision collision) {
         if (character.stateCurrent != "homingAttack") return;
         if (collision.collider.isTrigger) return;
         OnTargetLost();     
     }
 
-    public override void OnTriggerEnter(Collider other) {
+    public override void OnCharTriggerEnter(Collider other) {
         if (character.stateCurrent != "homingAttack") return;
         HomingAttackTarget[] targets = other.gameObject.GetComponentsInParent<HomingAttackTarget>();
         if (targets.Length == 0) return;
 
         character.velocity = new Vector2(
             0,
-            character.stats.Get("homingAttackBounceSpeed")
+            homingAttackBounceSpeed * character.physicsScale
         );
         character.stateCurrent = "jump";
         used = false;

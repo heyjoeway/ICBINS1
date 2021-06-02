@@ -30,7 +30,6 @@ public class LevelManager : GameMode {
                 Resources.Load<GameObject>("Character/Characters/Sonic - Sonic Rush/Character")
             ).GetComponent<Character>();
             Utils.SetScene(character.transform, "Level");
-            Time.timeScale = 0;
         }
         ReloadDisposablesScene();
     }

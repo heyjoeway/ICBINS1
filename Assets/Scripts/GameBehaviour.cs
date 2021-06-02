@@ -3,6 +3,7 @@ using UnityEngine;
 using System.Collections.Generic;
 
 public class GameBehaviour : MonoBehaviour {
+    [HideInInspector]
     public bool useUnscaledDeltaTime = true;
     public static HashSet<GameBehaviour> allGameBehvaiours = new HashSet<GameBehaviour>();
 

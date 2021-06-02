@@ -3,20 +3,25 @@ using UnityEngine.Networking;
 using System.Collections.Generic;
 using System;
 
-public class Character : GameBehaviour {  
-    public CharacterStats stats = new CharacterStats();
+[RequireComponent(typeof(Rigidbody))]
+[RequireComponent(typeof(ObjSpringable))]
+public class Character : GameBehaviour {
+    public float terminalSpeed = 16.5F;
+    public float smoothRotationThreshold = 45;
 
     // ========================================================================
 
+    [HideInInspector]
     public List<CharacterCapability> capabilities = new List<CharacterCapability>();
 
     public CharacterCapability GetCapability(string capabilityName) {
-        foreach (CharacterCapability capability in capabilities)
+        foreach (CharacterCapability capability in capabilities) {
             if (capability.name == capabilityName) return capability;
+        }
         return null;
     }
 
-    public CharacterCapability TryGetCapability(string capabilityName, Action<CharacterCapability> callback) {
+    public CharacterCapability WithCapability(string capabilityName, Action<CharacterCapability> callback) {
         CharacterCapability capability = GetCapability(capabilityName);
         if (capability != null) callback(capability);
         return capability;
@@ -73,7 +78,15 @@ public class Character : GameBehaviour {
         for (int i = effects.Count - 1; i >= 0; i--) {
             CharacterEffect effect = effects[i];
             effect.UpdateBase(deltaTime);
+        }
+    }
 
+    public void RemoveEffect(string effectName) {
+        // iterate backwards to prevent index from shifting
+        for (int i = effects.Count - 1; i >= 0; i--) {
+            CharacterEffect effect = effects[i];
+            if (effectName != effect.name) continue;
+            effect.DestroyBase();
         }
     }
 
@@ -122,11 +135,6 @@ public class Character : GameBehaviour {
         }
     }
 
-    public bool movingUphill => (
-        Mathf.Sign(groundSpeed) ==
-        Mathf.Sign(Mathf.Sin(forwardAngle * Mathf.Deg2Rad))
-    );
-
     // ========================================================================
 
     [HideInInspector]
@@ -135,16 +143,13 @@ public class Character : GameBehaviour {
         get { return rigidbody.velocity; }
         set { rigidbody.velocity = value; }
     }
-    // [HideInInspector, SyncVar]
     [HideInInspector]
     public Vector3 velocityPrev;
 
     // ========================================================================
 
-    // [HideInInspector, SyncVar]
     [HideInInspector]
     public float groundSpeedPrev = 0;
-    // [SyncVar]
     float _groundSpeed = 0;
     public float groundSpeed {
         get { return _groundSpeed; }
@@ -154,7 +159,6 @@ public class Character : GameBehaviour {
         }
     }
 
-    // 3D-Ready: NO
     public float groundSpeedRigidbody {
         get {
             return (
@@ -263,12 +267,10 @@ public class Character : GameBehaviour {
         Right // platform is to the right
     }
 
-    // [HideInInspector, SyncVar]
     [HideInInspector]
     public BalanceState balanceState = BalanceState.None;
 
     // Keeps character locked to ground while in ground state
-    // 3D-Ready: No, but pretty close, actually.
     public bool GroundSnap() {
         RaycastHit hit = GetGroundRaycast();
         balanceState = BalanceState.None;
@@ -346,11 +348,13 @@ public class Character : GameBehaviour {
     // ========================================================================
 
     // [SyncVar]
+    [HideInInspector]
     public float sizeScale = 1F;
 
     public float physicsScale => sizeScale * Utils.physicsScale;
 
     // [SyncVar]
+    [HideInInspector]
     public bool flipX = false;
     
     public enum CharacterFlipModes {
@@ -361,7 +365,7 @@ public class Character : GameBehaviour {
 
     // ========================================================================
 
-    // [SyncVar]
+    [HideInInspector]
     public bool facingRight = true;
 
     // ========================================================================
@@ -380,7 +384,7 @@ public class Character : GameBehaviour {
         Vector3 spriteRotation = spriteContainer.transform.eulerAngles;
         bool shouldRotate = (
             Mathf.Abs(Mathf.DeltaAngle(0, forwardAngle)) >
-            stats.Get("smoothRotationThreshold")
+            smoothRotationThreshold
         );
         
         float targetRotationZ = transform.eulerAngles.z;
@@ -407,24 +411,16 @@ public class Character : GameBehaviour {
         // );
     }
 
+    [HideInInspector]
     public float opacity = 1;
 
     // ========================================================================
 
-    public ObjShield shield;
-
-    // 3D-Ready: YES
-
-    public void RemoveShield() {
-        if (shield == null) return;
-        Destroy(shield.gameObject);
-        shield = null;
-    }
-
-    // ========================================================================
-
+    [HideInInspector]
     public Level currentLevel;
+    [HideInInspector]
     public float timer = 0;
+    [HideInInspector]
     public bool timerPause = false;
 
     int _score = 0;
@@ -437,6 +433,7 @@ public class Character : GameBehaviour {
             _score = value;
         }
     }
+    [HideInInspector]
     public int destroyEnemyChain = 0;
 
     int _ringLivesMax = 0;
@@ -478,6 +475,7 @@ public class Character : GameBehaviour {
     }
     public RespawnData respawnData = new RespawnData();
 
+    [HideInInspector]
     public int checkpointId = 0;
 
     public void Respawn() {
@@ -506,17 +504,19 @@ public class Character : GameBehaviour {
         facingRight = true;
 
         timerPause = false;
-        TryGetCapability("victory", (CharacterCapability capability) => {
+        WithCapability("victory", (CharacterCapability capability) => {
             ((CharacterCapabilityVictory)capability).victoryLock = false;
         });
     }
 
     // ========================================================================
 
+    [HideInInspector]
     public Vector2 positionMin = new Vector2(
         -Mathf.Infinity,
         -Mathf.Infinity
     );
+    [HideInInspector]
     public Vector2 positionMax = new Vector2(
         Mathf.Infinity,
         Mathf.Infinity
@@ -540,12 +540,10 @@ public class Character : GameBehaviour {
     // ========================================================================
 
     [HideInInspector]
-    public float horizontalInputLockTimer = 0;
-    public bool controlLockManual = false;
     public bool controlLock { get { return (
-        controlLockManual ||
         Time.timeScale == 0 ||
         InStateGroup("noControl") ||
+        HasEffect("controlLock") ||
         !isLocalPlayer
     ); }}
 
@@ -586,14 +584,14 @@ public class Character : GameBehaviour {
     );
 
     // 3D-Ready: NO
-    public void Hurt(bool moveLeft = true, bool spikes = false) {
+    public void Hurt(bool moveLeft = true, string source = "") {
         if (isInvulnerable) return;
         
-        if (shield != null) {
+        if (HasEffect("shield")) {
             SFX.Play(audioSource, "sfxHurt");
-            RemoveShield();
+            RemoveEffect("shield");
         } else if (rings == 0) {
-            if (spikes) SFX.Play(audioSource, "sfxDieSpikes");
+            if (source == "spikes") SFX.Play(audioSource, "sfxDieSpikes");
             else SFX.Play(audioSource, "sfxDie");
             stateCurrent = "dying";
             return;
@@ -615,37 +613,16 @@ public class Character : GameBehaviour {
     // ========================================================================
 
     [HideInInspector]
-    public Transform groundModeGroup;
-    [HideInInspector]
-    public Transform rollingModeGroup;
-    [HideInInspector]
-    public Transform airModeGroup;
-    [HideInInspector]
-    public Transform rollingAirModeGroup;
-    [HideInInspector]
-    public Collider rollingAirModeCollider;
-    [HideInInspector]
-    public Collider airModeCollider;
-
-    [HideInInspector]
     HUD hud;
 
     // ========================================================================
     public virtual void Start() {
-        rollingModeGroup.gameObject.SetActive(false);
-        groundModeGroup.gameObject.SetActive(false);
-        rollingAirModeGroup.gameObject.SetActive(false);
-        airModeGroup.gameObject.SetActive(false);
-        
-        foreach (CharacterCapability capability in capabilities)
-            capability.StateInit(stateCurrent, "");
-
         if (isLocalPlayer) {
             characterCamera = Instantiate(cameraPrefab).GetComponent<CharacterCamera>();
             characterCamera.character = this;
             characterCamera.UpdateDelta(0);
 
-            ObjTitleCard titleCard = ObjTitleCard.Make(this);
+            // ObjTitleCard titleCard = ObjTitleCard.Make(this);
 
             hud = Instantiate(hudPrefab).GetComponent<HUD>();
             hud.character = this;
@@ -662,12 +639,13 @@ public class Character : GameBehaviour {
 
     // ========================================================================
 
+    [HideInInspector]
     public bool isGhost = false;
+    [HideInInspector]
     public bool isLocalPlayer = true;
 
     public override void UpdateDelta(float deltaTime) {
         UpdateEffects(deltaTime);
-        stats.physicsScale = physicsScale;
 
         if (!isLocalPlayer) {
             isGhost = true;
@@ -681,7 +659,7 @@ public class Character : GameBehaviour {
             if (!isHarmful) destroyEnemyChain = 0;
 
             foreach (CharacterCapability capability in capabilities) {
-                capability.Update(deltaTime);
+                capability.CharUpdate(deltaTime);
                 input.enabled = !controlLock;
             }
 
@@ -723,32 +701,32 @@ public class Character : GameBehaviour {
 
     public void OnCollisionEnter(Collision collision) {
         foreach (CharacterCapability capability in capabilities)
-            capability.OnCollisionEnter(collision);
+            capability.OnCharCollisionEnter(collision);
     }
 
     public void OnCollisionStay(Collision collision) {
         foreach (CharacterCapability capability in capabilities)
-            capability.OnCollisionStay(collision);
+            capability.OnCharCollisionStay(collision);
     }
 
     public void OnCollisionExit(Collision collision) {
         foreach (CharacterCapability capability in capabilities)
-            capability.OnCollisionExit(collision);
+            capability.OnCharCollisionExit(collision);
     }
 
     public void OnTriggerEnter(Collider other) {
         foreach (CharacterCapability capability in capabilities)
-            capability.OnTriggerEnter(other);
+            capability.OnCharTriggerEnter(other);
     }
 
     public void OnTriggerStay(Collider other) {
         foreach (CharacterCapability capability in capabilities)
-            capability.OnTriggerStay(other);
+            capability.OnCharTriggerStay(other);
     }
 
     public void OnTriggerExit(Collider other) {
         foreach (CharacterCapability capability in capabilities)
-            capability.OnTriggerExit(other);
+            capability.OnCharTriggerExit(other);
     }
 
     // ========================================================================
@@ -780,26 +758,14 @@ public class Character : GameBehaviour {
         spriteContainer = Instantiate(spriteContainerPrefab).transform;
         sprite = spriteContainer.Find("Sprite");//.GetComponent<SpriteRenderer>();
         spriteAnimator = spriteContainer.Find("Sprite").GetComponent<Animator>();
-
-        groundModeGroup = transform.Find("Ground Mode");
-        rollingModeGroup = transform.Find("Rolling Mode");
-        airModeGroup = transform.Find("Air Mode");
-        rollingAirModeGroup = transform.Find("Rolling Air Mode");
-
-        rollingAirModeCollider = rollingAirModeGroup.Find("Collider").GetComponent<Collider>();
-        airModeCollider = airModeGroup.Find("Collider").GetComponent<Collider>();
     }
 
     public InputCustom input;
+    [HideInInspector]
     public int playerId = -1;
 
     public override void Awake() {
         base.Awake();
-
-        stats.Add(new Dictionary<string, object>() {
-            ["terminalSpeed"] = 16.5F,
-            ["smoothRotationThreshold"] = 45
-        });
 
         LevelManager.current.characters.Add(this);
         playerId = LevelManager.current.GetFreePlayerId();

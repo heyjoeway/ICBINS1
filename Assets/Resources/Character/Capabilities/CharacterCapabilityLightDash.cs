@@ -2,20 +2,16 @@ using UnityEngine;
 using System.Collections.Generic;
 
 public class CharacterCapabilityLightDash : CharacterCapability {
+    public float lightDashSpeed = 9F;
+
     float failsafeTimer;
-
-    public CharacterCapabilityLightDash(Character character) : base(character) { }
-
     ObjRing target;
     CharacterEffect afterImageEffect;
 
     public override void Init() {
         name = "lightDash";
         character.AddStateGroup("harmful", "lightDash");
-
-        character.stats.Add(new Dictionary<string, object>() {
-            ["lightDashSpeed"] = 9F
-        });
+        character.AddStateGroup("airCollision", "lightDash");
     }
 
     public override void StateInit(string stateName, string prevStateName) {
@@ -24,7 +20,6 @@ public class CharacterCapabilityLightDash : CharacterCapability {
         failsafeTimer = 5F;
         SFX.Play(character.audioSource, "sfxLightDash");
         character.velocity = Vector3.zero;
-        character.modeGroupCurrent = character.airModeGroup;
         afterImageEffect = new CharacterEffect(character, "afterImage");
         character.effects.Add(afterImageEffect);
         character.AnimatorPlay("Light Dash");
@@ -38,7 +33,7 @@ public class CharacterCapabilityLightDash : CharacterCapability {
 
     Vector3 positionPrev;
 
-    public override void Update(float deltaTime) {
+    public override void CharUpdate(float deltaTime) {
         if (character.stateCurrent != "lightDash") {
             if (!character.input.GetButtonDownPreventRepeat("Primary")) return;
             target = FindClosestTarget(true);
@@ -51,8 +46,8 @@ public class CharacterCapabilityLightDash : CharacterCapability {
             if (target != null) character.stateCurrent = "lightDash";
             else {
                 character.velocity = (character.position - positionPrev) * 60F * 0.75F;
-                if (character.velocity.magnitude > character.stats.Get("terminalSpeed"))
-                    character.velocity = character.stats.Get("terminalSpeed") * character.velocity.normalized;
+                if (character.velocity.magnitude > character.terminalSpeed * character.physicsScale)
+                    character.velocity = character.terminalSpeed * character.physicsScale * character.velocity.normalized;
                     
                 character.stateCurrent = "air";
                 character.AnimatorPlay("Fast");
@@ -64,7 +59,7 @@ public class CharacterCapabilityLightDash : CharacterCapability {
             Vector3 newPos = Vector3.MoveTowards(
                 character.position,
                 target.transform.position,
-                character.stats.Get("lightDashSpeed") * deltaTime * 2
+                lightDashSpeed * character.physicsScale * deltaTime * 2
             );
             newPos.z = character.position.z;
             character.position = newPos;

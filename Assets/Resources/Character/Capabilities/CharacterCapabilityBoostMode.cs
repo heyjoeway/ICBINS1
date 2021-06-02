@@ -2,16 +2,13 @@ using UnityEngine;
 using System.Collections.Generic;
 using System;
 
+[RequireComponent(typeof(CharacterCapabilityGround))]
 public class CharacterCapabilityBoostMode : CharacterCapability {
-    public CharacterCapabilityBoostMode(Character character) : base(character) { }
+    public float boostModeTime = 3F;
+    public float boostModeLowerThreshold = 6F;
+    public float boostModeUpperThreshold = 10F;
 
-    public override void Init() {
-        character.stats.Add(new Dictionary<string, object>() {
-            ["boostModeTime"] = 3F,
-            ["boostModeLowerThreshold"] = 6F,
-            ["boostModeUpperThreshold"] = 10F
-        });
-    }
+    // ========================================================================
 
     CharacterEffect afterImageEffect = null;
     CharacterEffect speedUpEffect = null;
@@ -46,21 +43,23 @@ public class CharacterCapabilityBoostMode : CharacterCapability {
     }
 
     float boostModeTimer = 0;
-    public override void Update(float deltaTime) {
+    public override void CharUpdate(float deltaTime) {
         if (!character.InStateGroup("ground")) return;
-        if (Mathf.Abs(character.groundSpeed) < character.stats.Get("boostModeLowerThreshold"))
+        if (Mathf.Abs(character.groundSpeed) < boostModeLowerThreshold * character.physicsScale)
             ExitBoostMode();
 
         if (character.HasEffect("boosting"))
             EnterBoostMode(false);
 
-        // if (Mathf.Abs(character.groundSpeed) > character.stats.Get("boostModeUpperThreshold"))
-            // EnterBoostMode();
+        float topSpeedNormal = 0;
+        character.WithCapability("ground", (CharacterCapability capability) => {
+            topSpeedNormal = ((CharacterCapabilityGround)capability).topSpeedNormal;
+        });
 
-        if (Mathf.Abs(character.groundSpeed) >= character.stats.Get("topSpeedNormal")) {
+        if (Mathf.Abs(character.groundSpeed) >= topSpeedNormal * character.physicsScale) {
             boostModeTimer += deltaTime;
 
-            if (boostModeTimer >= character.stats.GetRaw("boostModeTime"))
+            if (boostModeTimer >= boostModeTime)
                 EnterBoostMode();
         } else boostModeTimer = 0;
     }

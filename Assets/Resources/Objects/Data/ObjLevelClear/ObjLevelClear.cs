@@ -61,7 +61,7 @@ public class ObjLevelClear : MonoBehaviour {
 
         if (GlobalOptions.Get("levelTransitions") != "OFF") {
             character.timerPause = false;
-            character.TryGetCapability("victory", (CharacterCapability capability) => {
+            character.WithCapability("victory", (CharacterCapability capability) => {
                 ((CharacterCapabilityVictory)capability).victoryLock = false;
             });
             character.positionMax = Mathf.Infinity * Vector2.one;
@@ -116,7 +116,7 @@ public class ObjLevelClear : MonoBehaviour {
                     
                 actTextComponent.text = character.currentLevel.act.ToString();
 
-                character.TryGetCapability("victory", (CharacterCapability capability) => {
+                character.WithCapability("victory", (CharacterCapability capability) => {
                     ((CharacterCapabilityVictory)capability).victoryLock = true;
                 });
                 character.effects.Clear();

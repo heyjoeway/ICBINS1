@@ -1,8 +1,9 @@
 using UnityEngine;
 
+[RequireComponent(typeof(CharacterCapabilityGround))]
+[RequireComponent(typeof(CharacterCapabilityAir))]
+[RequireComponent(typeof(CharacterCapabilityRolling))]
 public class CharacterCapabilityRollingAir : CharacterCapability {
-    public CharacterCapabilityRollingAir(Character character) : base(character) { }
-
     public override void Init() {
         name = "rollingAir";
         character.AddStateGroup("airCollision", "rollingAir");
@@ -11,14 +12,17 @@ public class CharacterCapabilityRollingAir : CharacterCapability {
         character.AddStateGroup("rolling", "rollingAir");
     }
 
-    public override void StateInit(string stateName, string prevStateName) {
+    public override void StateInit(string stateName, string prevStateName) {       
         if (!character.InStateGroup("air") || !character.InStateGroup("rolling")) return;
-        character.modeGroupCurrent = character.rollingAirModeGroup;
-        
-        character.spriteAnimatorSpeed = 1 + ((Mathf.Abs(character.groundSpeed) / character.stats.Get("topSpeedNormal")) * 2F);
+        float topSpeedNormal = 0;
+        character.WithCapability("ground", (CharacterCapability capability) => {
+            topSpeedNormal = ((CharacterCapabilityGround)capability).topSpeedNormal;
+        });
+
+        character.spriteAnimatorSpeed = 1 + ((Mathf.Abs(character.groundSpeed) / topSpeedNormal * character.physicsScale) * 2F);
     }
 
-    public override void Update(float deltaTime) {
+    public override void CharUpdate(float deltaTime) {
         if (character.InStateGroup("air") && character.InStateGroup("rolling")) {
             if (!character.spriteAnimator.GetCurrentAnimatorStateInfo(0).IsTag("Roll"))
                 character.AnimatorPlay("Roll");

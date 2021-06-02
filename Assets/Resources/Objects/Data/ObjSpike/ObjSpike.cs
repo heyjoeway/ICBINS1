@@ -67,6 +67,6 @@ public class ObjSpike : MonoBehaviour {
     }
 
     public void DoAction(Character character) {
-        character.Hurt(character.position.x <= transform.position.x, true);
+        character.Hurt(character.position.x <= transform.position.x, "spikes");
     }
 }

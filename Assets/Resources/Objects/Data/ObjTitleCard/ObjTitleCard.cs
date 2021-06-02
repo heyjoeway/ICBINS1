@@ -4,8 +4,6 @@ using UnityEngine;
 using UnityEngine.UI;
 
 public class ObjTitleCard : MonoBehaviour {
-    bool debug = false; // Finishes card instantly
-
     public static ObjTitleCard Make(Character character = null, bool fadeIn = true) {
         ObjTitleCard titleCard = Instantiate(
             Constants.Get<GameObject>("prefabTitleCard"),
@@ -42,16 +40,12 @@ public class ObjTitleCard : MonoBehaviour {
         zoneTextComponent = transform.Find("Zone Name").GetComponent<Text>();
         canvas = GetComponent<Canvas>();
         animator = GetComponent<Animator>();
-
-        if (debug) {
-            Destroy(screenFade.gameObject);
-            StartTime();
-            Destroy(gameObject);
-            return;
-        }
     }
 
     public void Init() {
+        if (LevelManager.current.characters.Count == 1)
+            Time.timeScale = 0;
+
         if (character.characterCamera != null)
             canvas.worldCamera = character.characterCamera.camera;
 

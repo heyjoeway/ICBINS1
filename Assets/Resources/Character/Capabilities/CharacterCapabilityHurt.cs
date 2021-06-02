@@ -2,24 +2,19 @@ using UnityEngine;
 using System.Collections.Generic;
 
 public class CharacterCapabilityHurt : CharacterCapability {
-    float failsafeTimer;
+    public float hurtGravity = -0.1875F;
 
-    public CharacterCapabilityHurt(Character character) : base(character) { }
+    float failsafeTimer;
 
     public override void Init() {
         name = "hurt";
         character.AddStateGroup("airCollision", "hurt");
         character.AddStateGroup("ignore", "hurt");
-
-        character.stats.Add(new Dictionary<string, object>() {
-            ["hurtGravity"] = -0.1875F
-        });
     }
 
     public override void StateInit(string stateName, string prevStateName) {
         if (character.stateCurrent != name) return;
         character.opacity = 1;
-        character.modeGroupCurrent = character.airModeGroup;
         character.forwardAngle = 0;
         failsafeTimer = 5F;
     }
@@ -30,7 +25,7 @@ public class CharacterCapabilityHurt : CharacterCapability {
         character.effects.Add(new CharacterEffect(character, "invulnerable", 2));
     }
 
-    public override void Update(float deltaTime) {
+    public override void CharUpdate(float deltaTime) {
         if (character.stateCurrent != name) {
             character.opacity = 1;
 
@@ -45,7 +40,7 @@ public class CharacterCapabilityHurt : CharacterCapability {
 
         character.velocity += new Vector3(
             0,
-            character.stats.Get("hurtGravity"),
+            hurtGravity * character.physicsScale,
             0
         ) * deltaTime * 60F;
 

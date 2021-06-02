@@ -1,28 +1,23 @@
 using UnityEngine;
 using System.Collections.Generic;
 
+[RequireComponent(typeof(CharacterCapabilityGround))]
 public class CharacterCapabilityPeelOut : CharacterCapability {
-    string[] buttonsPeelOut = new string[] { "Secondary", "Tertiary" };
-
-    float peelOutTimer;
+    float peelOutSpeed = 12F;
+    public string[] buttonsPeelOut = new string[] { "Secondary", "Tertiary" };
 
     // ========================================================================
 
+    float peelOutTimer;
     Transform dustLocation;
     GameObject dust = null;
 
     // ========================================================================
 
-    public CharacterCapabilityPeelOut(Character character) : base(character) { }
-
     public override void Init() {
         name = "peelOut";
         character.AddStateGroup("noJump", "spindash");
         character.AddStateGroup("ground", "spindash");
-
-        character.stats.Add(new Dictionary<string, object>() {
-            ["peelOutSpeed"] = 12F
-        });
     }
 
     public override void StateInit(string stateName, string prevStateName) {
@@ -30,7 +25,6 @@ public class CharacterCapabilityPeelOut : CharacterCapability {
 
         peelOutTimer = 0.5F;
         SFX.Play(character.audioSource, "sfxPeelOutCharge");
-        character.modeGroupCurrent = character.groundModeGroup;
     }
 
     public override void StateDeinit(string stateName, string nextStateName) {
@@ -39,7 +33,7 @@ public class CharacterCapabilityPeelOut : CharacterCapability {
     }
 
     // See: https://info.sonicretro.org/SPG:Special_Abilities#Spindash_.28Sonic_2.2C_3.2C_.26_K.29
-    public override void Update(float deltaTime) {
+    public override void CharUpdate(float deltaTime) {
         if (character.stateCurrent == "ground") {
             // Switches the character to spindash state if connditions are met:
             // - Pressing spindash key combo
@@ -70,7 +64,7 @@ public class CharacterCapabilityPeelOut : CharacterCapability {
     // 3D-Ready: YES
     void SpindashRelease() {
         if (peelOutTimer <= 0) {
-            character.groundSpeed = character.stats.Get("peelOutSpeed") * (character.flipX ? -1 : 1);
+            character.groundSpeed = peelOutSpeed * character.physicsScale * (character.flipX ? -1 : 1);
             character.groundSpeedPrev = character.groundSpeed; // Hack for breakable walls
             if (character.characterCamera != null)
                 character.characterCamera.lagTimer = 0.26667F;
@@ -85,12 +79,17 @@ public class CharacterCapabilityPeelOut : CharacterCapability {
         character.flipX = !character.facingRight;
         character.spriteContainer.transform.eulerAngles = character.GetSpriteRotation(deltaTime);
 
+        float topSpeedNormal = 0;
+        character.WithCapability("ground", (CharacterCapability capability) => {
+            topSpeedNormal = ((CharacterCapabilityGround)capability).topSpeedNormal;
+        });
+
         float runSpeed = (1F - (peelOutTimer / 0.5F)) * 12F;
-        character.spriteAnimatorSpeed = runSpeed / character.stats.Get("topSpeedNormal");
+        character.spriteAnimatorSpeed = runSpeed / topSpeedNormal * character.physicsScale;
 
         if (runSpeed < 6F) {
             character.AnimatorPlay("Walk");
-            character.spriteAnimatorSpeed = 1 + (runSpeed / character.stats.Get("topSpeedNormal"));
+            character.spriteAnimatorSpeed = 1 + (runSpeed / topSpeedNormal * character.physicsScale);
         } else if (runSpeed >= 12F)
             character.AnimatorPlay("Fast");
         else character.AnimatorPlay("Run");

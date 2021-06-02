@@ -2,12 +2,11 @@ using UnityEngine;
 using System.Collections.Generic;
 
 public class CharacterCapabilityJump : CharacterCapability {
-    string[] buttonsJump = new string[] { "Secondary", "Tertiary" };
-    string[] buttonsJumpHold = new string[] { "Primary", "Secondary", "Tertiary" };
+    public float jumpSpeed = 6.5F;    
+    public string[] buttonsJump = new string[] { "Secondary", "Tertiary" };
+    public string[] buttonsJumpHold = new string[] { "Primary", "Secondary", "Tertiary" };
 
     // ========================================================================
-
-    public CharacterCapabilityJump(Character character) : base(character) { }
 
     public override void Init() {
         name = "jump";
@@ -16,13 +15,9 @@ public class CharacterCapabilityJump : CharacterCapability {
         character.AddStateGroup("rolling", "jump");
         character.AddStateGroup("jump", "jump");
         character.AddStateGroup("harmful", "jump");
-
-        character.stats.Add(new Dictionary<string, object>() {
-            ["jumpSpeed"] = 6.5F
-        });
     }
 
-    public override void Update(float deltaTime) {
+    public override void CharUpdate(float deltaTime) {
         if (character.InStateGroup("ground")) {
             UpdateGroundJump();
             return;
@@ -40,7 +35,7 @@ public class CharacterCapabilityJump : CharacterCapability {
         if (character.InStateGroup("noJump")) return;
         if (!character.input.GetButtonsDownPreventRepeat(buttonsJump)) return;
 
-        character.velocity += transform.up * character.stats.Get("jumpSpeed");
+        character.velocity += transform.up * jumpSpeed * character.physicsScale;
         SFX.PlayOneShot(character.audioSource, "sfxJump");
         character.stateCurrent = "jump";
     }

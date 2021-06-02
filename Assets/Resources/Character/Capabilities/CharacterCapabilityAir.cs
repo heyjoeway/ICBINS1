@@ -3,51 +3,58 @@ using System.Collections.Generic;
 using System;
 
 public class CharacterCapabilityAir : CharacterCapability {
-    public CharacterCapabilityAir(Character character) : base(character) { }
+    public Transform airModeGroup;
+    public float accelerationAirNormal = 0.09375F;
+    public float accelerationAirSpeedUp = 0.1875F;
+    public float decelerationAirNormal = 0.09375F;
+    public float decelerationAirSpeedUp = 0.1875F;
+
+    public float airDragThreshold = 4F;
+    public float gravityNormal = -0.21875F;  
+    public float frictionAirNormal = 0;
+    public float frictionAirSpeedUp = 0;
+
+    // ========================================================================
+
+    [HideInInspector]
+    public Collider airModeCollider;
+
+    float accelerationAir => (
+        character.HasEffect("speedUp") ?
+            accelerationAirSpeedUp :
+            accelerationAirNormal
+    );
+    float decelerationAir => (
+        character.HasEffect("speedUp") ?
+            decelerationAirSpeedUp :
+            decelerationAirNormal
+    );
+    float frictionAir => (
+        character.HasEffect("speedUp") ?
+            frictionAirSpeedUp :
+            frictionAirNormal
+    );
+
+    // ========================================================================
 
     public override void Init() {
         name = "air";
         character.AddStateGroup("air", "air");
         character.AddStateGroup("airCollision", "air");
-
-        character.stats.Add(new Dictionary<string, object>() {
-            ["accelerationAirNormal"] = 0.09375F,
-            ["accelerationAirSpeedUp"] = 0.1875F,
-            ["accelerationAir"] = (Func<string>)(
-                () => character.HasEffect("speedUp") ?
-                    "accelerationAirSpeedUp" :
-                    "accelerationAirNormal"
-            ),
-            ["decelerationAirNormal"] = 0.09375F,
-            ["decelerationAirSpeedUp"] = 0.1875F,
-            ["decelerationAir"] = (Func<string>)(
-                () => character.HasEffect("speedUp") ?
-                    "decelerationAirSpeedUp" :
-                    "decelerationAirNormal"
-            ),
-            ["airDragThreshold"] = 4F,
-            ["gravityNormal"] = -0.21875F,  
-            ["frictionAirNormal"] = 0,
-            ["frictionAirSpeedUp"] = 0,
-            ["frictionAir"] = (Func<string>)(() => (
-                character.HasEffect("speedUp") ?
-                    "frictionAirSpeedUp" :
-                    "frictionAirNormal"
-            )),          
-        });
+        airModeCollider = airModeGroup.Find("Collider").GetComponent<Collider>();
     }
 
     public override void StateInit(string stateName, string prevStateName) {
         if (!character.InStateGroup("airCollision")) return;
-        UpdateAirTopSoild();
+        UpdateAirMask();
+        character.modeGroupCurrent = airModeGroup;
         character.groundedDetectorCurrent = null;
         if (character.InStateGroup("rolling")) return;
-        character.modeGroupCurrent = character.airModeGroup;
     }
 
-    public override void Update(float deltaTime) {
+    public override void CharUpdate(float deltaTime) {
         if (!character.InStateGroup("airCollision")) return;
-        UpdateAirTopSoild();
+        UpdateAirMask();
         if (!character.InStateGroup("air")) return;
         UpdateAirMove(deltaTime);
         UpdateAirRotation(deltaTime);
@@ -58,14 +65,22 @@ public class CharacterCapabilityAir : CharacterCapability {
     }
 
     // 3D-Ready: YES
-    void UpdateAirTopSoild() {
+    void UpdateAirMask() {
+        string layerName;
+        
         if (character.velocity.y > 0) {
-            character.rollingAirModeCollider.gameObject.layer = LayerMask.NameToLayer("Player - Rolling and Ignore Top Solid");
-            character.airModeCollider.gameObject.layer = LayerMask.NameToLayer("Player - Ignore Top Solid");
+            if (character.InStateGroup("rolling"))
+                layerName = "Player - Rolling and Ignore Top Solid";
+            else
+                layerName = "Player - Ignore Top Solid";
         } else {
-            character.rollingAirModeCollider.gameObject.layer = LayerMask.NameToLayer("Player - Rolling");
-            character.airModeCollider.gameObject.layer = LayerMask.NameToLayer("Player - Default");
+            if (character.InStateGroup("rolling"))
+                layerName = "Player - Rolling";
+            else
+                layerName = "Player - Default";
         }
+
+        airModeCollider.gameObject.layer = LayerMask.NameToLayer(layerName);
     }
 
     // See: https://info.sonicretro.org/SPG:Jumping
@@ -78,22 +93,27 @@ public class CharacterCapabilityAir : CharacterCapability {
         if (character.input.GetAxisPositive("Horizontal")) inputDir = 1;
         if (character.input.GetAxisNegative("Horizontal")) inputDir = -1;
 
+        float topSpeed = 0;
+        character.WithCapability("ground", (CharacterCapability capability) => {
+            topSpeed = ((CharacterCapabilityGround)capability).topSpeed;
+        });
+
         // Acceleration
         if (inputDir == 1) {
             if (velocityTemp.x < 0) {
-                accelerationMagnitude = character.stats.Get("decelerationAir");
-            } else if (velocityTemp.x < character.stats.Get("topSpeed")) {
-                accelerationMagnitude = character.stats.Get("accelerationAir");
+                accelerationMagnitude = decelerationAir * character.physicsScale;
+            } else if (velocityTemp.x < topSpeed * character.physicsScale) {
+                accelerationMagnitude = accelerationAir * character.physicsScale;
             }
         } else if (inputDir == -1) {
             if (velocityTemp.x > 0) {
-                accelerationMagnitude = -character.stats.Get("decelerationAir");
-            } else if (velocityTemp.x > -character.stats.Get("topSpeed")) {
-                accelerationMagnitude = -character.stats.Get("accelerationAir");
+                accelerationMagnitude = -decelerationAir * character.physicsScale;
+            } else if (velocityTemp.x > -topSpeed * character.physicsScale) {
+                accelerationMagnitude = -accelerationAir * character.physicsScale;
             }
         } else {
             if (Mathf.Abs(velocityTemp.x) > 0.05F * character.physicsScale) {
-                accelerationMagnitude = -Mathf.Sign(velocityTemp.x) * character.stats.Get("frictionAir");
+                accelerationMagnitude = -Mathf.Sign(velocityTemp.x) * frictionAir * character.physicsScale;
             } else {
                 velocityTemp.x = 0;
                 accelerationMagnitude = 0;
@@ -108,7 +128,7 @@ public class CharacterCapabilityAir : CharacterCapability {
         velocityTemp += acceleration;
 
         // Air Drag
-        if ((velocityTemp.y > 0 ) && (velocityTemp.y < character.stats.Get("airDragThreshold")))
+        if ((velocityTemp.y > 0 ) && (velocityTemp.y < airDragThreshold * character.physicsScale))
             velocityTemp.x -= (
                 ((int)(velocityTemp.x / 0.125F)) / 256F
             ) * (deltaTime * 60F);
@@ -128,7 +148,7 @@ public class CharacterCapabilityAir : CharacterCapability {
     
     // 3D-Ready: Yes
     void UpdateAirGravity(float deltaTime) {
-        character.velocity += Vector3.up * character.stats.Get("gravityNormal") * deltaTime * 60F;
+        character.velocity += Vector3.up * gravityNormal * character.physicsScale * deltaTime * 60F;
     }
 
     // Handle air collisions
@@ -137,14 +157,13 @@ public class CharacterCapabilityAir : CharacterCapability {
     const float angleDistSteep = 45F;
     const float angleDistWall = 90F;
 
-    public override void OnCollisionStay(Collision collision) {
-        OnCollisionEnter(collision);
+    public override void OnCharCollisionStay(Collision collision) {
+        OnCharCollisionEnter(collision);
     }
 
     // Ready for hell?
     // Have fun
-    // 3D-Ready: ABSO-FUCKING-LUTELY NOT
-    public override void OnCollisionEnter(Collision collision) {
+    public override void OnCharCollisionEnter(Collision collision) {
         if (!character.InStateGroup("airCollision")) return;
 
         // Set ground speed or ignore collision based on angle
@@ -246,7 +265,7 @@ public class CharacterCapabilityAir : CharacterCapability {
 
         // Set state
         // -------------------------
-        character.horizontalInputLockTimer = 0;
+        character.RemoveEffect("horizontalInputLock");
         character.stateCurrent = "ground";
         character.spriteContainer.transform.eulerAngles = transform.eulerAngles;
     }

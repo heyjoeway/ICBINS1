@@ -58,11 +58,7 @@ public class ObjMonitorContents : MonoBehaviour {
                 SFX.Play(audioSource, "sfxRingMonitor");
                 break;
             case ContentsType.Shield:
-                SFX.Play(audioSource, "sfxShieldNormal");
-                recipient.shield = Instantiate(
-                    Constants.Get<GameObject>("prefabShieldNormal")
-                ).GetComponent<ObjShield>();
-                recipient.shield.character = recipient;
+                recipient.effects.Add(new CharacterEffectShield(recipient));
                 break;
             case ContentsType.Life:
                 recipient.lives++;
@@ -76,7 +72,5 @@ public class ObjMonitorContents : MonoBehaviour {
         }
     }
 
-    public void Destroy() {
-        Destroy(gameObject);
-    }
+    public void Destroy() { Destroy(gameObject); }
 }

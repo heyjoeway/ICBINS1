@@ -2,8 +2,26 @@ using UnityEngine;
 using System.Collections.Generic;
 using System;
 
+[RequireComponent(typeof(CharacterCapabilityGround))]
 public class CharacterCapabilityRolling : CharacterCapability {
-    public CharacterCapabilityRolling(Character character) : base(character) { }
+    public float frictionRollNormal =  0.0234375F;
+    public float frictionRollSpeedUp =  0.046875F;
+    public float decelerationRoll =  0.125F;
+    public float slopeFactorRollUp =  0.078125F;
+    public float slopeFactorRollDown =  0.3125F;
+    public float rollThreshold =  1.03125F;
+    public float unrollThreshold = .5F;
+    public float rollLockBoostSpeed = 3F;
+    public bool rollRotate = false;
+    public Transform rollingModeGroup;
+
+    // ========================================================================
+
+    public float frictionRoll => (
+        character.HasEffect("speedUp") ?
+            frictionRollSpeedUp :
+            frictionRollNormal
+    );
 
     public override void Init() {
         name = "rolling";
@@ -15,23 +33,6 @@ public class CharacterCapabilityRolling : CharacterCapability {
         character.AddStateGroup("ground", "rollLock");
         character.AddStateGroup("rolling", "rollLock");
         character.AddStateGroup("noJump", "rollLock");
-
-        character.stats.Add(new Dictionary<string, object>() {
-            ["frictionRollNormal"] =  0.0234375F,
-            ["frictionRollSpeedUp"] =  0.046875F,
-            ["decelerationRoll"] =  0.125F,
-            ["slopeFactorRollUp"] =  0.078125F,
-            ["slopeFactorRollDown"] =  0.3125F,
-            ["rollThreshold"] =  1.03125F,
-            ["unrollThreshold"] = .5F,
-            ["rollLockBoostSpeed"] = 3F,
-            ["frictionRoll"] = (Func<string>)(() =>
-                character.HasEffect("speedUp") ?
-                    "frictionRollSpeedUp" :
-                    "frictionRollNormal"
-            ),
-            ["rollRotate"] = false
-        });
     }
 
     public override void StateInit(string stateName, string prevStateName) {
@@ -40,14 +41,14 @@ public class CharacterCapabilityRolling : CharacterCapability {
             character.InStateGroup("ground")
         )) return;
 
-        character.modeGroupCurrent = character.rollingModeGroup;
+        character.modeGroupCurrent = rollingModeGroup;
     }
 
-    public override void Update(float deltaTime) {
+    public override void CharUpdate(float deltaTime) {
         if (character.stateCurrent == "ground") {
             if (character.pressingLeft || character.pressingRight) return;
             if (!character.input.GetAxisNegative("Vertical")) return;
-            if (Mathf.Abs(character.groundSpeed) < character.stats.Get("rollThreshold")) return;
+            if (Mathf.Abs(character.groundSpeed) < rollThreshold * character.physicsScale) return;
             character.stateCurrent = "rolling";
             SFX.PlayOneShot(character.audioSource, "sfxRoll");
         }
@@ -65,7 +66,7 @@ public class CharacterCapabilityRolling : CharacterCapability {
     void UpdateTerminalSpeed() {
         character.groundSpeed = Mathf.Min(
             Mathf.Abs(character.groundSpeed),
-            character.stats.Get("terminalSpeed")
+            character.terminalSpeed * character.physicsScale
         ) * Mathf.Sign(character.groundSpeed);
     }
 
@@ -78,28 +79,34 @@ public class CharacterCapabilityRolling : CharacterCapability {
 
         if (character.input.GetAxisNegative("Horizontal")) {
             if (character.groundSpeed > 0)
-                accelerationMagnitude = -character.stats.Get("decelerationRoll");
+                accelerationMagnitude = -decelerationRoll * character.physicsScale;
         } else if (character.input.GetAxisPositive("Horizontal")) {
             if (character.groundSpeed < 0)
-                accelerationMagnitude = character.stats.Get("decelerationRoll");
+                accelerationMagnitude = decelerationRoll * character.physicsScale;
         }
 
         if (Mathf.Abs(character.groundSpeed) > 0.05F * character.physicsScale)
             accelerationMagnitude -= (
                 Mathf.Sign(character.groundSpeed) *
-                character.stats.Get("frictionRoll")
+                frictionRoll * character.physicsScale
             );
 
+        bool movingUphill = (
+            Mathf.Sign(character.groundSpeed) ==
+            Mathf.Sign(Mathf.Sin(character.forwardAngle * Mathf.Deg2Rad))
+        );
+
+
         float slopeFactor = (
-            character.movingUphill ?
-                character.stats.Get("slopeFactorRollUp") :
-                character.stats.Get("slopeFactorRollDown")
+            movingUphill ?
+                slopeFactorRollUp * character.physicsScale :
+                slopeFactorRollDown * character.physicsScale
         );
         accelerationMagnitude -= slopeFactor * Mathf.Sin(character.forwardAngle * Mathf.Deg2Rad);
         character.groundSpeed += accelerationMagnitude * deltaTime * 60F;
 
         // Unroll / roll lock boost
-        if (Mathf.Abs(character.groundSpeed) < character.stats.Get("unrollThreshold")) {
+        if (Mathf.Abs(character.groundSpeed) < unrollThreshold * character.physicsScale) {
             if (character.stateCurrent == "rollLock") {
                 if ((character.forwardAngle < 270) && (character.forwardAngle > 180))
                     character.facingRight = true;
@@ -107,7 +114,7 @@ public class CharacterCapabilityRolling : CharacterCapability {
                     character.facingRight = false;
 
                 character.groundSpeed = (
-                    character.stats.Get("rollLockBoostSpeed") *
+                    rollLockBoostSpeed * character.physicsScale *
                     (character.facingRight ? 1 : -1)
                 );
             } else {
@@ -121,15 +128,21 @@ public class CharacterCapabilityRolling : CharacterCapability {
     void UpdateRollingAnim(float deltaTime) {
         if (!character.spriteAnimator.GetCurrentAnimatorStateInfo(0).IsTag("Roll"))
             character.AnimatorPlay("Roll");
+
+        float topSpeedNormal = 0;
+        character.WithCapability("ground", (CharacterCapability capability) => {
+            topSpeedNormal = ((CharacterCapabilityGround)capability).topSpeedNormal;
+        });
+
         character.spriteAnimatorSpeed = 1 + (
             (
                 Mathf.Abs(character.groundSpeed) /
-                character.stats.Get("topSpeedNormal")
+                topSpeedNormal * character.physicsScale
             ) * 2F
         );
         // ORDER MATTERS! GetSpriteRotation may depend on flipX for rotation-based flipping
         character.flipX = !character.facingRight;
-        if (character.stats.GetRaw("rollRotate") == 1)
+        if (rollRotate)
             character.spriteContainer.transform.eulerAngles = character.GetSpriteRotation(deltaTime);
         else
             character.spriteContainer.eulerAngles = Vector3.zero;

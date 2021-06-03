@@ -51,12 +51,7 @@ public class CharacterCapabilityBoostMode : CharacterCapability {
         if (character.HasEffect("boosting"))
             EnterBoostMode(false);
 
-        float topSpeedNormal = 0;
-        character.WithCapability("ground", (CharacterCapability capability) => {
-            topSpeedNormal = ((CharacterCapabilityGround)capability).topSpeedNormal;
-        });
-
-        if (Mathf.Abs(character.groundSpeed) >= topSpeedNormal * character.physicsScale) {
+        if (Mathf.Abs(character.groundSpeed) >= boostModeUpperThreshold * character.physicsScale) {
             boostModeTimer += deltaTime;
 
             if (boostModeTimer >= boostModeTime)

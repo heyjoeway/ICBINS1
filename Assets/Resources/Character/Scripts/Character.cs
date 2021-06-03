@@ -339,10 +339,16 @@ public class Character : GameBehaviour {
     [HideInInspector]
     public float spriteAnimatorSpeed;
 
-    public void AnimatorPlay(string stateName, float normalizedTime = float.NegativeInfinity) {
+    public void AnimatorPlay(string stateName, string ignoreIfTag = "", float normalizedTime = float.NegativeInfinity) {
+        if ((ignoreIfTag != "") && AnimatorIsTag(ignoreIfTag)) return;
+        
         spriteAnimatorStatePrev = spriteAnimatorState;
         spriteAnimator.Play(stateName, -1, normalizedTime);
         spriteAnimatorState = stateName;
+    }
+
+    public bool AnimatorIsTag(string tag) {
+        return spriteAnimator.GetCurrentAnimatorStateInfo(0).IsTag(tag);
     }
 
     // ========================================================================

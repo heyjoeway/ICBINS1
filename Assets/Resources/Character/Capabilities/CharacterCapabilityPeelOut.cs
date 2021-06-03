@@ -11,6 +11,7 @@ public class CharacterCapabilityPeelOut : CharacterCapability {
     float peelOutTimer;
     Transform dustLocation;
     GameObject dust = null;
+    CharacterCapabilityGround capabilityGround;
 
     // ========================================================================
 
@@ -18,6 +19,7 @@ public class CharacterCapabilityPeelOut : CharacterCapability {
         name = "peelOut";
         character.AddStateGroup("noJump", "spindash");
         character.AddStateGroup("ground", "spindash");
+        capabilityGround = (CharacterCapabilityGround)character.GetCapability("ground");
     }
 
     public override void StateInit(string stateName, string prevStateName) {
@@ -79,19 +81,7 @@ public class CharacterCapabilityPeelOut : CharacterCapability {
         character.flipX = !character.facingRight;
         character.spriteContainer.transform.eulerAngles = character.GetSpriteRotation(deltaTime);
 
-        float topSpeedNormal = 0;
-        character.WithCapability("ground", (CharacterCapability capability) => {
-            topSpeedNormal = ((CharacterCapabilityGround)capability).topSpeedNormal;
-        });
-
         float runSpeed = (1F - (peelOutTimer / 0.5F)) * 12F;
-        character.spriteAnimatorSpeed = runSpeed / topSpeedNormal * character.physicsScale;
-
-        if (runSpeed < 6F) {
-            character.AnimatorPlay("Walk");
-            character.spriteAnimatorSpeed = 1 + (runSpeed / topSpeedNormal * character.physicsScale);
-        } else if (runSpeed >= 12F)
-            character.AnimatorPlay("Fast");
-        else character.AnimatorPlay("Run");
+        capabilityGround.UpdateRunAnim(runSpeed);
     }
 }

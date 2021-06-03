@@ -51,9 +51,9 @@ MonoBehaviour:
   lagTimer: 0
   hBorderDistance: 8
   hMoveMax: 16
-  vMoveMaxGroundSlow: 16
-  vMoveMaxGroundFast: 16
-  vMoveMaxAir: 16
+  vMoveMaxGroundSlow: 999
+  vMoveMaxGroundFast: 999
+  vMoveMaxAir: 999
   vBorderDistanceAir: 32
   cameraZone: {fileID: 0}
 --- !u!20 &495726082896974522

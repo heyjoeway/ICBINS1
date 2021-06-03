@@ -88,14 +88,14 @@ public class ObjSpring : MonoBehaviour {
     void Start() {
         characterGroundedDetector = transform.Find("Object").GetComponent<CharacterGroundedDetector>();
 
-        switch(type) {
-            case SpringType.Yellow:
-                animator.Play("Yellow Normal");
-                break;
-            case SpringType.Red:
-                animator.Play("Red Normal");
-                break;
-        }
+        // switch(type) {
+        //     case SpringType.Yellow:
+        //         animator.Play("Yellow Normal");
+        //         break;
+        //     case SpringType.Red:
+        //         animator.Play("Red Normal");
+        //         break;
+        // }
     }
 
     public float springPower = 16F;
@@ -128,7 +128,7 @@ public class ObjSpring : MonoBehaviour {
         if (character != null) {
             if (!keepGrounded) {
                 character.stateCurrent = "air";
-                character.AnimatorPlay("Spring");
+                character.AnimatorPlay("Spring", "", 0);
                 character.spriteAnimatorSpeed = 1;
             } else character.GroundSpeedSync();
         }

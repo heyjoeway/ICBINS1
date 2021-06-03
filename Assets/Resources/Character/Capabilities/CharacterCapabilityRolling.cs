@@ -17,6 +17,8 @@ public class CharacterCapabilityRolling : CharacterCapability {
 
     // ========================================================================
 
+    CharacterCapabilityGround capabilityGround;
+
     public float frictionRoll => (
         character.HasEffect("speedUp") ?
             frictionRollSpeedUp :
@@ -33,6 +35,8 @@ public class CharacterCapabilityRolling : CharacterCapability {
         character.AddStateGroup("ground", "rollLock");
         character.AddStateGroup("rolling", "rollLock");
         character.AddStateGroup("noJump", "rollLock");
+
+        capabilityGround = (CharacterCapabilityGround)character.GetCapability("ground");
     }
 
     public override void StateInit(string stateName, string prevStateName) {
@@ -126,18 +130,12 @@ public class CharacterCapabilityRolling : CharacterCapability {
 
     // 3D-Ready: YES
     void UpdateRollingAnim(float deltaTime) {
-        if (!character.spriteAnimator.GetCurrentAnimatorStateInfo(0).IsTag("Roll"))
-            character.AnimatorPlay("Roll");
-
-        float topSpeedNormal = 0;
-        character.WithCapability("ground", (CharacterCapability capability) => {
-            topSpeedNormal = ((CharacterCapabilityGround)capability).topSpeedNormal;
-        });
+        character.AnimatorPlay("Roll", "Roll");
 
         character.spriteAnimatorSpeed = 1 + (
             (
                 Mathf.Abs(character.groundSpeed) /
-                topSpeedNormal * character.physicsScale
+                capabilityGround.topSpeedNormal * character.physicsScale
             ) * 2F
         );
         // ORDER MATTERS! GetSpriteRotation may depend on flipX for rotation-based flipping

@@ -24,8 +24,7 @@ public class CharacterCapabilityRollingAir : CharacterCapability {
 
     public override void CharUpdate(float deltaTime) {
         if (character.InStateGroup("air") && character.InStateGroup("rolling")) {
-            if (!character.spriteAnimator.GetCurrentAnimatorStateInfo(0).IsTag("Roll"))
-                character.AnimatorPlay("Roll");
+            character.AnimatorPlay("Roll", "Roll");
         }
         
         if (!character.InStateGroup("air") || !character.InStateGroup("rolling")) {

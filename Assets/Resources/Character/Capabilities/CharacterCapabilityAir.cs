@@ -14,8 +14,12 @@ public class CharacterCapabilityAir : CharacterCapability {
     public float frictionAirNormal = 0;
     public float frictionAirSpeedUp = 0;
 
-    // ========================================================================
+    public float topSpeedAirNormal = 6F;
+    public float topSpeedAirSpeedUp = 12F;
+    public bool animAirCoolFall = false;
 
+    // ========================================================================
+    
     [HideInInspector]
     public Collider airModeCollider;
 
@@ -33,6 +37,11 @@ public class CharacterCapabilityAir : CharacterCapability {
         character.HasEffect("speedUp") ?
             frictionAirSpeedUp :
             frictionAirNormal
+    );
+    float topSpeedAir => (
+        character.HasEffect("speedUp") ?
+            topSpeedAirSpeedUp :
+            topSpeedAirNormal
     );
 
     // ========================================================================
@@ -93,22 +102,17 @@ public class CharacterCapabilityAir : CharacterCapability {
         if (character.input.GetAxisPositive("Horizontal")) inputDir = 1;
         if (character.input.GetAxisNegative("Horizontal")) inputDir = -1;
 
-        float topSpeed = 0;
-        character.WithCapability("ground", (CharacterCapability capability) => {
-            topSpeed = ((CharacterCapabilityGround)capability).topSpeed;
-        });
-
         // Acceleration
         if (inputDir == 1) {
             if (velocityTemp.x < 0) {
                 accelerationMagnitude = decelerationAir * character.physicsScale;
-            } else if (velocityTemp.x < topSpeed * character.physicsScale) {
+            } else if (velocityTemp.x < topSpeedAir * character.physicsScale) {
                 accelerationMagnitude = accelerationAir * character.physicsScale;
             }
         } else if (inputDir == -1) {
             if (velocityTemp.x > 0) {
                 accelerationMagnitude = -decelerationAir * character.physicsScale;
-            } else if (velocityTemp.x > -topSpeed * character.physicsScale) {
+            } else if (velocityTemp.x > -topSpeedAir * character.physicsScale) {
                 accelerationMagnitude = -accelerationAir * character.physicsScale;
             }
         } else {
@@ -278,7 +282,30 @@ public class CharacterCapabilityAir : CharacterCapability {
             character.facingRight = true;
     }
 
+    static readonly string[] animCoolFallTags = {
+        "Skid",
+        "Skid",
+        "Balancing",
+        "Slow Walk",
+        "Walk",
+        "Fast",
+        "Run",
+        "Push",
+        "Look Up",
+        "Look Down",
+        "Idle"
+    };
+
     void UpdateAirAnim(float deltaTime) {
+        if (animAirCoolFall) {
+            foreach (string tag in animCoolFallTags) {
+                if (character.AnimatorIsTag(tag)) {
+                    character.AnimatorPlay("Fall", "Fall");
+                    break;
+                }
+            }
+        }
+
         UpdateAirAnimDirection();
         // ORDER MATTERS! GetSpriteRotation may depend on flipX for rotation-based flipping
         character.flipX = !character.facingRight;

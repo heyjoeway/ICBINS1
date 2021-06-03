@@ -1,22 +1,38 @@
 using UnityEngine;
 using ActionCode2D.Renderers;
+using System;
 
 public class CharacterCapabilityAfterImage3D : CharacterCapability {
     Transform afterImage;
     Animator afterImageAnimator;
+    Rewindable<Vector3> positionHistory;
+    Rewindable<Vector3> scaleHistory;
+    Rewindable<Quaternion> rotationHistory;
 
     public override void Init() {
+        positionHistory = Rewindable<Vector3>.Create();
+        scaleHistory = Rewindable<Vector3>.Create();
+        rotationHistory = Rewindable<Quaternion>.Create();
         afterImage = character.spriteContainer.Find("Afterimage");
         afterImageAnimator = afterImage.GetComponent<Animator>();
     }
 
-    Vector3[] positionHistory = new Vector3[5];
-    Vector3[] scaleHistory = new Vector3[5];
-    Quaternion[] rotationHistory = new Quaternion[5];
-    int historyIndex = 0;
     bool historyFlicker = false;
 
     public override void CharUpdate(float deltaTime) {
+        positionHistory.Set(character.sprite.position); 
+        rotationHistory.Set(character.sprite.rotation);
+        scaleHistory.Set(character.sprite.localScale);
+        
+        bool active = (
+            character.HasEffect("afterImage") ||
+            character.HasEffect("speedUp") ||
+            character.HasEffect("boostMode")
+        );
+
+        afterImage.gameObject.SetActive(active);
+        if (!active) return;
+        
         for (int i = 0; i < afterImageAnimator.layerCount; i++) {
             afterImageAnimator.Play(
                 character.spriteAnimator.GetCurrentAnimatorStateInfo(i).fullPathHash,
@@ -29,25 +45,21 @@ public class CharacterCapabilityAfterImage3D : CharacterCapability {
             );
         }
 
-        int historyIndexOffset = historyIndex - (historyFlicker ? 1 : 3);
-        if (historyIndexOffset < 0)
-            historyIndexOffset += 5;
-
-        afterImage.position = positionHistory[historyIndexOffset];
-        afterImage.localScale = scaleHistory[historyIndexOffset];
-        afterImage.rotation = rotationHistory[historyIndexOffset];
-
+        int historyIndexOffset = (historyFlicker ? 1 : 3);
         historyFlicker = !historyFlicker;
-        historyIndex++;
-        historyIndex %= 5;
-        positionHistory[historyIndex] = character.sprite.position; 
-        rotationHistory[historyIndex] = character.sprite.rotation;
-        scaleHistory[historyIndex] = character.sprite.localScale;
 
-        afterImage.gameObject.SetActive(
-            character.HasEffect("afterImage") ||
-            character.HasEffect("speedUp") ||
-            character.HasEffect("boostMode")
-        );
+        try {
+            afterImage.position = positionHistory.GetFromIndex(
+                positionHistory.RewindByIndex(historyIndexOffset, false)
+            );
+            afterImage.localScale = scaleHistory.GetFromIndex(
+                scaleHistory.RewindByIndex(historyIndexOffset, false)
+            );
+            afterImage.rotation = rotationHistory.GetFromIndex(
+                rotationHistory.RewindByIndex(historyIndexOffset, false)
+            );
+
+            afterImage.gameObject.SetActive(active);
+        } catch (Exception e) { }
     }
 }

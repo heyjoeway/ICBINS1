@@ -97,7 +97,7 @@ public class CharacterCapabilitySpindash : CharacterCapability {
 
     // 3D-Ready: YES
     void SpindashCharge() {
-        character.AnimatorPlay("Spindash", 0);
+        character.AnimatorPlay("Spindash", "", 0);
         spindashPower += 2;
         SFX.Play(
             character.audioSource,

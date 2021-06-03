@@ -127,8 +127,35 @@ public class CharacterCapabilityGround : CharacterCapability {
         accelerationPrev = accelerationMagnitude;
     }
 
+    public void UpdateRunAnim(float speed) {
+        // Slow Walking
+        // ======================
+        if (Mathf.Abs(speed) < animWalkThreshold * character.physicsScale) {
+            character.AnimatorPlay("Slow Walk", "Slow Walk");
+            character.spriteAnimatorSpeed = 1 + (Mathf.Abs(speed) / topSpeedNormal * character.physicsScale);
+
+        // Walking
+        // ======================
+        } else if (Mathf.Abs(speed) < animRunThreshold * character.physicsScale) {
+            character.AnimatorPlay("Walk", "Walk");
+            character.spriteAnimatorSpeed = 1 + (Mathf.Abs(speed) / topSpeedNormal * character.physicsScale);
+        // Running Fast
+        // ======================
+        } else if (
+            (Mathf.Abs(speed) >= animPeeloutThreshold * character.physicsScale) &&
+            GlobalOptions.GetBool("peelOut")
+        ) {
+            character.AnimatorPlay("Fast", "Fast");
+            character.spriteAnimatorSpeed = Mathf.Abs(speed) / topSpeedNormal * character.physicsScale;
+        } else {
+        // Running
+        // ======================
+            character.AnimatorPlay("Run", "Run");
+            character.spriteAnimatorSpeed = Mathf.Abs(speed) / topSpeedNormal * character.physicsScale;
+        }
+    }
+
     // Updates the character's animation while they're on the ground
-    // 3D-Ready: NO
     void UpdateGroundAnim(float deltaTime) {
         character.spriteAnimatorSpeed = 1;
 
@@ -150,7 +177,7 @@ public class CharacterCapabilityGround : CharacterCapability {
 
             // Skidding
             // ======================
-            bool skidding = character.spriteAnimator.GetCurrentAnimatorStateInfo(0).IsTag("Skid");
+            bool alreadySkidding = character.AnimatorIsTag("Skid");
 
             bool notSkidding = (
                 ((accelerationPrev > 0) && (character.groundSpeed > 0)) ||
@@ -180,7 +207,7 @@ public class CharacterCapabilityGround : CharacterCapability {
                 else if (character.input.GetAxisPositive("Vertical"))
                     character.AnimatorPlay("Look Up");
                 else if (character.balanceState != Character.BalanceState.None) {                   
-                    if (!character.spriteAnimator.GetCurrentAnimatorStateInfo(0).IsTag("Balancing")) {
+                    if (!character.AnimatorIsTag("Balancing")) {
                         if (
                             (character.facingRight && (character.balanceState == Character.BalanceState.Right)) ||
                             (!character.facingRight && (character.balanceState == Character.BalanceState.Left))
@@ -190,59 +217,23 @@ public class CharacterCapabilityGround : CharacterCapability {
                             character.AnimatorPlay("Balancing Backwards");
                         }
                     }
-                    character.AnimatorPlay("Balancing");
-                } else {
-                    if (!character.spriteAnimator.GetCurrentAnimatorStateInfo(0).IsTag("Idle"))
-                        character.AnimatorPlay("Idle");
-                }
+                } else character.AnimatorPlay("Idle", "Idle");
             // Pushing anim
             // ======================
             } else if (pushing) {
-                if (!character.spriteAnimator.GetCurrentAnimatorStateInfo(0).IsTag("Push"))
-                    character.AnimatorPlay("Push");
+                character.AnimatorPlay("Push", "Push");
     
                 character.spriteAnimatorSpeed = 1 + (Mathf.Abs(character.groundSpeed) / topSpeedNormal * character.physicsScale);
             // Skidding, again
             // ======================
-            } else if ((canSkid || skidding) && !notSkidding) {
-                if (!character.spriteAnimator.GetCurrentAnimatorStateInfo(0).IsTag("Skid")) {
-                    SFX.Play(character.audioSource, "sfxSkid");
+            } else if (canSkid && !notSkidding && !alreadySkidding) {
+                SFX.Play(character.audioSource, "sfxSkid");
 
-                    if (Mathf.Abs(character.groundSpeed) < animSkidFastThreshold * character.physicsScale)
-                        character.AnimatorPlay("Skid");
-                    else
-                        character.AnimatorPlay("Skid Fast");
-                }
-
-            // Slow Walking
-            // ======================
-            } else if (Mathf.Abs(character.groundSpeed) < animWalkThreshold * character.physicsScale) {
-                if (!character.spriteAnimator.GetCurrentAnimatorStateInfo(0).IsTag("Slow Walk"))
-                    character.AnimatorPlay("Slow Walk");
-    
-                character.spriteAnimatorSpeed = 1 + (Mathf.Abs(character.groundSpeed) / topSpeedNormal * character.physicsScale);
-
-            // Walking
-            // ======================
-            } else if (Mathf.Abs(character.groundSpeed) < animRunThreshold * character.physicsScale) {
-                if (!character.spriteAnimator.GetCurrentAnimatorStateInfo(0).IsTag("Walk"))
-                    character.AnimatorPlay("Walk");
-    
-                character.spriteAnimatorSpeed = 1 + (Mathf.Abs(character.groundSpeed) / topSpeedNormal * character.physicsScale);
-            // Running Fast
-            // ======================
-            } else if (
-                (Mathf.Abs(character.groundSpeed) >= animPeeloutThreshold * character.physicsScale) &&
-                GlobalOptions.GetBool("peelOut")
-             ) {
-                character.AnimatorPlay("Fast");
-                character.spriteAnimatorSpeed = Mathf.Abs(character.groundSpeed) / topSpeedNormal * character.physicsScale;
-            } else {
-            // Running
-            // ======================
-                character.AnimatorPlay("Run");
-                character.spriteAnimatorSpeed = Mathf.Abs(character.groundSpeed) / topSpeedNormal * character.physicsScale;
-            }
+                if (Mathf.Abs(character.groundSpeed) < animSkidFastThreshold * character.physicsScale)
+                    character.AnimatorPlay("Skid");
+                else
+                    character.AnimatorPlay("Skid Fast");
+            } else UpdateRunAnim(character.groundSpeed);
         }
 
         // Final value application

@@ -6,14 +6,14 @@ public class CharacterEffectShield : CharacterEffect {
 
     public CharacterEffectShield(Character character)
         : base(character, "shield") {
+            
+        character.RemoveEffect("shield");
 
-        if (!character.HasEffect("shield")) {
-            shield = GameObject.Instantiate(
-                Constants.Get<GameObject>("prefabShieldNormal")
-            ).GetComponent<ObjShield>();
-            shield.character = character;
-        }
-
+        shield = GameObject.Instantiate(
+            Constants.Get<GameObject>("prefabShieldNormal")
+        ).GetComponent<ObjShield>();
+        shield.character = character;
+        
         SFX.Play(character.audioSource, "sfxShieldNormal");
     }
 

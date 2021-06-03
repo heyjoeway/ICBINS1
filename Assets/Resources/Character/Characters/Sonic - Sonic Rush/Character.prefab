@@ -201,6 +201,9 @@ MonoBehaviour:
   gravityNormal: -0.21875
   frictionAirNormal: 0.28125
   frictionAirSpeedUp: 0.5625
+  topSpeedAirNormal: 6
+  topSpeedAirSpeedUp: 12
+  animAirCoolFall: 1
   airModeCollider: {fileID: 0}
 --- !u!114 &-6068268411037642733
 MonoBehaviour:

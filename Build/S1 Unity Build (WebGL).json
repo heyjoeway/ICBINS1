@@ -1,0 +1,16 @@
+{
+"companyName": "heyjoeway",
+"productName": "I Can't Believe it's Not Sonic 1",
+"productVersion": "0.3",
+"dataUrl": "S1 Unity Build (WebGL).data.unityweb",
+"wasmCodeUrl": "S1 Unity Build (WebGL).wasm.code.unityweb",
+"wasmFrameworkUrl": "S1 Unity Build (WebGL).wasm.framework.unityweb",
+"graphicsAPI": ["WebGL 2.0","WebGL 1.0"],
+"webglContextAttributes": {"preserveDrawingBuffer": false},
+"splashScreenStyle": "Dark",
+"backgroundColor": "#000000",
+"cacheControl": {"default": "must-revalidate"},
+"developmentBuild": false,
+"multithreading": false,
+"unityVersion": "2019.2.0f1"
+}
